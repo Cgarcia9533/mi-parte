@@ -2975,27 +2975,70 @@ a:hover{color:var(--ink)}
 
 <sc-if value="{{ vMateriales }}" hint-placeholder-val="{{ false }}">
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px;animation:vistaIn .24s ease-out both">
+<div style="display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:14px;box-shadow:var(--sh);padding:12px 14px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Buscar</span>
+<input value="{{ buscaMat }}" sc-camel-on-change="{{ setBuscaMat }}" placeholder="Descripción o referencia" style="flex:1;min-width:0;box-sizing:border-box;background:transparent;border:none;color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:0">
+<span sc-camel-on-click="{{ limpiaBuscaMat }}" style="display:{{ dispLimpiaMat }};font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer;padding:0 2px">✕</span>
+</div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
-<sc-for list="{{ tiposLista }}" as="t" hint-placeholder-count="8">
-<div sc-camel-on-click="{{ t.set }}" style="padding:10px 13px;border:1px solid {{ t.edge }};border-radius:999px;background:{{ t.bg }};color:{{ t.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">{{ t.lab }}</div>
+<sc-for list="{{ filtrosMat }}" as="f" hint-placeholder-count="7">
+<div sc-camel-on-click="{{ f.set }}" style="padding:10px 13px;border:1px solid {{ f.edge }};border-radius:999px;background:{{ f.bg }};color:{{ f.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">{{ f.lab }}</div>
 </sc-for>
 </div>
-<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
-<sc-for list="{{ bdMateriales }}" as="m" hint-placeholder-count="6">
-<div style="padding:12px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:7px">
-<input value="{{ m.desc }}" sc-camel-on-change="{{ m.setDesc }}" style="width:100%;box-sizing:border-box;background:transparent;border:none;border-radius:0;color:var(--ink);font:500 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;padding:0">
-<div style="display:{{ m.dispRef }};gap:10px;align-items:center">
-<input value="{{ m.ref }}" sc-camel-on-change="{{ m.setRef }}" placeholder="Referencia" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--dim);font:400 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:8px">
-<input value="{{ m.ud }}" sc-camel-on-change="{{ m.setUd }}" placeholder="ud" style="width:52px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--amber);font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:8px;text-align:center">
-<span sc-camel-on-click="{{ m.quitar }}" style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer">✕</span>
+<sc-for list="{{ gruposMat }}" as="g" hint-placeholder-count="4">
+<div style="display:{{ g.disp }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 9px 9px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
+<span style="flex:1;min-width:0;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">{{ g.lab }} · {{ g.n }}</span>
+<span sc-camel-on-click="{{ g.add }}" style="padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);cursor:pointer">+ Añadir</span>
 </div>
-<div style="display:{{ m.dispSolo }};justify-content:flex-end">
-<span sc-camel-on-click="{{ m.quitar }}" style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer">✕</span>
+<sc-for list="{{ g.items }}" as="m" hint-placeholder-count="3">
+<div style="border-bottom:1px solid var(--line)">
+<div sc-camel-on-click="{{ m.abrir }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:500 13.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:{{ m.tinta }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.desc }}</span>
+<span style="display:{{ m.dispMeta }};font:400 10.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;color:var(--dim)">{{ m.meta }}</span>
+</div>
+<span style="font:400 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);transform:rotate({{ m.giro }});transition:transform .18s ease">›</span>
+</div>
+<div style="display:{{ m.dispEd }};flex-direction:column;gap:12px;padding:3px 14px 15px;background:var(--band)">
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Descripción</span>
+<input value="{{ m.desc0 }}" sc-camel-on-change="{{ m.setDesc }}" placeholder="Como lo llamas en obra" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.03em;padding:12px">
+</div>
+<div style="display:{{ m.dispRef }};flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Referencia</span>
+<input value="{{ m.ref }}" sc-camel-on-change="{{ m.setRef }}" placeholder="Código del proveedor" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:400 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Unidad</span>
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<sc-for list="{{ m.uds }}" as="u" hint-placeholder-count="4">
+<div sc-camel-on-click="{{ u.set }}" style="min-width:46px;text-align:center;padding:11px 12px;border:1px solid {{ u.edge }};border-radius:999px;background:{{ u.bg }};color:{{ u.ink }};font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer">{{ u.lab }}</div>
+</sc-for>
+<input value="{{ m.udLibre }}" sc-camel-on-change="{{ m.setUd }}" placeholder="otra" style="width:64px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:999px;color:var(--amber);font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px 8px;text-align:center">
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Apartado</span>
+<select value="{{ m.tipo }}" sc-camel-on-change="{{ m.setTipo }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:12px">
+<sc-for list="{{ tiposOpc }}" as="o" hint-placeholder-count="5">
+<option value="{{ o.v }}">{{ o.lab }}</option>
+</sc-for>
+</select>
+</div>
+<div style="display:flex;gap:8px;align-items:stretch">
+<span sc-camel-on-click="{{ m.borrar }}" style="padding:12px 15px;border:1px solid var(--line);border-radius:10px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Borrar</span>
+<span sc-camel-on-click="{{ m.abrir }}" style="flex:1;text-align:center;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);cursor:pointer">Hecho</span>
+</div>
 </div>
 </div>
 </sc-for>
 </div>
-<div sc-camel-on-click="{{ nuevoMaterial }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">{{ nuevoLab }}</div>
+</sc-for>
+<div style="display:{{ dispNadaMat }};border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px;font:400 12px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Nada en la lista con eso. Prueba con menos letras o añádelo nuevo.</div>
+<div sc-camel-on-click="{{ nuevoMaterial }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">{{ nuevoMatLab }}</div>
 </div>
 </sc-if>
 
@@ -3590,6 +3633,8 @@ function obraVacia(nom) {
 function migraEpisHerr(datos) {
   const db = datos.db;
   if (!Array.isArray(db.materiales)) db.materiales = [];
+  // solo una vez: si luego los borras a mano, se quedan borrados
+  if (db.vEpiHerr >= 2) return datos;
   // los EPIs pasan a ser un apartado de materiales, conservando su id ('e0'...)
   if (!db.materiales.some(m => m.tipo === 'epi')) {
     const propios = (db.episExtra || []).map(e => ({ id: e.id, desc: e.lab, tipo: 'epi', ref: '', ud: '' }));
@@ -3602,6 +3647,7 @@ function migraEpisHerr(datos) {
   if (!db.materiales.some(m => m.tipo === 'herramienta')) {
     db.materiales = db.materiales.concat(HERR.map((lab, i) => ({ id: 'h' + i, desc: lab, tipo: 'herramienta', ref: '', ud: '' })));
   }
+  db.vEpiHerr = 2;
   return datos;
 }
 function migraObras(datos) {
@@ -3722,7 +3768,10 @@ function semilla() {
     db: {
       obra: { nombre: 'Nave Logística Alfaro', cliente: 'Grupo Berlanga', pedido: '2026-114', ubicacion: 'Pol. Ind. La Senda, nave 12, Alfaro (La Rioja)', contactos: [{ nom: 'Marta Ibáñez · jefa de obra', tel: '618 224 703' }] },
       operarios: OPS.map((o, i) => ({ id: 'o' + i, nom: o[0], cat: o[1], emp: o[2], tel: o[3], notas: o[4] || '', activo: o[5] !== false })),
-      materiales: MATS.map((m, i) => ({ id: 'm' + i, desc: m[0], tipo: m[1], ref: m[2], ud: m[3] })),
+      materiales: MATS.map((m, i) => ({ id: 'm' + i, desc: m[0], tipo: m[1], ref: m[2], ud: m[3] }))
+        .concat(EPIS.map((lab, i) => ({ id: 'e' + i, desc: lab, tipo: 'epi', ref: '', ud: '' })))
+        .concat(HERR.map((lab, i) => ({ id: 'h' + i, desc: lab, tipo: 'herramienta', ref: '', ud: '' }))),
+      vEpiHerr: 2,
       zonas: [],
       episExtra: [],
       tareas: [],
@@ -3758,6 +3807,7 @@ class Component extends DCLogic {
     this.state = {
       db: base.db, partes: base.partes || {}, view: 'inicio', paso: 1, dia: hoyKey(), obraVer: null, verFin: false,
       buscaOp: '', buscaBd: '', tipoMat: null, ficha: null, tareaNueva: '', matResalta: null,
+      buscaMat: '', matEdit: null, filtroMat: null,
       herr: 'lapiz', zoom: 1, pan: { x: 0, y: 0 }, avisoCerrado: false, ancho: 0,
       hoja: null, hojaObra: null, dlg: null, cargando: false, odCarp: '', tut: null, oFotos: false, foto: null
     };
@@ -5492,6 +5542,9 @@ class Component extends DCLogic {
     const tipos = tiposTodos.filter(t => !APARTE.includes(t)).sort((a, b) => (usoTipos[b] || 0) - (usoTipos[a] || 0));
     // en la lista de materiales: primero el material, luego EPIs y herramientas, y «otro» al final
     const tiposLista = tipos.filter(t => t !== 'otro').concat(APARTE.filter(t => tiposTodos.includes(t)), tipos.filter(t => t === 'otro'));
+    const qMat = (s.buscaMat || '').trim().toLowerCase();
+    const matsBd = db.materiales.filter(m => !qMat || ((m.desc || '') + ' ' + (m.ref || '')).toLowerCase().includes(qMat));
+    const matsVis = matsBd.filter(m => !s.filtroMat || m.tipo === s.filtroMat);
     const opsIds = p.ops.map(o => o.id);
     const q = s.buscaOp.toLowerCase();
     const candidatos = db.operarios.filter(o => o.activo && !opsIds.includes(o.id) && (!q || (o.nom + ' ' + o.cat).toLowerCase().includes(q))).slice(0, 6);
@@ -6124,23 +6177,67 @@ class Component extends DCLogic {
       tendencia: rankF.g === null ? 'todavía sin valorar' : rankF.txt,
       notasFicha: notasOp, hayNotasFicha: notasOp.length > 0,
       borrarOperario: () => this.pregunta('Borrar la ficha', 'Se borra la ficha de ' + (fich.nom || 'este operario') + '. Los partes ya guardados la seguirán mencionando.', () => { this.setDb(d => { d.operarios = d.operarios.filter(x => x.id !== s.ficha); }); this.setState({ view: 'operarios', ficha: null }); }, 'Sí, borrar'),
-      // bd materiales
-      bdMateriales: listaQ.map(m => {
-        const i = db.materiales.findIndex(x => x.id === m.id);
+      // bd materiales: buscador, apartados y ficha desplegable
+      buscaMat: s.buscaMat,
+      setBuscaMat: e => this.setState({ buscaMat: e.target.value }),
+      limpiaBuscaMat: () => this.setState({ buscaMat: '' }),
+      dispLimpiaMat: qMat ? 'block' : 'none',
+      dispNadaMat: (qMat || s.filtroMat) && !matsVis.length ? 'block' : 'none',
+      filtrosMat: [{ lab: 'Todo', t: null }].concat(tiposLista.map(t => ({ lab: ROTULO_TIPO[t] || t, t })))
+        .map(f => Object.assign({ lab: f.lab, set: () => this.setState({ filtroMat: f.t }) }, sel(s.filtroMat === f.t))),
+      nuevoMatLab: s.filtroMat === 'epi' ? '+ Nuevo EPI' : (s.filtroMat === 'herramienta' ? '+ Nueva herramienta' : '+ Nuevo material'),
+      tiposOpc: tiposLista.map(t => ({ v: t, lab: ROTULO_TIPO[t] || t })),
+      gruposMat: tiposLista.map(t => {
+        const items = matsBd.filter(m => m.tipo === t);
+        const aparte = APARTE.includes(t);
         return {
-          desc: m.desc, ref: m.ref, ud: m.ud,
-          dispRef: APARTE.includes(m.tipo) ? 'none' : 'flex',
-          dispSolo: APARTE.includes(m.tipo) ? 'flex' : 'none',
-          setDesc: e => this.setDb(d => { d.materiales[i].desc = e.target.value; }),
-          setRef: e => this.setDb(d => { d.materiales[i].ref = e.target.value; }),
-          setUd: e => this.setDb(d => { d.materiales[i].ud = e.target.value; }),
-          quitar: () => this.pregunta(
-            m.tipo === 'epi' ? 'Borrar EPI' : (m.tipo === 'herramienta' ? 'Borrar herramienta' : 'Borrar material'),
-            'Se quita «' + (m.desc || 'esto') + '» de la lista. Los partes ya guardados no cambian.',
-            () => this.setDb(d => { d.materiales.splice(i, 1); }), 'Sí, borrar')
+          lab: ROTULO_TIPO[t] || t, n: items.length,
+          disp: items.length && (!s.filtroMat || s.filtroMat === t) ? 'block' : 'none',
+          add: () => {
+            const id = 'm' + Date.now();
+            this.setDb(d => {
+              const nuevo = { id, desc: '', tipo: t, ref: '', ud: aparte ? '' : 'ud' };
+              const i = d.materiales.findIndex(x => x.tipo === t);
+              if (i < 0) d.materiales.unshift(nuevo); else d.materiales.splice(i, 0, nuevo);
+            });
+            this.setState({ matEdit: id, buscaMat: '' });
+          },
+          items: items.map(m => {
+            const abierto = s.matEdit === m.id;
+            const meta = [m.ref, m.ud].filter(Boolean).join('   ·   ');
+            const mut = f => this.setDb(d => { const x = d.materiales.find(y => y.id === m.id); if (x) f(x); });
+            return {
+              desc: m.desc || 'Sin nombre', desc0: m.desc, ref: m.ref, tipo: m.tipo,
+              udLibre: ['ud', 'm²', 'ml', 'kg'].includes(m.ud) ? '' : m.ud,
+              tinta: m.desc ? 'var(--ink)' : 'var(--dim)',
+              meta, dispMeta: meta ? 'block' : 'none',
+              giro: abierto ? '90deg' : '0deg',
+              dispEd: abierto ? 'flex' : 'none',
+              dispRef: aparte ? 'none' : 'flex',
+              abrir: () => this.setState({ matEdit: abierto ? null : m.id }),
+              setDesc: e => mut(x => { x.desc = e.target.value; }),
+              setRef: e => mut(x => { x.ref = e.target.value; }),
+              setUd: e => mut(x => { x.ud = e.target.value; }),
+              setTipo: e => { const v = e.target.value; mut(x => { x.tipo = v; }); },
+              uds: ['ud', 'm²', 'ml', 'kg'].map(u => Object.assign({ lab: u, set: () => mut(x => { x.ud = u; }) }, sel(m.ud === u))),
+              borrar: () => this.pregunta(
+                m.tipo === 'epi' ? 'Borrar EPI' : (m.tipo === 'herramienta' ? 'Borrar herramienta' : 'Borrar material'),
+                'Se quita «' + (m.desc || 'esto') + '» de la lista. Los partes ya guardados no cambian.',
+                () => { this.setDb(d => { d.materiales = d.materiales.filter(y => y.id !== m.id); }); this.setState({ matEdit: null }); }, 'Sí, borrar')
+            };
+          })
         };
       }),
-      nuevoMaterial: () => this.setDb(d => d.materiales.unshift({ id: 'm' + Date.now(), desc: '', tipo: s.tipoMat || 'otro', ref: '', ud: 'ud' })),
+      nuevoMaterial: () => {
+        const id = 'm' + Date.now();
+        const tipo = s.filtroMat || 'otro';
+        this.setDb(d => {
+          const nuevo = { id, desc: '', tipo, ref: '', ud: APARTE.includes(tipo) ? '' : 'ud' };
+          const i = d.materiales.findIndex(x => x.tipo === tipo);
+          if (i < 0) d.materiales.unshift(nuevo); else d.materiales.splice(i, 0, nuevo);
+        });
+        this.setState({ matEdit: id, buscaMat: '' });
+      },
       // ajustes
       resAviso: horasAv.join(' · ') + ' · ' + (notif ? 'activado · ' + diasTxt : 'desactivado'),
       avisosLista: horasAv.map((h, i) => ({
@@ -6174,7 +6271,7 @@ class Component extends DCLogic {
       ...this.diagAvisos(),
       sinEspacio: !!s.sinEspacio,
       ...this.espacio(s, db),
-      vaciarTodo: () => this.pregunta('Vaciar la app', 'Se borran todos los partes, operarios y materiales de este móvil. Las tarjetas del inicio se quedan como las tienes puestas. No se puede deshacer.', () => {
+      vaciarTodo: () => this.pregunta('Vaciar la app', 'Se borran todos los partes de este móvil y las listas vuelven a como venían de fábrica: operarios, materiales, EPIs y herramientas de ejemplo. Las tarjetas del inicio se quedan como las tienes puestas. No se puede deshacer.', () => {
         const z = semilla();
         z.db.inicio = JSON.parse(JSON.stringify(db.inicio || z.db.inicio));
         z.db.ajustes = JSON.parse(JSON.stringify(db.ajustes || z.db.ajustes));

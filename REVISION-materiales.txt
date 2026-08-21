@@ -1,0 +1,84 @@
+MI PARTE 1.2 — materiales
+==========================
+
+  versionCode 7, versionName 1.2
+  sha256: 40e3456a066174412771328f278ac783ef96089012e0b3efd585427b5722c468
+  certificado 1cc8c054...2c57
+
+Se instala encima sin desinstalar. No he tocado ni una línea de tu código.
+
+
+OJO CON EL ADJUNTO
+------------------
+Lo mandaste con el mismo nombre que la vez anterior. El fichero que quedó bajo
+ese nombre es el VIEJO (md5 a4a41552), y el tuyo se guardó aparte, con sufijo:
+
+    Mi Parte rediseño laboral1-2-9d3d6f9e.zip   md5 64c242ca
+
+He compilado ese, el nuevo. Pero si algún día no ves reflejado un cambio,
+empieza por ahí: renombra el zip antes de mandarlo.
+
+
+LOS CINCO INVARIANTES
+---------------------
+  pila de fuentes  410 literales (eran 395: la pantalla de material nueva suma)
+  __bundler 0 · documentElement.replaceWith 0
+  translateX 1, el del carrusel, dentro de su overflow:hidden
+  minmax(0,1fr) 2 · min-width:0 36
+  caché mi-parte-1.2-v3
+  index.html de la raíz y el de assets con el mismo md5
+
+Sin métodos nativos nuevos: no ha hecho falta tocar Java.
+
+
+LO QUE TRAE
+-----------
+La pantalla de Material deja de ser una lista plana de 36 fichas abiertas.
+Ahora: buscador por descripción o referencia, filtros que filtran la lista
+entera, agrupación por apartados con su cuenta y un «+ Añadir» en cada
+cabecera, fichas que se despliegan al tocarlas, y un desplegable APARTADO para
+mover un material de sitio, que antes no se podía.
+
+El paso 4 del parte no se ha tocado.
+
+También el fallo de los EPIs que volvían solos: migraEpisHerr() los sembraba en
+cada arranque siempre que no encontrara ninguno, así que «Vaciar y empezar de
+cero» los quitaba y el arranque siguiente los devolvía.
+
+
+DOS NÚMEROS DE TU VERSION QUE NO CUADRAN
+-----------------------------------------
+El fichero manda; la nota se quedó atrás. Es la segunda vez seguida:
+
+  El VERSION dice «360 apariciones» de la pila de fuentes.  Reales: 410.
+  El VERSION dice «CACHE mi-parte-1.1-v1 -> mi-parte-1.2-v3».
+    La v3 es correcta, pero venías de mi-parte-1.2-v2, no de la 1.1-v1.
+
+Ninguno rompe nada, pero son cifras de autocomprobación: si no cuadran con el
+fichero, no comprueban nada. Yo las verifico igualmente, así que no es un
+problema para compilar; lo digo por si te fías de ellas para otra cosa.
+
+
+VERIFICADO EN EL FICHERO
+------------------------
+  index.html, sw.js, manifest.json e iconos: md5 idénticos a los tuyos
+  los siete Java compilan juntos, 31 clases, sin avisos
+  com.microsoft.skydrive: 0 (la nube sigue siendo genérica)
+  OPEN_DOCUMENT_TREE presente (el selector de carpetas funciona)
+  miparte-fuente y miparte-cierre-2 en el dex
+  dexdump: verPdf, carpetaOneDrive, eligeCarpetaOneDrive, guardaOneDrive,
+    guardaCopia, sharePdf, reprograma, fuenteMovil
+  apksigner verify pasa, certificado de siempre
+
+
+NO PROBADO EN ANDROID — MÍRALO TÚ
+---------------------------------
+  1. Material: buscador, filtros, mover un material de apartado con el
+     desplegable, y que «+ Añadir» de una cabecera cree la ficha en ESE
+     apartado.
+  2. Que al vaciar la app los EPIs ya no vuelven al reabrirla.
+  3. Que el paso 4 del parte sigue igual que antes.
+  4. La nube: sin carpeta fija debe salir la hoja de Android con todas.
+  5. «Ver el PDF», que sigue sin probarse.
+
+Copia de seguridad antes de instalar.
