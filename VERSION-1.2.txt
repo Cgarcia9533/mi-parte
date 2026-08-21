@@ -81,7 +81,8 @@ Secciones, en este orden: horas por operario (tabla con dias, normales, extras
 y total, con su fila de TOTAL), trabajos por zona a dos columnas, material
 gastado, material pendiente, incidencias con su fecha y notas de la obra.
 Firmas debajo del texto, sin hoja de conformidad. A4 vertical, sin imagenes.
-Contactos fuera, como pediste.
+Debajo del membrete va CONTACTOS, a dos columnas: nombre a la izquierda y
+telefono alineado a la derecha, en negrita. Solo sale si la obra tiene alguno.
 
 
 EL TUTORIAL
@@ -237,9 +238,9 @@ La barra de abajo ya tenia sus cuatro iconos. Tres se han rehecho:
 
   Ajustes      era un circulo con radios; ahora es una rueda dentada de ocho
                dientes, trazo de 1,6 px como los demas.
-  Operarios    el casco no se leia como un casco: la cupula era demasiado
-               plana y el ala se confundia con el borde. Cupula mas alta,
-               ala marcada y la cresta encima.
+  Operarios    el casco no se leia como un casco por mucho que se retocara.
+               Fuera el casco: ahora es un peon de ajedrez (cabeza, collarin,
+               cuerpo acampanado y base), que a 23 px se reconoce solo.
   Material     era un cubo en perspectiva; ahora es una caja de herramientas
                de frente, con su asa arriba, la tapa y el cierre.
 
@@ -263,7 +264,7 @@ LAS CINCO COSAS QUE ROMPEN EL APK
 3. Animaciones horizontales: sigue habiendo un solo translateX, el del
    carrusel del tutorial, dentro de su overflow:hidden.
 4. Rejillas: no se ha tocado ninguna.
-5. sw.js: CACHE mi-parte-1.1-v1 -> mi-parte-1.2-v3.
+5. sw.js: CACHE mi-parte-1.1-v1 -> mi-parte-1.2-v4.
 
 
 PARA QUIEN COMPILA EL APK
@@ -323,7 +324,7 @@ dentro, no impreso.
      migracion esta probada en navegador con datos de ejemplo, no con tu base.
      Saca antes una copia de seguridad desde Ajustes.
  12. Que los cuatro iconos de la barra se distinguen a un brazo de distancia y
-     con el movil al sol: el casco y la caja de herramientas son los que hay
+     con el movil al sol: el peon y la caja de herramientas son los que hay
      que mirar.
  13. Marcar herramientas en el paso 3 y comprobar que salen en el PDF.
  14. Con TU carpeta ya elegida, que "Guardar en la nube" sigue subiendo a
@@ -387,3 +388,49 @@ es verdad: vuelven los de ejemplo. Ahora lo dice tal cual.
   MIRALO TU: al actualizar, que tus EPIs y herramientas propios sigan en la
   lista y que los marcados en partes viejos sigan marcados. La migracion
   antigua se respeta: solo se le pone la marca de hecha.
+
+
+VACIAR SOLO VACIA LOS PARTES
+----------------------------
+"Vaciar y empezar de cero" devolvia la app a fabrica: los partes se iban, si,
+pero los operarios y los materiales volvian a ser los de ejemplo. Cada vez que
+reseteabas te salian otra vez los cinco operarios de muestra y habia que
+borrarlos a mano.
+
+Ahora el boton solo borra LOS PARTES. Con ellos se van las fotos, los croquis,
+las incidencias, las horas y el material apuntado de cada dia, que es lo que
+va dentro del parte.
+
+  SE BORRA         todos los partes guardados, con sus fotos y croquis.
+  NO SE TOCA       operarios, materiales, EPIs, herramientas, obras, ajustes
+                   (avisos, carpeta de la nube), tarjetas del inicio, zonas y
+                   tareas.
+
+El aviso de confirmacion lo dice tal cual, y el titulo del dialogo ya no es
+"Vaciar la app" sino "Vaciar los partes". Quien quiera la app de fabrica lo
+hace desde los ajustes de Android o reinstalando, que para eso estan.
+
+De paso, al vaciar vuelve al inicio con la fecha de hoy y recalcula el espacio
+ocupado, que antes se quedaba con la cifra vieja.
+
+
+LAS CASILLAS DE EPIS NO MARCABAN
+--------------------------------
+Sintoma: en el paso 5, "Repaso de EPIs", tocar una casilla no hacia nada.
+
+Causa: al rehacer la lista de materiales, el bloque que prepara los EPIs del
+paso 5 se quedo sin el manejador del toque. La plantilla llamaba a e.toggle y
+ese toggle no existia, asi que el toque caia en el vacio sin dar ningun error.
+
+Arreglo: vuelve el toggle, y ahora borra la clave en vez de guardarla en false
+cuando desmarcas, para no dejar basura en el parte. Probado en navegador:
+marca y desmarca, y lo marcado sale en el PDF.
+
+
+TELEFONOS EN EL RESUMEN
+-----------------------
+El resumen de obra no llevaba los contactos: se quitaron a proposito en la
+maqueta R2 y ahora los quieres. Van en un bloque CONTACTOS justo debajo del
+membrete, antes de las horas por operario, a dos columnas y con el telefono
+cuadrado a la derecha. Si la obra no tiene contactos, el bloque no aparece y
+el resumen queda como estaba.

@@ -3587,7 +3587,7 @@ const svgIco = d => React.createElement('svg', {
 });
 const ICO_TAB = {
   inicio: svgIco('<rect x="3.2" y="5" width="17.6" height="15.4" rx="2"></rect><path d="M3.2 9.6h17.6M8 3.2v3.6M16 3.2v3.6"></path><path d="M7.4 13.4h4.2M7.4 16.8h7.2"></path>'),
-  operarios: svgIco('<path d="M2.9 17.1h18.2"></path><path d="M5.1 17.1v-3.5a6.9 6.9 0 0 1 13.8 0v3.5"></path><path d="M9.9 7.5V4.9a1.5 1.5 0 0 1 1.5-1.5h1.2a1.5 1.5 0 0 1 1.5 1.5v2.6"></path><path d="M2.9 17.1a1.6 1.6 0 0 0 1.6 1.6h15a1.6 1.6 0 0 0 1.6-1.6"></path>'),
+  operarios: svgIco('<circle cx="12" cy="6.1" r="2.9"></circle><path d="M7.9 10.3h8.2"></path><path d="M9.5 10.3c0 3.3-1.1 5.3-2.7 7.2h10.4c-1.6-1.9-2.7-3.9-2.7-7.2"></path><path d="M4.6 17.5h14.8c.9 0 1.6.7 1.6 1.6v1.6H3v-1.6c0-.9.7-1.6 1.6-1.6z"></path>'),
   materiales: svgIco('<path d="M3.1 9.9h17.8v9.3H3.1z"></path><path d="M3.1 13.6h17.8"></path><path d="M9.6 9.9V8.2a1.5 1.5 0 0 1 1.5-1.5h1.8a1.5 1.5 0 0 1 1.5 1.5v1.7"></path><path d="M10.3 13.6h3.4v2.2h-3.4z"></path>'),
   ajustes: svgIco('<path d="M9.99 5.82L10.58 3.06L13.42 3.06L14.01 5.82A6.5 6.5 0 0 1 14.95 6.21L17.32 4.68L19.32 6.68L17.79 9.05A6.5 6.5 0 0 1 18.18 9.99L20.94 10.58L20.94 13.42L18.18 14.01A6.5 6.5 0 0 1 17.79 14.95L19.32 17.32L17.32 19.32L14.95 17.79A6.5 6.5 0 0 1 14.01 18.18L13.42 20.94L10.58 20.94L9.99 18.18A6.5 6.5 0 0 1 9.05 17.79L6.68 19.32L4.68 17.32L6.21 14.95A6.5 6.5 0 0 1 5.82 14.01L3.06 13.42L3.06 10.58L5.82 9.99A6.5 6.5 0 0 1 6.21 9.05L4.68 6.68L6.68 4.68L9.05 6.21Z"></path><circle cx="12" cy="12" r="2.75"></circle>')
 };
@@ -4633,6 +4633,20 @@ class Component extends DCLogic {
     const bb = yy - 46;
     D.caja(M, bb, D.ancho, top - bb, 0.7, '0.1');
     D.y = bb - 12;
+    const cts = (obra.contactos || []).filter(c => (c.nom || '').trim() || (c.tel || '').trim());
+    if (cts.length) {
+      h2('Contactos');
+      const cw2 = (D.ancho - 24) / 2;
+      for (let i = 0; i < cts.length; i += 2) {
+        if (D.y < 100) D.nueva(cab);
+        cts.slice(i, i + 2).forEach((c, j) => {
+          const x = M + j * (cw2 + 24);
+          D.txt(D.recorta(c.nom || 'Contacto', cw2 - 90, 9.2), x, D.y, 9.2);
+          D.txtD(D.recorta(c.tel || '', 86, 9.2), x + cw2, D.y, 9.2, true);
+        });
+        D.y -= 6; D.linea(M, D.y, R, 0.5, '0.83'); D.y -= 13;
+      }
+    }
     if (r.porOp.length) {
       h2('Horas por operario');
       const cO = M + 4, cC = M + 200, cD = M + 316, cN = M + 400, cE = M + 462, cT = R - 4;
@@ -6089,6 +6103,7 @@ class Component extends DCLogic {
         return {
           lab: e.lab, mark: on ? '✓' : '',
           edge: on ? 'var(--green)' : 'var(--line)', bg: on ? 'var(--green)' : 'transparent',
+          toggle: () => this.setP(x => { x.epis = x.epis || {}; if (x.epis[e.id]) delete x.epis[e.id]; else x.epis[e.id] = true; })
         };
       }),
       dispSinEpis: this.listaEpis().length ? 'none' : 'block',
@@ -6271,11 +6286,8 @@ class Component extends DCLogic {
       ...this.diagAvisos(),
       sinEspacio: !!s.sinEspacio,
       ...this.espacio(s, db),
-      vaciarTodo: () => this.pregunta('Vaciar la app', 'Se borran todos los partes de este móvil y las listas vuelven a como venían de fábrica: operarios, materiales, EPIs y herramientas de ejemplo. Las tarjetas del inicio se quedan como las tienes puestas. No se puede deshacer.', () => {
-        const z = semilla();
-        z.db.inicio = JSON.parse(JSON.stringify(db.inicio || z.db.inicio));
-        z.db.ajustes = JSON.parse(JSON.stringify(db.ajustes || z.db.ajustes));
-        this.setState({ db: z.db, partes: {}, view: 'inicio' }, () => this.guarda());
+      vaciarTodo: () => this.pregunta('Vaciar los partes', 'Se borran todos los partes de este móvil, con sus fotos, croquis, incidencias y material apuntado. Tus listas y tus ajustes no se tocan: operarios, materiales, EPIs, herramientas, obras y las tarjetas del inicio se quedan como las tienes. No se puede deshacer.', () => {
+        this.setState({ partes: {}, view: 'inicio', dia: hoyKey(), ficha: null, obraVer: null }, () => { this.guarda(); this.midEspacio(); });
       }, 'Sí, vaciar'),
       // tabs
       tabs: [['Hoy', 'inicio'], ['Operarios', 'operarios'], ['Material', 'materiales'], ['Ajustes', 'ajustes']].map(([lab, v]) => {

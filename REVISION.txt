@@ -1,0 +1,58 @@
+MI PARTE 1.2 — compilada
+=========================
+
+  versionCode 8, versionName 1.2
+  sha256: 3ba6e73247cd37464eec11555e8ccc64174a951e093c76778917257c1bf7884a
+  certificado 1cc8c054...2c57
+  zip de origen: md5 ec3503dc7681a3d003dc0a6d603ab522
+
+Se instala encima sin desinstalar. No he tocado ni una línea de tu código: no
+hacía falta, verPdf ya estaba desde la compilación anterior.
+
+
+LOS CINCO INVARIANTES
+---------------------
+  pila de fuentes  410 literales, sin cambios respecto al zip anterior
+  __bundler 0 · documentElement.replaceWith 0
+  translateX 1, el del carrusel, dentro de su overflow:hidden
+  minmax(0,1fr) 2 · min-width:0 36
+  caché mi-parte-1.2-v4
+  index.html de la raíz y el de assets con el mismo md5
+
+
+LO QUE TRAE
+-----------
+Tres cosas, todas de la app:
+
+  Vaciar        «Vaciar y empezar de cero» devolvía la app a fábrica y te
+                replantaba los cinco operarios de ejemplo cada vez. Ahora borra
+                solo los partes, con sus fotos y croquis. Operarios, materiales,
+                EPIs, herramientas, obras, ajustes, tarjetas y zonas se quedan.
+                El diálogo pasa a llamarse «Vaciar los partes».
+  Contactos     vuelven al PDF, debajo del membrete, a dos columnas.
+  Icono         el casco de Operarios pasa a peón de ajedrez.
+
+El cambio de vaciar es el bueno. El de antes hacía inservible el botón: para
+limpiar los partes tenías que borrar a mano lo que te volvía a aparecer.
+
+
+VERIFICADO EN EL FICHERO
+------------------------
+  index.html, sw.js, manifest.json e iconos: md5 idénticos a los tuyos
+  los siete Java compilan juntos, 31 clases, sin avisos
+  com.microsoft.skydrive: 0, la nube sigue siendo genérica
+  OPEN_DOCUMENT_TREE presente, el selector de carpetas funciona
+  dexdump: verPdf, guardaOneDrive, carpetaOneDrive, eligeCarpetaOneDrive,
+    guardaCopia, sharePdf, fuenteMovil, reprograma
+  apksigner verify pasa, certificado de siempre
+
+
+NO PROBADO EN ANDROID — MÍRALO TÚ
+---------------------------------
+  1. «Vaciar los partes»: que se lleve los partes y NO toque operarios ni
+     materiales. Hazlo con la copia de seguridad hecha, que esto borra.
+  2. Que los contactos salen en el PDF debajo del membrete.
+  3. El icono de Operarios a 23 px, con el móvil al sol.
+  4. Lo de siempre que sigue sin probarse: «Ver el PDF» y la hoja de la nube.
+
+Copia de seguridad antes de instalar.
