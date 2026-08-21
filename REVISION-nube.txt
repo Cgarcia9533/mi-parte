@@ -1,0 +1,94 @@
+MI PARTE 1.2 — la nube, ahora sí genérica
+==========================================
+
+  versionCode 6, versionName 1.2
+  sha256: e70fc6ee20e5a2ee648c3a63dc609273cf2f13406647742b6e1ddd403450afe2
+  certificado 1cc8c054...2c57
+
+Se instala encima sin desinstalar.
+
+
+LO QUE HE QUITADO
+-----------------
+El botón forzaba OneDrive. Literalmente:
+
+    i.setPackage(PAQUETE_ONEDRIVE);   // "com.microsoft.skydrive"
+
+Eso decía a Android «manda esto a OneDrive y a nadie más». Quien no tuviera
+OneDrive caía en un camino de emergencia con un aviso de la app diciendo
+«OneDrive no está instalado: elige dónde guardarlo». Justo lo que no querías.
+
+Fuera la línea, fuera la constante, fuera el aviso. El código pasa de 42 líneas
+a 30.
+
+
+LO QUE HACE AHORA
+-----------------
+Sin carpeta fija, que es como viene de fábrica:
+
+    Intent i = new Intent(Intent.ACTION_SEND);
+    i.setType("application/pdf");
+    i.putExtra(Intent.EXTRA_STREAM, ...);
+    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    startActivity(i);
+
+Sin `setPackage` y sin `createChooser` con título propio. Se lo damos a Android
+y Android hace lo suyo: si solo hay una app capaz de recibir un PDF, va directa;
+si hay varias, saca SU hoja de compartir, con OneDrive, Drive, Dropbox, correo,
+WhatsApp y lo que tenga cada uno instalado.
+
+Cero mensajes de la app. Cero decisiones de la app.
+
+
+UNA COSA QUE NO PUEDO DARTE, Y CONVIENE QUE LA SEPAS
+-----------------------------------------------------
+Pides «la primera vez eliges tu nube y ya está». La primera mitad sí. La
+segunda, no del todo: **Android no deja que una app fije un destino por defecto
+para compartir.** No existe el «recordar mi elección» para ACTION_SEND. La hoja
+va a salir cada vez.
+
+Lo que sí pasa: Android pone arriba del todo la app que usaste la última vez.
+Así que a partir del segundo parte es un toque en el primer icono, pero la hoja
+aparece igual.
+
+Si quieres guardado de verdad sin que salga nada, eso ya lo tienes y es la otra
+vía: el botón «Cambiar» abre el selector de carpetas de Android, eliges una
+carpeta una sola vez, y desde entonces el PDF se escribe ahí solo, sin abrir
+nada. Debajo del botón te pone «Va a «…»».
+
+La pega conocida: en ese selector de carpetas NO aparece OneDrive, porque su
+app de Android no publica proveedor de documentos. Sí aparecen Drive, Dropbox y
+las carpetas locales del móvil.
+
+Resumiendo, para quien use la app:
+
+  Nada configurado     hoja de Android cada vez, con su nube arriba.
+                       Vale para OneDrive y para todas las demás.
+  Carpeta elegida      un toque, sin que se abra nada.
+                       Vale para Drive, Dropbox y carpetas locales.
+
+
+VERIFICADO EN EL FICHERO
+------------------------
+  com.microsoft.skydrive en el dex: 0
+  el aviso «OneDrive no está instalado» en el dex: 0
+  OPEN_DOCUMENT_TREE presente: el selector de carpetas sigue funcionando
+  application/pdf declarado 2 veces en el manifest (SEND y VIEW), que es lo que
+    permite ver las apps de nube en Android 11+
+  los siete Java compilan juntos, 31 clases, sin avisos
+  dexdump: verPdf, carpetaOneDrive, eligeCarpetaOneDrive, guardaOneDrive,
+    sharePdf, escribeEnCarpeta
+  apksigner verify pasa, certificado de siempre
+
+No he tocado tu index.html ni el sw.js.
+
+
+NO PROBADO EN ANDROID — MÍRALO TÚ
+---------------------------------
+  1. Con la carpeta fija quitada, «Guardar en la nube» debe sacar la hoja de
+     Android con todas tus apps, no ir directo a OneDrive.
+  2. Que al elegir una y repetir al día siguiente, esa app sale la primera.
+  3. Con carpeta fija puesta, que siga escribiendo sin abrir nada.
+  4. «Ver el PDF», que sigue sin probarse.
+
+Copia de seguridad antes de instalar.
