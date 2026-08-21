@@ -2316,9 +2316,12 @@ a:hover{color:var(--ink)}
 <span style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">›</span>
 </div>
 </sc-for>
-<div style="display:flex;gap:8px;padding:12px 14px 14px">
-<div sc-camel-on-click="{{ copiarAyer }}" style="flex:1;text-align:center;padding:13px 8px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Copiar ayer</div>
-<div sc-camel-on-click="{{ exportar }}" style="flex:1;text-align:center;padding:13px 8px;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#23231f;cursor:pointer">PDF del día</div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px 14px">
+<div style="display:flex;gap:8px">
+<div sc-camel-on-click="{{ copiarAyer }}" style="flex:1;text-align:center;padding:13px 8px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Copiar último</div>
+<div sc-camel-on-click="{{ nuevaObra }}" style="flex:1;text-align:center;padding:13px 8px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Nueva obra</div>
+</div>
+<div sc-camel-on-click="{{ exportar }}" style="text-align:center;padding:13px 8px;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#23231f;cursor:pointer">PDF del día</div>
 </div>
 </div>
 
@@ -5476,8 +5479,8 @@ class Component extends DCLogic {
         tFila({ cajaDisp: 'flex', mark: '✓', cajaEdge: V, cajaBg: V, izq: 'Operarios', der: '4 hoy · 34 h' }),
         tFila({ cajaDisp: 'flex', mark: '3', cajaEdge: A, cajaInk: A, izq: 'Trabajos', der: 'sin rellenar' })
       ],
-      pie: 'Copiar ayer · PDF del día',
-      nota: 'El resumen del parte de hoy: los seis pasos, cuántos llevas hechos y los dos botones de abajo para copiar el parte de ayer o sacar el PDF.'
+      pie: 'Copiar último · Nueva obra · PDF del día',
+      nota: 'El resumen del parte de hoy: los seis pasos, cuántos llevas hechos y los botones de abajo para copiar el último parte de esta obra, abrir una obra nueva o sacar el PDF.'
     });
   }
   compruebaTutorial() {
