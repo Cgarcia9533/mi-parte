@@ -2427,6 +2427,25 @@ a:hover{color:var(--ink)}
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Partes anteriores</span>
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ histDato }}</span>
 </div>
+<div style="padding:9px 10px;border-bottom:1px solid var(--line)">
+<input value="{{ qBusca }}" sc-camel-on-change="{{ setQBusca }}" placeholder="Buscar en todos los partes" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
+</div>
+<sc-if value="{{ buscando }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ resultados }}" as="r" hint-placeholder-count="3">
+<div sc-camel-on-click="{{ r.ir }}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer">
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:52px;flex:none">{{ r.f }}</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:600 8.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)">{{ r.donde }}</span>
+<span style="font:400 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.txt }}</span>
+</div>
+<span style="font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">›</span>
+</div>
+</sc-for>
+<sc-if value="{{ sinResultados }}" hint-placeholder-val="{{ false }}">
+<div style="padding:16px 14px;font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Nada con eso. Busca por trabajo, zona, material, incidencia, pie de foto, operario u obra.</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{ noBuscando }}" hint-placeholder-val="{{ true }}">
 <sc-for list="{{ historial }}" as="d" hint-placeholder-count="3">
 <div sc-camel-on-click="{{ d.ir }}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:52px">{{ d.f }}</span>
@@ -2437,6 +2456,7 @@ a:hover{color:var(--ink)}
 </sc-for>
 <sc-if value="{{ sinHistorial }}" hint-placeholder-val="{{ false }}">
 <div style="padding:16px 14px;font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Todavía no hay partes guardados.</div>
+</sc-if>
 </sc-if>
 </div>
 </div>
@@ -2466,6 +2486,14 @@ a:hover{color:var(--ink)}
 <sc-if value="{{ p1 }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;flex-direction:column;gap:14px;animation:pasoIn .22s ease-out both">
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
+<sc-if value="{{ variasObras }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<sc-for list="{{ partesDia }}" as="q" hint-placeholder-count="0">
+<div sc-camel-on-click="{{ q.ir }}" style="padding:8px 12px;border:1px solid {{ q.edge }};border-radius:999px;background:{{ q.bg }};color:{{ q.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ q.lab }}</div>
+</sc-for>
+<span sc-camel-on-click="{{ quitaParteDia }}" style="display:{{ dispQuitaParte }};margin-left:auto;font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--red);cursor:pointer">Quitar</span>
+</div>
+</sc-if>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">{{ paso1Eti }}</span>
 <input value="{{ obraNombre }}" sc-camel-on-change="{{ setObraNombre }}" placeholder="Obra" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -2509,6 +2537,13 @@ a:hover{color:var(--ink)}
 <input type="time" value="{{ salida }}" sc-camel-on-change="{{ setSalida }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
 <span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--amber);min-width:56px;text-align:right">{{ horasDia }}</span>
 </div>
+</div>
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;align-items:center;gap:12px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Otra obra este mismo día</span>
+<span style="font:400 11px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Cada obra lleva su parte, con su horario y su PDF</span>
+</div>
+<span sc-camel-on-click="{{ otraObraDia }}" style="flex:none;padding:11px 15px;border:1px solid var(--line);border-radius:999px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Añadir</span>
 </div>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Valoración de la jornada</span>
@@ -2590,7 +2625,7 @@ a:hover{color:var(--ink)}
 <input value="{{ t.zona }}" sc-camel-on-change="{{ t.setZona }}" list="zonas-lista" placeholder="Zona" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <span sc-camel-on-click="{{ t.quitar }}" style="font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding:0 4px;cursor:pointer">✕</span>
 </div>
-<textarea value="{{ t.texto }}" sc-camel-on-change="{{ t.setTexto }}" rows="2" placeholder="Trabajo realizado" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px;resize:vertical"></textarea>
+<textarea data-trab="{{ t.idx }}" value="{{ t.texto }}" sc-camel-on-change="{{ t.setTexto }}" rows="2" placeholder="Trabajo realizado" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px;resize:vertical"></textarea>
 </div>
 </sc-for>
 <div sc-camel-on-click="{{ addTrabajo }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">+ Añadir línea de trabajo</div>
@@ -2696,7 +2731,16 @@ a:hover{color:var(--ink)}
 <sc-if value="{{ p6 }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:14px;animation:pasoIn .22s ease-out both">
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column">
-<div style="display:flex;align-items:center;gap:6px;padding:9px;border-bottom:1px solid var(--line);background:var(--wash);flex-wrap:wrap">
+<div sc-camel-on-click="{{ croToggle }}" style="display:flex;align-items:center;gap:10px;padding:15px 14px;background:var(--wash);cursor:pointer;border-left:4px solid var(--amber)">
+<span style="width:26px;height:26px;border-radius:8px;background:var(--amber);color:#23231f;display:flex;align-items:center;justify-content:center;font:700 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none">✎</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:700 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)">Croquis</span>
+<span style="font:400 10.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ croEstado }}</span>
+</div>
+<span style="font:700 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#23231f;background:var(--amber);border-radius:999px;padding:9px 14px;flex:none">{{ croLab }}</span>
+</div>
+<sc-if value="{{ croAbierto }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:6px;padding:9px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--wash);flex-wrap:wrap">
 <sc-for list="{{ herramientas }}" as="h" hint-placeholder-count="2">
 <div sc-camel-on-click="{{ h.set }}" style="padding:10px 13px;border:1px solid {{ h.edge }};border-radius:999px;background:{{ h.bg }};color:{{ h.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">{{ h.lab }}</div>
 </sc-for>
@@ -2709,6 +2753,7 @@ a:hover{color:var(--ink)}
 <input value="{{ croquisTitulo }}" sc-camel-on-change="{{ setCroquisTitulo }}" placeholder="Título del croquis" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <input value="{{ croquisEscala }}" sc-camel-on-change="{{ setCroquisEscala }}" placeholder="Escala" style="width:110px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 </div>
+</sc-if>
 </div>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Fotos y documentos</div>
@@ -3345,7 +3390,7 @@ Cargar una copia
 </div>
 <div style="display:flex;flex-direction:column;gap:5px;padding:14px;background:var(--band)">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Al día siguiente</span>
-<span style="font:400 12px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--banddim)">El parte nuevo sale con la obra y el horario ya puestos, copiados del día anterior. Solo tocas lo que cambia.</span>
+<span style="font:400 12px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--banddim)">El parte nuevo sale con la obra y el horario ya puestos. Si lo encuentras en blanco, «Copiar último» te trae el último parte de esa obra, sea de cuándo sea: el lunes te trae el viernes, no el domingo.</span>
 </div>
 </div>
 </div>
@@ -3520,6 +3565,21 @@ Cargar una copia
 </div>
 </div>
 <span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Dentro de cada obra: los días y las horas acumuladas, la cuadrilla, los trabajos por zona, el material pendiente, el resumen en PDF y las fotos de todos sus partes, que se pueden ver ahí mismo o bajar en un zip.</span>
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;flex:none">
+<div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Cambiar de obra</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:13px 14px;border-bottom:1px solid var(--line)">
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">Nueva obra</span>
+<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Botón en el inicio, al lado de «Copiar último». Abre la obra, la deja activa y te pone la cuadrilla y el horario del último parte: solo le pones nombre y cliente. Cuidado: cambiar el nombre de la obra activa no crea otra obra, renombra la que había, y sus partes viejos pasan a salir con el nombre nuevo.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:13px 14px">
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">Dos obras el mismo día</span>
+<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Si por la mañana estás en una nave y por la tarde en otra, el día se parte en dos: un parte por obra, cada uno con su horario, su cuadrilla y su PDF. Se añade al final del paso 1, debajo del horario.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px;padding:14px;background:var(--band)">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Con dos partes</span>
+<span style="font:400 12px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--banddim)">Arriba del paso 1 salen las dos obras del día: tocas una y saltas a su parte. «Quitar» borra el segundo y deja el primero intacto. Las horas de la semana suman los dos.</span>
+</div>
+</div>
 </div>
 <div style="flex:0 0 100%;width:100%;height:100%;box-sizing:border-box;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:13px;opacity:{{ t10.op }};transform:translateY({{ t10.ty }});transition:opacity .3s ease .1s,transform .4s cubic-bezier(.3,.9,.25,1) .1s">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Ajustes</span>
@@ -3541,6 +3601,17 @@ Cargar una copia
 <span style="padding:11px 0;text-align:center;border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:10px;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">S</span>
 <span style="padding:11px 0;text-align:center;border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:10px;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">D</span>
 </div>
+</div>
+</div>
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;flex:none">
+<div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Datos y copias</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:13px 14px;border-bottom:1px solid var(--line)">
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">Copia de seguridad</span>
+<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Un fichero con todo dentro: partes, fotos, obras y listas. Se carga en otro teléfono y queda igual que aquí.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:13px 14px">
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">Vaciar y empezar de cero</span>
+<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Borra solo los partes, con sus fotos y sus croquis. Tus operarios, materiales, EPIs, herramientas, obras y ajustes se quedan como los tengas.</span>
 </div>
 </div>
 </div>
@@ -3597,25 +3668,23 @@ const ICO_TAB = {
 const VISTO = 'miparte:tutorial:1.0';
 const TUT_N = 10; // pantallas del recorrido; la 11ª es la de novedades
 const NOVEDADES = [
-  'Los dos PDF se han rehecho. El parte del día lleva una banda de cifras arriba, los operarios y el material en tablas con columnas, y una hoja de conformidad para firmar.',
-  'El resumen de obra ya no se parece al parte: membrete propio con las cifras de la obra dentro, y los trabajos por zona a dos columnas.',
-  'Fuera el botón de imprimir. En «PDF del día» ahora puedes ver el PDF, compartirlo, guardarlo en el móvil o mandarlo a la nube.',
-  'La nube ya no es solo OneDrive: la primera vez que le das a «Guardar en la nube» eliges tú la carpeta, sea de OneDrive, Drive o Dropbox. Debajo del botón se lee siempre a dónde va.',
-  'En la ficha de la obra se ven las fotos de todos sus partes y se bajan en un zip.',
-  'La valoración por criterios se llama igual en todas las pantallas: valoración. Los tres colores siguen siendo verde, ámbar y rojo.',
-  'Las tarjetas del inicio enseñan su dato sin entrar: pasos hechos, pendientes sin marcar, líneas de material, horas de la semana y partes guardados.',
-  'La cabecera va como un parte: la obra y el cliente arriba, y debajo la fecha con el número de parte de esa obra.',
-  'A la derecha de la cabecera, una chapa: ABIERTO mientras falte algún paso, CERRADO con los seis hechos. Si estás en un día que no es hoy, la chapa dice la fecha de ese día.',
-  'La tarjeta del parte lleva una barra de seis segmentos, uno por paso.',
-  'Fuera los subtítulos que explicaban cada pantalla: su sitio es este tutorial.'
+  'Un día puede llevar dos obras. Cada una tiene su propio parte, con su horario, su cuadrilla y su PDF. Se añade al final del paso 1, debajo del horario.',
+  'La tarjeta «Partes anteriores» del inicio lleva buscador: escribes dos letras y busca en todos los partes guardados — trabajos, zonas, material, incidencias, pies de foto, croquis, notas y obras.',
+  'El botón «Copiar ayer» ahora se llama «Copiar último», que es lo que siempre hizo: trae el último parte de esa obra, sea de cuándo sea. El lunes te trae el viernes.',
+  'Botón de «Nueva obra» en el inicio, al lado de «Copiar último». Antes había que ir a la pestaña de obras y bajar del todo.',
+  'El croquis del paso 6 viene plegado y ocupa una línea hasta que lo abres. Se vuelve a cerrar solo al salir del paso.',
+  '«Vaciar y empezar de cero» solo borra los partes, con sus fotos y sus croquis. Operarios, materiales, EPIs, herramientas, obras y tus ajustes se quedan como los tengas.',
+  'Arreglado: en el paso 5 no se podían marcar las casillas de los EPIs.',
+  'El resumen de obra en PDF ya lleva los teléfonos de contacto, debajo del membrete.',
+  'El icono de Operarios de la barra de abajo es ahora un peón de ajedrez: el casco no se leía a tamaño de icono.'
 ];
 const TUT_PASOS = [
-  ['Obra y horario', 'La obra, la hora de entrada y la de salida. Es la cabecera del PDF y sale ya rellena con el horario del parte anterior.'],
+  ['Obra y horario', 'La obra, la hora de entrada y la de salida. Es la cabecera del PDF y sale ya rellena con el horario del último parte de esa obra. Al final del paso puedes añadir otra obra al mismo día.'],
   ['Operarios', 'Marcas quién ha venido hoy y las horas de cada uno. Las extras van aparte para que se vean en el PDF.'],
   ['Trabajos', 'Lo que se ha hecho, en corto: «Montado el tramo 4 de bandeja, 18 m» o «Tirada de cable en planta 2».'],
   ['Material', 'Lo que ha entrado y lo que falta. Lo que dejas marcado como pendiente aparece luego en el inicio.'],
   ['Incidencias y EPIs', '«La grúa llegó 2 h tarde» o «Sin luz toda la mañana». Aquí apuntas también los EPIs que has repartido.'],
-  ['Croquis y fotos', 'Un dibujo a mano con el dedo y las fotos del día con su pie. Todo se pega al final del PDF.']
+  ['Croquis y fotos', 'El croquis viene plegado: lo abres con «Dibujar» y dibujas a mano con el dedo. Debajo, las fotos del día con su pie. Todo se pega al final del PDF.']
 ];
 const TUT_TARJ = [['parte', 'Parte diario'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
 const TUT_TAREAS = ['Pedir la grúa para el jueves', 'Llamar al jefe de obra', 'Reponer guantes anticorte'];
@@ -3673,8 +3742,10 @@ function migraObras(datos) {
   Object.keys(ps).forEach(k => { if (ps[k] && !ps[k].obraId) ps[k].obraId = db.obras[0].id; });
   return datos;
 }
+function soloDia(k) { return String(k || '').split('#')[0]; }
+function sinAcc(t) { return String(t == null ? '' : t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 function fechaCorta(k) {
-  const d = new Date(k);
+  const d = new Date(soloDia(k));
   return String(d.getDate()).padStart(2, '0') + ' ' + ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][d.getMonth()];
 }
 function talla(b) {
@@ -3759,7 +3830,7 @@ const MATS = [
 ];
 
 function dmy(k) {
-  const d = new Date(k);
+  const d = new Date(soloDia(k));
   return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
 }
 function hoyKey(d) {
@@ -3810,7 +3881,7 @@ class Component extends DCLogic {
     this.state = {
       db: base.db, partes: base.partes || {}, view: 'inicio', paso: 1, dia: hoyKey(), obraVer: null, verFin: false,
       buscaOp: '', buscaBd: '', tipoMat: null, ficha: null, tareaNueva: '', matResalta: null,
-      buscaMat: '', matEdit: null, filtroMat: null,
+      buscaMat: '', matEdit: null, filtroMat: null, croAbierto: false, qBusca: '',
       herr: 'lapiz', zoom: 1, pan: { x: 0, y: 0 }, avisoCerrado: false, ancho: 0,
       hoja: null, hojaObra: null, dlg: null, cargando: false, odCarp: '', tut: null, oFotos: false, foto: null
     };
@@ -3819,6 +3890,11 @@ class Component extends DCLogic {
     this.trazo = null;
   }
   componentDidMount() {
+    window.MiParteAccion = a => { try { this.accionWidget(String(a || '')); } catch (e) { } };
+    window.MiParteFotos = j => {
+      try { this.fotosWidget(typeof j === 'string' ? JSON.parse(j) : j); } catch (e) { }
+    };
+    setTimeout(() => this.sincroWidget(), 400);
     this.onResize = () => this.setState({ ancho: window.innerWidth });
     window.addEventListener('resize', this.onResize);
     this.setState({ ancho: window.innerWidth });
@@ -3836,10 +3912,23 @@ class Component extends DCLogic {
     this.pinta(); this.mideInicio();
     // al salir de la ficha de obra, las fotos se vuelven a esconder
     if (this.state.oFotos && this.state.view !== 'obra') this.setState({ oFotos: false });
+    // el croquis se vuelve a cerrar al salir del paso 6
+    if (this.state.croAbierto && (this.state.view !== 'asistente' || this.state.paso !== 6)) this.setState({ croAbierto: false });
+    // un parte extra del día que se queda sin obra y sin datos se descarta solo
+    const sobra = Object.keys(this.state.partes).filter(k => k.indexOf('#') > 0 && k !== this.state.dia &&
+      !(this.state.partes[k] || {}).obraId && !this.hayDatos(this.state.partes[k]));
+    if (sobra.length) {
+      const partes = Object.assign({}, this.state.partes);
+      sobra.forEach(k => delete partes[k]);
+      this.setState({ partes }, () => this.guarda());
+    }
     if (this.enfocaPie != null) {
-      const i = this.enfocaPie; this.enfocaPie = null;
-      const el = document.querySelector('[data-pie="' + i + '"]');
-      if (el) { try { el.focus(); } catch (e) { } }
+      const el = document.querySelector('[data-pie="' + this.enfocaPie + '"]');
+      if (el) { this.enfocaPie = null; try { el.focus(); } catch (e) { } }
+    }
+    if (this.enfocaTrab != null) {
+      const el = document.querySelector('[data-trab="' + this.enfocaTrab + '"]');
+      if (el) { this.enfocaTrab = null; try { el.focus(); } catch (e) { } }
     }
   }
   componentWillUnmount() {
@@ -3895,6 +3984,7 @@ class Component extends DCLogic {
   guarda(extra) {
     const st = Object.assign({}, this.state, extra || {});
     const datos = { db: st.db, partes: st.partes };
+    this.sincroWidget(st);
     if (this.idbOk) {
       this.ultimo = datos;
       clearTimeout(this.tGuarda);
@@ -4069,10 +4159,84 @@ class Component extends DCLogic {
       }
     });
   }
-  eligeObraDia(id) {
+  eligeObraDia(id) { this.asignaObraParte(id); }
+  asignaObraParte(id) {
     const db = JSON.parse(JSON.stringify(this.state.db));
     db.obraId = id;
-    this.setState({ db, dlg: null }, () => { this.guarda(); this.copiaAnterior(true); });
+    const partes = Object.assign({}, this.state.partes);
+    partes[this.state.dia] = Object.assign(parteVacio(), partes[this.state.dia] || {}, { obraId: id });
+    this.setState({ db, partes, dlg: null }, () => { this.guarda(); this.copiaAnterior(true); });
+  }
+  nuevoParteDia() {
+    const base = soloDia(this.state.dia);
+    const db = this.state.db, u = this.ultimoDiaObras();
+    const usadas = Object.keys(this.state.partes).filter(x => soloDia(x) === base)
+      .map(x => (this.state.partes[x] || {}).obraId);
+    const lista = (db.obras || [])
+      .filter(o => (!o.fin || o.id === db.obraId) && usadas.indexOf(o.id) < 0)
+      .sort((a, b) => String(u[b.id] || '').localeCompare(String(u[a.id] || '')))
+      .slice(0, 6)
+      .map(o => ({
+        lab: o.nombre || 'Obra sin nombre',
+        sub: (u[o.id] ? 'último parte ' + fechaCorta(u[o.id]) : 'todavía sin partes') + (o.cliente ? '  ·  ' + o.cliente : ''),
+        on: () => this.creaParteDia(o.id)
+      }));
+    lista.push({ lab: 'Otra obra, nueva', sub: 'se crea la ficha y le pones nombre aquí mismo', on: () => this.creaParteDia('') });
+    // Hasta que no toque una obra no se crea nada: si sale por «Ahora no»,
+    // el día se queda exactamente como estaba.
+    this.setState({
+      dlg: {
+        tit: 'Otra obra este mismo día', cancel: true, cancelLab: 'Ahora no', lista,
+        txt: 'El día se parte en dos: cada obra lleva su propio parte, con su horario, su cuadrilla y su PDF. Toca la obra donde has estado después.'
+      }
+    });
+  }
+  creaParteDia(id) {
+    const base = soloDia(this.state.dia);
+    const partes = Object.assign({}, this.state.partes);
+    let n = 2;
+    while (partes[base + '#' + n]) n++;
+    const k = base + '#' + n;
+    const db = JSON.parse(JSON.stringify(this.state.db));
+    let obraId = id;
+    if (!obraId) {
+      const o = obraVacia();
+      db.obras = (db.obras || []).concat([o]);
+      obraId = o.id;
+    }
+    db.obraId = obraId;
+    partes[k] = Object.assign(parteVacio(), { obraId });
+    this.setState({ db, partes, dia: k, view: 'asistente', paso: 1, dlg: null },
+      () => { this.guarda(); this.copiaAnterior(true); });
+  }
+  resultadosBusca(q) {
+    const t = sinAcc(q).trim();
+    if (t.length < 2) return [];
+    const s = this.state, db = s.db, out = [];
+    const nMat = {}, nOp = {};
+    (db.materiales || []).forEach(m => { nMat[m.id] = m.desc || ''; });
+    (db.operarios || []).forEach(o => { nOp[o.id] = o.nom || ''; });
+    const cabe = x => sinAcc(x).indexOf(t) >= 0;
+    Object.keys(s.partes).sort().reverse().forEach(k => {
+      if (out.length >= 40) return;
+      const p = s.partes[k] || {};
+      const o = (db.obras || []).find(x => x.id === p.obraId) || {};
+      const add = (donde, txt, paso) => { if (out.length < 40 && String(txt || '').trim()) out.push({ k, donde, txt: String(txt).trim(), paso }); };
+      if (cabe(o.nombre) || cabe(o.cliente) || cabe(o.pedido)) add('Obra', o.nombre || o.cliente, 1);
+      (p.trabajos || []).forEach(w => { if (cabe(w.texto) || cabe(w.zona)) add(w.zona || 'Trabajos', w.texto || w.zona, 3); });
+      (p.material || []).forEach(m => { if (cabe(nMat[m.id])) add('Material', (m.cant ? m.cant + ' · ' : '') + nMat[m.id], 4); });
+      (p.incidencias || []).forEach(i => { if (cabe(i.inc) || cabe(i.causa) || cabe(i.accion) || cabe(i.tipo)) add('Incidencia', i.inc || i.causa || i.accion || i.tipo, 5); });
+      (p.fotos || []).forEach(f => { if (cabe(f.pie) || cabe(f.zona)) add('Foto', f.pie || f.zona, 6); });
+      if (cabe((p.croquis || {}).titulo)) add('Croquis', (p.croquis || {}).titulo, 6);
+      (p.ops || []).forEach(x => {
+        if (cabe(x.obs)) add('Nota de ' + (nOp[x.id] || 'operario'), x.obs, 2);
+        else if (cabe(nOp[x.id])) add('Operario', nOp[x.id], 2);
+      });
+    });
+    return out.map(r => Object.assign({}, r, {
+      f: fechaCorta(r.k),
+      ir: () => this.setState({ dia: r.k, view: 'asistente', paso: r.paso, qBusca: '' })
+    }));
   }
   // ---------- croquis ----------
   pinta() {
@@ -4209,7 +4373,7 @@ class Component extends DCLogic {
   puntos(id, dias) {
     let pts = 0, det = { v: 0, a: 0, r: 0 };
     Object.keys(this.state.partes).forEach(k => {
-      if (dias && (Date.now() - new Date(k).getTime()) / 86400000 > dias) return;
+      if (dias && (Date.now() - new Date(soloDia(k)).getTime()) / 86400000 > dias) return;
       const o = (this.state.partes[k].ops || []).find(x => x.id === id);
       if (!o || !this.valorado(o)) return;
       const g = this.global(o.crit);
@@ -4223,7 +4387,7 @@ class Component extends DCLogic {
     const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7));
     const map = {};
     Object.keys(this.state.partes).forEach(k => {
-      if (new Date(k) < new Date(hoyKey(lunes))) return;
+      if (new Date(soloDia(k)) < new Date(hoyKey(lunes))) return;
       const p = this.state.partes[k];
       const hd = horasEntre(p.entrada, p.salida);
       (p.ops || []).forEach(o => {
@@ -4397,7 +4561,7 @@ class Component extends DCLogic {
       D.txt(D.recorta(val, cw4 - 16, 15), x, bt - 32, 15, true, valGris);
       if (sub) D.txt(D.recorta(sub, cw4 - 16, 7.5), x, bt - 44, 7.5, false, '0.4');
     };
-    celda(0, 'PARTE N.º', String(nP), new Date(s.dia).toLocaleDateString('es-ES', { weekday: 'long' }));
+    celda(0, 'PARTE N.º', String(nP), new Date(soloDia(s.dia)).toLocaleDateString('es-ES', { weekday: 'long' }));
     celda(1, 'HORARIO', hd ? fmtH(hd) + ' h' : 'sin datos', hd ? (p.entrada || '--') + ' a ' + (p.salida || '--') : '', hd ? null : '0.5');
     celda(2, 'OPERARIOS', nOps ? String(nOps) : 'ninguno', nOps ? fmtH(mano) + ' h entre todos' : '', nOps ? null : '0.5');
     celda(3, 'INCIDENCIAS', abiertas ? String(abiertas) : 'ninguna', abiertas ? (abiertas === 1 ? 'abierta' : 'abiertas') : '', abiertas ? null : '0.5');
@@ -4936,7 +5100,7 @@ class Component extends DCLogic {
   }
   nombrePdf() {
     const o = (this.oDia().nombre || 'obra').replace(/[\\/:*?"<>|]/g, ' ').trim();
-    return 'Parte ' + this.state.dia + ' - ' + o + '.pdf';
+    return 'Parte ' + soloDia(this.state.dia) + (this.state.dia.indexOf('#') > 0 ? ' (obra ' + this.state.dia.split('#')[1] + ')' : '') + ' - ' + o + '.pdf';
   }
   espacio(s, db) {
     const uso = s.uso || { usados: (localStorage.getItem(KEY) || '').length, tope: 5 * 1024 * 1024 };
@@ -5013,6 +5177,66 @@ class Component extends DCLogic {
     if (!fu.ok) return 'Letra del móvil: no se ha encontrado ninguna instalada, así que se usa la del sistema.';
     const nom = String(fu.fuente || '').split('/').pop().replace(/\.(ttf|otf)$/i, '');
     return 'Letra del móvil: ' + (nom || 'la del sistema') + ' · activa';
+  }
+  sincroWidget(st) {
+    const N = window.MiParteNative;
+    if (!N || !N.syncWidget) return;
+    const s = st || this.state, db = s.db || {}, hoy = hoyKey();
+    const ks = Object.keys(s.partes || {}).filter(x => soloDia(x) === hoy);
+    const kAct = ks.find(x => (s.partes[x] || {}).obraId === db.obraId) || ks[0];
+    const p = (kAct && s.partes[kAct]) || parteVacio();
+    const obra = (db.obras || []).find(o => o.id === (p.obraId || db.obraId)) || {};
+    const seis = [
+      !!(p.entrada && p.salida), (p.ops || []).length > 0, (p.trabajos || []).some(t => t.texto),
+      (p.material || []).length > 0,
+      (p.incidencias || []).some(i => i.inc) || Object.values(p.epis || {}).some(Boolean),
+      ((p.croquis || {}).strokes || []).length > 0 || (p.fotos || []).length > 0
+    ];
+    const aj = db.ajustes || {};
+    const horas = (aj.avisos && aj.avisos.length ? aj.avisos : [aj.aviso || '19:00']).filter(Boolean);
+    try {
+      N.syncWidget(JSON.stringify({
+        dia: hoy,
+        obra: obra.nombre || '',
+        cliente: obra.cliente || '',
+        tareas: (db.tareas || []).filter(t => !t.hecha).length,
+        cerrado: seis.every(Boolean),
+        hora: horas[horas.length - 1] || '19:00',
+        avisa: !!aj.notif
+      }));
+    } catch (e) { }
+  }
+  accionWidget(a) {
+    if (a === 'tareas') return this.setState({ view: 'inicio', dia: hoyKey() });
+    if (a === 'trabajo') {
+      const dia = hoyKey();
+      const partes = Object.assign({}, this.state.partes);
+      const k = Object.keys(partes).filter(x => soloDia(x) === dia)
+        .find(x => (partes[x] || {}).obraId === this.state.db.obraId) || dia;
+      const p = Object.assign(parteVacio(), partes[k] || {});
+      p.trabajos = (p.trabajos || []).concat([{ hora: '', zona: '', texto: '' }]);
+      if (!p.obraId) p.obraId = this.state.db.obraId;
+      partes[k] = p;
+      this.enfocaTrab = p.trabajos.length - 1;
+      return this.setState({ partes, dia: k, view: 'asistente', paso: 3 }, () => this.guarda());
+    }
+    this.setState({ view: 'asistente', paso: 1, dia: hoyKey() });
+  }
+  fotosWidget(lista) {
+    if (!lista || !lista.length) return;
+    const dia = hoyKey();
+    const partes = Object.assign({}, this.state.partes);
+    const k = Object.keys(partes).filter(x => soloDia(x) === dia)
+      .find(x => (partes[x] || {}).obraId === this.state.db.obraId) || dia;
+    const p = Object.assign(parteVacio(), partes[k] || {});
+    if (!p.obraId) p.obraId = this.state.db.obraId;
+    const zona = ((p.trabajos || []).filter(t => t.zona).slice(-1)[0] || {}).zona || '';
+    lista.forEach(f => {
+      if (!f || !f.b64) return;
+      p.fotos = (p.fotos || []).concat([{ src: 'data:image/jpeg;base64,' + f.b64, pie: '', hora: f.hora || '', zona }]);
+    });
+    partes[k] = p;
+    this.setState({ partes, dia: k, view: 'asistente', paso: 6 }, () => this.guarda());
   }
   horasAviso() {
     const aj = this.state.db.ajustes || {};
@@ -5470,7 +5694,7 @@ class Component extends DCLogic {
         tFila({ izq: '8 ago · Nave 3', cur: 'pointer', estDisp: 'flex', est: 'Cerrado', estCol: V }),
         tFila({ izq: '7 ago · Taller', cur: 'pointer', estDisp: 'flex', est: 'A medias', estCol: A })
       ],
-      nota: 'Los partes de otros días. Toca uno y se abre tal como lo dejaste, para corregirlo o volver a sacar el PDF.'
+      nota: 'Los partes de otros días. Toca uno y se abre tal como lo dejaste, para corregirlo o volver a sacar el PDF. Arriba tiene un buscador que atraviesa todos los partes: trabajos, zonas, material, incidencias, pies de foto, croquis, notas y obras. Cada resultado te lleva a ese día y a ese paso.'
     });
     return Object.assign({}, base, {
       cab: 'Parte diario', der: '2 de 6', derCol: D,
@@ -5540,8 +5764,8 @@ class Component extends DCLogic {
       }));
     const sem = this.semanaDatos();
     const tot = sem.reduce((a, b) => a + b.h, 0);
-    const hist = Object.keys(s.partes).filter(k => k !== hoyKey()).sort().reverse().slice(0, 8).map(k => {
-      const pt = s.partes[k], d = new Date(k);
+    const hist = Object.keys(s.partes).filter(k => soloDia(k) !== hoyKey()).sort().reverse().slice(0, 8).map(k => {
+      const pt = s.partes[k], d = new Date(soloDia(k));
       return {
         f: String(d.getDate()).padStart(2, '0') + ' ' + ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][d.getMonth()],
         res: (pt.trabajos.find(t => t.zona) || {}).zona || (pt.ops.length + ' operarios'),
@@ -5644,7 +5868,11 @@ class Component extends DCLogic {
     const nRojo = opsVal.filter(o => this.global(o.crit) === 'r').length;
     const nAmbar = opsVal.filter(o => this.global(o.crit) === 'a').length;
     const nPend = tareasOrd.filter(x => !x.t.hecha).length;
-    const nHist = Object.keys(s.partes).filter(k => k !== hoyKey()).length;
+    const nHist = Object.keys(s.partes).filter(k => soloDia(k) !== hoyKey()).length;
+    const esHoy = soloDia(s.dia) === hoyKey();
+    const resBusca = this.resultadosBusca(s.qBusca || '');
+    const buscando = sinAcc(s.qBusca || '').trim().length >= 2;
+    const ksDia = Object.keys(s.partes).filter(k => soloDia(k) === soloDia(s.dia)).sort();
     return {
       // cabecera
       cabTitulo: s.view === 'asistente' ? 'Paso ' + s.paso + ' de 6 · ' + PASOS[s.paso - 1] : s.view === 'inicio' ? 'Mi Parte' : { operarios: 'Base de operarios', materiales: 'Base de materiales', ajustes: 'Ajustes', ficha: 'Ficha de operario', semana: 'Resumen semanal', obras: 'Tus obras', obra: 'Ficha de la obra' }[s.view],
@@ -5655,9 +5883,9 @@ class Component extends DCLogic {
           ? ([oVer.cliente, oVer.pedido ? 'ped. ' + oVer.pedido : ''].filter(Boolean).join(' · ') || 'sin cliente')
           : (esParte ? fDMY(s.dia) + ' · Parte n.º ' + nParte : ([obraDia.cliente, obraDia.pedido ? 'ped. ' + obraDia.pedido : ''].filter(Boolean).join(' · ') || 'toca el nombre para ver tus obras'))),
       chapaDisp: esParte ? 'flex' : 'none',
-      chapaTxt: s.dia !== hoyKey() ? fDMY(s.dia) : (completo ? 'Cerrado' : 'Abierto'),
-      chapaBg: s.dia !== hoyKey() ? 'var(--red)' : (completo ? 'var(--green)' : 'var(--amber)'),
-      chapaInk: s.dia !== hoyKey() ? 'var(--paper)' : (completo ? '#fff' : '#23231f'),
+      chapaTxt: !esHoy ? fDMY(s.dia) : (completo ? 'Cerrado' : 'Abierto'),
+      chapaBg: !esHoy ? 'var(--red)' : (completo ? 'var(--green)' : 'var(--amber)'),
+      chapaInk: !esHoy ? 'var(--paper)' : (completo ? '#fff' : '#23231f'),
       dispRueda: s.view === 'inicio' ? 'flex' : 'none',
       dispVolver: s.view === 'inicio' ? 'none' : 'block',
       irInicio: () => this.setState({ view: s.view === 'inicio' ? 'ajustes' : 'inicio', ficha: null }),
@@ -5770,11 +5998,36 @@ class Component extends DCLogic {
       vAviso: tarde && !completo && !s.avisoCerrado && s.view === 'inicio',
       avisoTexto: 'Son más de las ' + avisoHora + ' y el parte de hoy no está cerrado',
       cerrarAviso: () => this.setState({ avisoCerrado: true }),
-      vOtroDia: s.dia !== hoyKey() && (s.view === 'inicio' || s.view === 'asistente'),
-      otroDiaTexto: 'Estás en el parte del ' + new Date(s.dia).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + (obraDia.nombre ? ', en ' + obraDia.nombre : ''),
+      vOtroDia: !esHoy && (s.view === 'inicio' || s.view === 'asistente'),
+      otroDiaTexto: 'Estás en el parte del ' + new Date(soloDia(s.dia)).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + (obraDia.nombre ? ', en ' + obraDia.nombre : ''),
       volverHoy: () => this.setState({ dia: hoyKey() }),
+      partesDia: ksDia.length < 2 ? [] : ksDia.map((k, i) => {
+        const ob = (db.obras || []).find(x => x.id === (s.partes[k] || {}).obraId) || {};
+        const on = k === s.dia;
+        return {
+          lab: (i + 1) + 'ª · ' + (ob.nombre || 'sin obra'),
+          bg: on ? 'var(--amber)' : 'transparent',
+          ink: on ? '#23231f' : 'var(--dim)',
+          edge: on ? 'var(--amber)' : 'var(--line)',
+          ir: () => this.setState({ dia: k, paso: 1 })
+        };
+      }),
+      otraObraDia: () => this.nuevoParteDia(),
+      variasObras: ksDia.length > 1,
+      dispQuitaParte: s.dia.indexOf('#') > 0 ? 'block' : 'none',
+      quitaParteDia: () => this.pregunta('Quitar esta obra del día',
+        'Se borra este parte con lo que lleve apuntado. El primer parte del día no se toca.',
+        () => {
+          const partes = Object.assign({}, s.partes);
+          delete partes[s.dia];
+          this.setState({ partes, dia: soloDia(s.dia), paso: 1 }, () => this.guarda());
+        }, 'Sí, quitar'),
+      qBusca: s.qBusca || '',
+      setQBusca: e => this.setState({ qBusca: e.target.value }),
+      buscando, noBuscando: !buscando,
+      resultados: resBusca, sinResultados: buscando && resBusca.length === 0,
       // inicio
-      fechaLarga: new Date(s.dia).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }),
+      fechaLarga: new Date(soloDia(s.dia)).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }),
       progreso: rellenos.filter(Boolean).length ? rellenos.filter(Boolean).length + ' de 6' : '',
       segsParte: rellenos.map(r => ({ col: r ? 'var(--amber)' : 'var(--line)' })),
       valDato: opsVal.length === 0 ? '' : (nRojo ? nRojo + ' en rojo' : (nAmbar ? nAmbar + ' en ámbar' : 'todo verde')),
@@ -5794,7 +6047,7 @@ class Component extends DCLogic {
       semanaVacia: sem.length === 0, semanaTotal: fmtH(tot), semanaDato: tot ? fmtH(tot) + ' h' : '',
       verSemana: () => this.setState({ view: 'semana' }),
       historial: hist, sinHistorial: hist.length === 0,
-      histDato: nHist ? nHist + (nHist === 1 ? ' parte' : ' partes') : '',
+      histDato: buscando ? (resBusca.length ? resBusca.length + (resBusca.length === 1 ? ' resultado' : ' resultados') : 'nada') : (nHist ? nHist + (nHist === 1 ? ' parte' : ' partes') : ''),
       refInicio: this.iniRef,
       colsInicio: colsIni > 1 ? 'repeat(auto-fill,minmax(340px,1fr))' : '1fr',
       filasInicio: colsIni > 1 ? '6px' : 'auto',
@@ -5862,7 +6115,7 @@ class Component extends DCLogic {
       vHoja: s.hoja === 'pdf' || s.hoja === 'resumen',
       hojaTit: s.hoja === 'resumen'
         ? 'Resumen de obra · ' + (((db.obras || []).find(o => o.id === s.hojaObra) || {}).nombre || 'obra')
-        : 'PDF del parte · ' + s.dia,
+        : 'PDF del parte · ' + dmy(s.dia),
       dispVer: hayVer ? 'flex' : 'none',
       dispCompGrande: hayVer ? 'none' : 'flex',
       dispCompChico: hayVer ? 'block' : 'none',
@@ -6044,6 +6297,7 @@ class Component extends DCLogic {
       // paso 3
       zonas: db.zonas || [],
       trabajos: p.trabajos.map((t, i) => ({
+        idx: i,
         hora: t.hora || '', zona: t.zona || '', texto: t.texto || '',
         setHora: e => this.setP(x => { x.trabajos[i].hora = e.target.value; }),
         setZona: e => { const v = e.target.value; this.setP(x => { x.trabajos[i].zona = v; }); if (v.length > 3 && !(db.zonas || []).includes(v)) this.setDb(d => { d.zonas = [...new Set([...(d.zonas || []), v])].slice(-14); }); },
@@ -6118,6 +6372,10 @@ class Component extends DCLogic {
       zoomTexto: 'zoom ' + Math.round(s.zoom * 100) + '% · pinza para acercar',
       deshacer: () => this.setP(x => x.croquis.strokes.pop()),
       borrarCroquis: () => this.pregunta('Borrar el croquis', 'Se borran todos los trazos de este croquis. No se puede deshacer.', () => this.setP(x => { x.croquis.strokes = []; }), 'Sí, borrar'),
+      croAbierto: !!s.croAbierto,
+      croLab: s.croAbierto ? 'Cerrar' : 'Dibujar',
+      croEstado: p.croquis.strokes.length ? (p.croquis.titulo || p.croquis.strokes.length + (p.croquis.strokes.length === 1 ? ' trazo' : ' trazos')) : 'Toca para dibujar a mano',
+      croToggle: () => this.setState(st => ({ croAbierto: !st.croAbierto }), () => setTimeout(() => this.pinta(), 30)),
       croquisTitulo: p.croquis.titulo || '', croquisEscala: p.croquis.escala || '',
       setCroquisTitulo: e => this.setP(x => { x.croquis.titulo = e.target.value; }),
       setCroquisEscala: e => this.setP(x => { x.croquis.escala = e.target.value; }),
@@ -6302,7 +6560,7 @@ class Component extends DCLogic {
           ir: () => this.setState({ view: v, ficha: null })
         };
       }),
-      pdfFecha: s.dia
+      pdfFecha: soloDia(s.dia)
     };
   }
 }

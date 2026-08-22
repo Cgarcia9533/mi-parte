@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.miparte.montajes"
-    android:versionCode="9"
+    android:versionCode="11"
     android:versionName="1.2">
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
@@ -65,7 +65,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="fullUser"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode|density"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
