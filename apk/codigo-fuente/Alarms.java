@@ -25,8 +25,10 @@ public final class Alarms {
     private static final int MAX = 6;
     private static final int BASE = 7301;
     private static final int PRUEBA = 7399;
+    private static final int PINTA = 7350;
 
     static final String ACCION_PRUEBA = "miparte.prueba";
+    static final String ACCION_PINTA = "miparte.repinta";
 
     private static int flags() {
         int f = PendingIntent.FLAG_UPDATE_CURRENT;
@@ -78,6 +80,40 @@ public final class Alarms {
         return cal.getTimeInMillis();   // ningun dia marcado: no llega aqui con mascara valida
     }
 
+    /** Hoy a esa hora; si ya paso, mañana. Sin mirar los dias marcados. */
+    private static long enPunto(String hhmm) {
+        int h = 19, m = 0;
+        try {
+            String[] hm = hhmm.split(":");
+            h = Integer.parseInt(hm[0].trim());
+            if (hm.length > 1) m = Integer.parseInt(hm[1].trim());
+        } catch (Exception ignored) { }
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, h);
+        cal.set(Calendar.MINUTE, m);
+        cal.set(Calendar.SECOND, 5);
+        cal.set(Calendar.MILLISECOND, 0);
+        if (cal.getTimeInMillis() <= System.currentTimeMillis()) cal.add(Calendar.DAY_OF_YEAR, 1);
+        return cal.getTimeInMillis();
+    }
+
+    /** Alarma que SOLO repinta los widgets al llegar la hora limite.
+     *
+     *  Va aparte de los avisos a proposito. La de los avisos solo se pone si
+     *  tienes las notificaciones encendidas y solo los dias marcados; el rojo
+     *  del widget no depende de ninguna de las dos cosas, igual que la banda
+     *  de la app. Sin esta alarma, con los avisos apagados el rojo tenia que
+     *  esperar a que abrieras la app o a la actualizacion de media hora, que
+     *  Android aplaza mientras el movil duerme. */
+    public static void repintaEnLaHora(Context c) {
+        AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        if (am == null) return;
+        Intent in = new Intent(c, AvisoReceiver.class);
+        in.setAction(ACCION_PINTA);
+        PendingIntent p = PendingIntent.getBroadcast(c, PINTA, in, flags());
+        pon(am, enPunto(WidgetDatos.horaLimite(c)), p, exactas(c));
+    }
+
     public static void reprograma(Context c) {
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         if (am == null) return;
@@ -95,6 +131,7 @@ public final class Alarms {
             if (prox == 0 || t < prox) prox = t;
         }
         Prefs.guardaProxima(c, on ? prox : 0);
+        repintaEnLaHora(c);
     }
 
     /** Exacta si se puede; si no, la de siempre. Nunca revienta por esto. */

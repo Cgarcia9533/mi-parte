@@ -46,6 +46,7 @@ public class WidgetVigilar extends AppWidgetProvider {
         v.setPendingIntentTemplate(R.id.wLista,
                 PendingIntent.getActivity(c, 41, tocar, Widgets.banderasPlantilla()));
         v.setOnClickPendingIntent(R.id.wCab, Widgets.abre(c, "equipo", 42));
+        v.setViewVisibility(R.id.wMas, android.view.View.GONE);
         return v;
     }
 }

@@ -43,14 +43,34 @@ public class ListaService extends RemoteViewsService {
             JSONArray out = new JSONArray();
             try {
                 if ("tareas".equals(tipo)) {
+                    // Lo tachado ya no desaparece: se queda con la casilla verde
+                    // y el texto tachado, igual que en la app. El estado que se
+                    // pinta es el de la app mas lo que espera en la cola, para
+                    // que el toque se vea en el momento y en los dos sentidos.
                     JSONArray a = o.optJSONArray("tareas");
                     for (int i = 0; a != null && i < a.length(); i++) {
-                        String t = a.optString(i, "");
-                        if (t.isEmpty() || WidgetDatos.tareaEnCola(c, t)) continue;
+                        Object it = a.opt(i);
+                        String t = WidgetDatos.tareaTxt(it);
+                        if (t.isEmpty()) continue;
                         JSONObject f = new JSONObject();
                         f.put("izq", t);
                         f.put("caja", true);
                         f.put("txt", t);
+                        f.put("hecha", WidgetDatos.tareaVista(c, t, WidgetDatos.tareaHecha(it)));
+                        out.put(f);
+                    }
+                    // Y las escritas en el widget que aun no han entrado en la
+                    // app: se ven abajo, marcadas, y un toque las borra.
+                    JSONArray nv = WidgetDatos.nuevasEnCola(c);
+                    for (int i = 0; i < nv.length(); i++) {
+                        String t = nv.optString(i, "");
+                        if (t.isEmpty() || WidgetDatos.estaEnApp(c, t)) continue;
+                        JSONObject f = new JSONObject();
+                        f.put("izq", t);
+                        f.put("caja", true);
+                        f.put("txt", t);
+                        f.put("hecha", false);
+                        f.put("est", "sin volcar");
                         out.put(f);
                     }
                 } else if ("material".equals(tipo)) {
@@ -106,8 +126,17 @@ public class ListaService extends RemoteViewsService {
             boolean sep = f.optBoolean("separador", false);
             boolean caja = f.optBoolean("caja", false) && !sep;
 
+            boolean hecha = f.optBoolean("hecha", false);
+
             v.setTextViewText(R.id.fIzq, f.optString("izq", ""));
             v.setViewVisibility(R.id.fCaja, caja ? android.view.View.VISIBLE : android.view.View.GONE);
+            v.setInt(R.id.fCaja, "setBackgroundResource",
+                    hecha ? R.drawable.widget_caja_ok : R.drawable.widget_caja);
+            // Las banderas se ponen SIEMPRE: RemoteViews reaprovecha las filas y
+            // si no se reponen, una fila hecha deja tachada a la que ocupe su sitio.
+            v.setInt(R.id.fIzq, "setPaintFlags", hecha
+                    ? (android.graphics.Paint.ANTI_ALIAS_FLAG | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG)
+                    : android.graphics.Paint.ANTI_ALIAS_FLAG);
 
             String sub = f.optString("sub", "");
             v.setTextViewText(R.id.fSub, sub);
@@ -127,7 +156,7 @@ public class ListaService extends RemoteViewsService {
                 v.setTextColor(R.id.fIzq, WidgetDatos.color(c, R.color.w_flojo));
                 v.setTextViewTextSize(R.id.fIzq, android.util.TypedValue.COMPLEX_UNIT_SP, 9f);
             } else {
-                v.setTextColor(R.id.fIzq, WidgetDatos.color(c, R.color.w_texto));
+                v.setTextColor(R.id.fIzq, WidgetDatos.color(c, hecha ? R.color.w_flojo : R.color.w_texto));
                 v.setTextViewTextSize(R.id.fIzq, android.util.TypedValue.COMPLEX_UNIT_SP, 13f);
             }
 

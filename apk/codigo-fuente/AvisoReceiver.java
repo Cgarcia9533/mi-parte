@@ -24,6 +24,14 @@ public class AvisoReceiver extends BroadcastReceiver {
             return;
         }
 
+        // Alarma de solo repintar: no avisa de nada, solo pone los widgets al
+        // dia a la hora limite (el rojo) y se vuelve a programar.
+        if (Alarms.ACCION_PINTA.equals(accion)) {
+            Widgets.refresca(c);
+            Alarms.repintaEnLaHora(c);
+            return;
+        }
+
         try {
             if (Prefs.avisoHoy(c)) {
                 String hoy = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
@@ -34,6 +42,13 @@ public class AvisoReceiver extends BroadcastReceiver {
             }
         } finally {
             Alarms.reprograma(c);
+            // Repintar los widgets AHORA. PARTE DE HOY y RESUMEN se ponen rojos
+            // cuando pasa la hora sin cerrar el parte, pero eso lo deciden al
+            // dibujarse, y su updatePeriodMillis es de media hora que ademas
+            // Android aplaza mientras el movil duerme: el rojo podia tardar
+            // horas o no llegar. Esta alarma SI es exacta, asi que es el momento
+            // bueno para repintar.
+            Widgets.refresca(c);
         }
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.miparte.montajes"
-    android:versionCode="14"
-    android:versionName="1.2">
+    android:versionCode="21"
+    android:versionName="1.3.2">
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
 
@@ -218,6 +218,14 @@
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:excludeFromRecents="true"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".TareaRapida"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:taskAffinity="" />
 
         <receiver android:name=".BootReceiver" android:exported="true">

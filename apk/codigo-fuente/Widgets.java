@@ -21,15 +21,9 @@ final class Widgets {
         return f;
     }
 
-    /** Banderas para las PLANTILLAS de los widgets de lista.
-     *
-     *  Una plantilla de coleccion TIENE que ser mutable: setOnClickFillInIntent
-     *  funciona fundiendo el intent de cada fila dentro de la plantilla, y esa
-     *  fusion es una modificacion. Con FLAG_IMMUTABLE no ocurre y el toque en
-     *  la fila no hace absolutamente nada, sin dar ningun error.
-     *
-     *  Por debajo de API 31 no existe FLAG_MUTABLE y los PendingIntent son
-     *  mutables si no se dice lo contrario: basta con NO poner FLAG_IMMUTABLE. */
+    /** Las PLANTILLAS de los widgets de lista tienen que ser mutables:
+     *  setOnClickFillInIntent funde el intent de la fila dentro de la plantilla,
+     *  y con FLAG_IMMUTABLE esa fusion no ocurre y el toque no hace nada. */
     static int banderasPlantilla() {
         int f = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= 31) f |= PendingIntent.FLAG_MUTABLE;
@@ -48,6 +42,14 @@ final class Widgets {
     static PendingIntent camara(Context c, int codigo) {
         Intent i = new Intent(c, FotoRapida.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(c, codigo, i, banderas());
+    }
+
+    /** Escribir una tarea sin abrir la app: una ventanita encima de lo que
+     *  tengas puesto, y la tarea se queda en la cola hasta que abras la app. */
+    static PendingIntent tareaNueva(Context c, int codigo) {
+        Intent i = new Intent(c, TareaRapida.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return PendingIntent.getActivity(c, codigo, i, banderas());
     }
 

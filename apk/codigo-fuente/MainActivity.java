@@ -710,6 +710,9 @@ public class MainActivity extends Activity {
         public void syncWidget(String json) {
             WidgetDatos.guarda(MainActivity.this, json);
             Widgets.refresca(MainActivity.this);
+            // La hora limite llega en ese json: si ha cambiado, la alarma que
+            // repinta el rojo tiene que moverse con ella.
+            Alarms.repintaEnLaHora(MainActivity.this);
         }
 
         @JavascriptInterface
@@ -997,6 +1000,10 @@ public class MainActivity extends Activity {
         // rehacer las alarmas: las que se pusieron inexactas pasan a exactas.
         Avisos.creaCanal(this);
         Alarms.reprograma(this);
+        // La cola del widget: antes solo se soltaba en arranque en frio y al
+        // abrir DESDE un widget. Si la app seguia viva en segundo plano y la
+        // traias al frente, no llegaba nunca.
+        sueltaPendientes();
     }
 
     @Override
@@ -1019,31 +1026,89 @@ public class MainActivity extends Activity {
         sueltaPendientes();
     }
 
-    /** Pasa a la app web la accion del widget y las fotos que haya sacado la
-     *  camara rapida. Si la pagina aun no esta cargada, espera a onPageFinished. */
-    private void sueltaPendientes() {
-        if (!paginaLista) return;
+    /** Pasa a la app web la cola del widget y la accion pendiente.
+     *
+     *  window.MiParteCola lo define React en componentDidMount, que corre
+     *  DESPUES de onPageFinished: hay que preguntar si el enganche existia y
+     *  solo entonces dar la cola por entregada. Si no, se reintenta. */
+    private void sueltaPendientes() { sueltaPendientes(0); }
+
+    /** La misma cola que ya se ha mandado y todavia no ha contestado, y cuando
+     *  se mando. Sirve para no mandarla dos veces seguidas. Caduca sola a los
+     *  tres segundos: si algo va mal, se reintenta, no se queda atascada. */
+    private String colaEnVuelo;
+    private long colaDesde;
+
+    private void sueltaPendientes(final int intento) {
+        if (!paginaLista || web == null) return;
+
+        String pendiente = WidgetDatos.recoge(this);
+        // Anti doble entrega: al tocar un boton de widget con la app viva,
+        // Android llama a onNewIntent Y a onResume, uno detras de otro. Los dos
+        // sueltan la cola, y como el acuse de recibo tarda (evaluateJavascript
+        // contesta mas tarde), el segundo se encontraba todo igual que el
+        // primero y lo mandaba otra vez. De ahi las dos lineas de trabajo.
+        if (pendiente != null && pendiente.equals(colaEnVuelo)
+                && System.currentTimeMillis() - colaDesde < 3000) {
+            pendiente = null;
+        }
+        final String cola = pendiente;
         final String accion = accionPendiente;
-        accionPendiente = null;
-        final String cola = WidgetDatos.recoge(this);
+        final boolean hayAccion = accion != null && !accion.isEmpty() && !"foto".equals(accion);
+        if (cola == null && !hayAccion) { accionPendiente = null; return; }
+
+        // La accion se coge AQUI, no en el acuse de recibo. Asi la segunda
+        // llamada ya no la ve. Si la entrega falla, se devuelve y se reintenta.
+        if (hayAccion) accionPendiente = null;
+        if (cola != null) { colaEnVuelo = cola; colaDesde = System.currentTimeMillis(); }
+
         runOnUiThread(new Runnable() {
             public void run() {
                 try {
                     if (cola != null) {
-                        // Fichajes, tareas tachadas, material y fotos de la rafaga.
-                        // La app web los mete en el parte del dia en que se hicieron
-                        // y saca un aviso con todo lo que ha entrado.
-                        web.evaluateJavascript("window.MiParteCola&&window.MiParteCola(" + cola + ")", null);
+                        web.evaluateJavascript(
+                                "(function(){if(!window.MiParteCola)return 'no';"
+                                        + "try{window.MiParteCola(" + cola + ");return 'si';}"
+                                        + "catch(e){return 'no';}})()",
+                                new ValueCallback<String>() {
+                                    public void onReceiveValue(String r) {
+                                        colaEnVuelo = null;
+                                        if (r != null && r.contains("si")) {
+                                            WidgetDatos.vaciaCola(MainActivity.this);
+                                            Widgets.refresca(MainActivity.this);
+                                        } else {
+                                            reintenta(intento);
+                                        }
+                                    }
+                                });
                     }
-                    if (accion != null && !accion.isEmpty() && !"foto".equals(accion)) {
-                        // Sin esto el .focus() del JS pone el cursor pero el
-                        // teclado no sube: el WebView no tiene el foco de entrada.
+                    if (hayAccion) {
                         web.requestFocus();
-                        web.evaluateJavascript("window.MiParteAccion&&window.MiParteAccion('"
-                                + accion.replace("'", "") + "')", null);
+                        final String a = accion.replace("'", "");
+                        web.evaluateJavascript(
+                                "(function(){if(!window.MiParteAccion)return 'no';"
+                                        + "try{window.MiParteAccion('" + a + "');return 'si';}"
+                                        + "catch(e){return 'no';}})()",
+                                new ValueCallback<String>() {
+                                    public void onReceiveValue(String r) {
+                                        if (r == null || !r.contains("si")) {
+                                            accionPendiente = accion;   // no entro: se devuelve
+                                            reintenta(intento);
+                                        }
+                                    }
+                                });
                     }
                 } catch (Exception ignored) { }
             }
         });
+    }
+
+    /** 40 intentos de 250 ms. Si en diez segundos la app no ha montado, la cola
+     *  se queda para el proximo arranque en vez de perderse. */
+    private void reintenta(final int intento) {
+        if (intento >= 40 || web == null) return;
+        web.postDelayed(new Runnable() {
+            public void run() { sueltaPendientes(intento + 1); }
+        }, 250);
     }
 }

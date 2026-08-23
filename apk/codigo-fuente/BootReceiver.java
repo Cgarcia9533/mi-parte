@@ -11,5 +11,8 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent i) {
         Alarms.reprograma(c);
+        // Al arrancar el movil, al cambiar la hora y al instalar encima, los
+        // widgets pueden estar enseñando el rojo (o la falta de rojo) de antes.
+        Widgets.refresca(c);
     }
 }

@@ -40,8 +40,8 @@ public class WidgetResumen extends AppWidgetProvider {
                 : (obra.isEmpty() ? "SIN OBRA" : obra.toUpperCase()));
         v.setTextViewText(R.id.wFecha, deHoy ? WidgetDatos.fechaLarga() : "toca para empezar");
 
-        int tareas = o.optJSONArray("tareas") == null ? 0 : o.optJSONArray("tareas").length();
-        int material = o.optJSONArray("material") == null ? 0 : o.optJSONArray("material").length();
+        int tareas = WidgetDatos.tareasPendientes(c);
+        int material = WidgetDatos.materialPendiente(c);
 
         cifra(c, v, R.id.c1, R.id.r1, deHoy ? o.optInt("pasos", 0) + " de 6" : "\u2014", "PASOS DEL PARTE", rojo);
         cifra(c, v, R.id.c2, R.id.r2, deHoy ? String.valueOf(o.optInt("ops", 0)) : "\u2014", "OPERARIOS HOY", rojo);

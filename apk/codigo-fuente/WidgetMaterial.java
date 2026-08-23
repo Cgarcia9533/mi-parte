@@ -51,6 +51,7 @@ public class WidgetMaterial extends AppWidgetProvider {
         v.setPendingIntentTemplate(R.id.wLista,
                 PendingIntent.getBroadcast(c, 31, tocar, Widgets.banderasPlantilla()));
         v.setOnClickPendingIntent(R.id.wCab, Widgets.abre(c, "material", 32));
+        v.setViewVisibility(R.id.wMas, android.view.View.GONE);
         return v;
     }
 }

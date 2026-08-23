@@ -35,7 +35,12 @@ public class WidgetTareas extends AppWidgetProvider {
 
     static RemoteViews pinta(Context c, int id) {
         RemoteViews v = new RemoteViews(c.getPackageName(), R.layout.widget_lista);
-        v.setTextViewText(R.id.wCab, "PENDIENTES");
+        int espera = WidgetDatos.enEspera(c);
+        // Si hay algo esperando a que se abra la app, se dice. Sirve de aviso y
+        // tambien para saber si la cola esta llegando: al abrir la app deberia
+        // desaparecer.
+        v.setTextViewText(R.id.wCab, espera == 0 ? "PENDIENTES"
+                : "PENDIENTES · " + espera + (espera == 1 ? " SIN VOLCAR" : " SIN VOLCAR"));
         v.setTextViewText(R.id.wVacio, "Nada pendiente.");
 
         Intent datos = new Intent(c, ListaService.class);
@@ -50,6 +55,8 @@ public class WidgetTareas extends AppWidgetProvider {
         v.setPendingIntentTemplate(R.id.wLista,
                 PendingIntent.getBroadcast(c, 21, tocar, Widgets.banderasPlantilla()));
         v.setOnClickPendingIntent(R.id.wCab, Widgets.abre(c, "tareas", 22));
+        v.setViewVisibility(R.id.wMas, android.view.View.VISIBLE);
+        v.setOnClickPendingIntent(R.id.wMas, Widgets.tareaNueva(c, 23));
         return v;
     }
 }

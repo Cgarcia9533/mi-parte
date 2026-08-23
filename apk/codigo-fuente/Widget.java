@@ -51,7 +51,7 @@ public class Widget extends AppWidgetProvider {
             v.setTextViewText(R.id.wFecha, "toca para empezar");
         }
         // La cuenta de tareas se queda como estaba, sin avisar de que es vieja.
-        int n = o.optJSONArray("tareas") == null ? 0 : o.optJSONArray("tareas").length();
+        int n = WidgetDatos.tareasPendientes(c);
         v.setTextViewText(R.id.wTareas, n == 0 ? "sin tareas pendientes"
                 : n + (n == 1 ? " tarea pendiente" : " tareas pendientes"));
 
@@ -63,11 +63,18 @@ public class Widget extends AppWidgetProvider {
         v.setTextColor(R.id.wFecha, flojo);
         v.setTextColor(R.id.wTareas, flojo);
 
+        // El nombre de la obra abre la lista de obras: es el atajo para cambiar
+        // de obra sin pasar por el parte. Va ANTES que el fondo para que el
+        // toque en el texto no se lo lleve el fondo. En el 4x1, que no tiene
+        // botones, es la unica manera de cambiar de obra desde el widget.
+        v.setOnClickPendingIntent(R.id.wObra, Widgets.abre(c, "obras", 5));
         v.setOnClickPendingIntent(R.id.wFondo, Widgets.abre(c, "parte", 1));
         v.setOnClickPendingIntent(R.id.wTareas, Widgets.abre(c, "tareas", 2));
         v.setOnClickPendingIntent(R.id.wFoto, Widgets.camara(c, 9));
         if (conBotones()) {
-            v.setOnClickPendingIntent(R.id.wParte, Widgets.abre(c, "parte", 3));
+            // El boton de la izquierda es ELEGIR OBRA, no PARTE DE HOY: para
+            // abrir el parte ya esta el resto de la tarjeta (wFondo).
+            v.setOnClickPendingIntent(R.id.wParte, Widgets.abre(c, "obras", 3));
             v.setOnClickPendingIntent(R.id.wTrabajo, Widgets.abre(c, "trabajo", 4));
         }
         return v;
