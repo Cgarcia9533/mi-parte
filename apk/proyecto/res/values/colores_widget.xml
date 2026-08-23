@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Modo claro: blanco de dia. La version oscura esta en values-night. -->
+<resources>
+    <color name="w_fondo">#FBFAF7</color>
+    <color name="w_linea">#DEDBD2</color>
+    <color name="w_texto">#23231F</color>
+    <color name="w_flojo">#7A776D</color>
+    <color name="w_ambar">#E3A21A</color>
+    <color name="w_sobre_ambar">#23231F</color>
+    <color name="w_apagado">#A9A59A</color>
+    <color name="w_barra">#C9C5B8</color>
+    <color name="w_rojo">#B3341F</color>
+    <color name="w_rojo_claro">#B3341F</color>
+    <color name="w_rojo_texto">#FFFFFF</color>
+    <color name="w_rojo_flojo">#F3D8D2</color>
+
+    <string name="widget_desc_grande">Parte de hoy: obra, fecha, tareas y foto rapida</string>
+    <string name="widget_desc_fila">Parte de hoy, en una fila</string>
+    <string name="w_desc_fichar">Fichar entrada y salida de un toque</string>
+    <string name="w_desc_tareas">Tareas pendientes: tocas una y la tachas</string>
+    <string name="w_desc_material">Material pendiente de recibir o colocar</string>
+    <string name="w_desc_vigilar">A vigilar: quien acumula rojos en cuatro semanas</string>
+    <string name="w_desc_semana">Las horas de la semana, dia a dia</string>
+    <string name="w_desc_foto">Foto rapida al parte de hoy</string>
+    <string name="w_desc_incidencia">Apuntar una incidencia</string>
+    <string name="w_desc_obra">La obra activa</string>
+    <string name="w_desc_resumen">Resumen del dia y de la semana, en cifras</string>
+</resources>

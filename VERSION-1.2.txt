@@ -434,3 +434,207 @@ maqueta R2 y ahora los quieres. Van en un bloque CONTACTOS justo debajo del
 membrete, antes de las horas por operario, a dos columnas y con el telefono
 cuadrado a la derecha. Si la obra no tiene contactos, el bloque no aparece y
 el resumen queda como estaba.
+
+
+EL BOTON YA NO DICE "COPIAR AYER"
+---------------------------------
+Nunca copio lo de ayer, aunque lo pusiera. Lo que hace es buscar el ultimo
+parte guardado DE ESA MISMA OBRA, sea de cuando sea: si el ultimo fue el
+viernes, copia el viernes; si vuelves de tres semanas de vacaciones, copia el
+de hace tres semanas. El domingo no aparece porque el domingo no hay parte.
+Si la obra todavia no tiene ningun parte, avisa de que no hay nada que copiar.
+
+El boton ahora dice COPIAR ULTIMO, que es lo que hace. Cambiado tambien en el
+texto del tutorial.
+
+
+BOTON DE NUEVA OBRA EN EL INICIO
+--------------------------------
+Ya existia una via para abrir obra: el dialogo "¿En que obra estas hoy?" que
+salta al abrir la app cuando el parte de hoy esta en blanco y hay partes de
+dias anteriores. Ahi, debajo de las obras en marcha, esta la opcion "Otra
+obra, nueva". El problema es que ese dialogo sale una vez al dia como mucho:
+si lo cierras o si el parte de hoy ya tiene algo, para abrir obra hay que
+irse a la pestana Obras y bajar del todo.
+
+Ahora el inicio lleva el boton siempre a mano. La botonera del parte diario
+queda en dos filas:
+
+  COPIAR ULTIMO   |   NUEVA OBRA      borde fino, las dos al 50%
+  PDF DEL DIA                          ambar, ancho completo
+
+NUEVA OBRA hace lo mismo que la opcion del dialogo: crea la obra, la deja
+activa, arrastra al parte de hoy la cuadrilla y el horario del ultimo parte
+(lo demas en blanco) y abre su ficha para que le pongas nombre y cliente.
+
+
+sw.js: CACHE mi-parte-1.2-v4 -> mi-parte-1.2-v5.
+
+
+EL CROQUIS VIENE PLEGADO
+------------------------
+El lienzo del croquis se comia media pantalla del paso 6 aunque no dibujaras
+nada, y las fotos quedaban debajo del todo.
+
+Ahora el croquis es una cabecera de una linea: franja ambar, cuadro con lapiz,
+CROQUIS en negrita y un boton DIBUJAR en ambar macizo. Debajo, "Toca para
+dibujar a mano" si esta vacio, o el titulo y el numero de trazos si ya hay
+algo. Se abre tocando y se vuelve a cerrar solo al salir del paso 6, asi que
+cada vez que entras lo encuentras plegado. Las fotos suben y quedan a la vista.
+
+
+BUSCADOR EN LOS PARTES
+----------------------
+La tarjeta "Partes anteriores" del inicio lleva un buscador. Escribes dos
+letras y la lista de dias se cambia por resultados de TODOS los partes
+guardados. Sin acentos y sin mayusculas: da igual como lo escribas.
+
+Mira en: trabajos y zonas, material, incidencias (el hecho, la causa, la
+accion y el tipo), pies de foto, titulos de croquis, notas de cada operario,
+nombres de operario y nombre, cliente y pedido de la obra.
+
+Cada resultado dice de que dia es y de que parte del parte sale, y al tocarlo
+te lleva a ese dia y a ese paso. Tope de 40 resultados.
+
+
+UN DIA, DOS OBRAS
+-----------------
+Habia un hueco: un parte por dia y un parte lleva una obra. Si por la manana
+estabas en una nave y por la tarde en otra, no cabia.
+
+Ahora el dia se puede partir. Al final del paso 1, debajo del horario, hay una
+casilla con "Anadir": eliges la obra y se crea el segundo parte del dia, con
+su horario, su cuadrilla y su PDF aparte. Le trae el ultimo parte de esa obra,
+como hace "Copiar ultimo".
+
+Con dos partes, arriba del paso 1 salen las dos obras del dia: tocas una y
+saltas a su parte. "Quitar" borra el segundo y deja el primero intacto. Las
+horas de la semana suman los dos.
+
+Por dentro, la clave del parte pasa a ser "2026-08-22" para el primero y
+"2026-08-22#2" para el segundo. Todo lo que leia la clave como fecha pasa por
+soloDia(), asi que el historial, la semana, los avisos y los PDF siguen
+contando bien.
+
+Nada se crea hasta que tocas una obra: si sales por "Ahora no", el dia se
+queda exactamente como estaba.
+
+
+COPIAR AYER SE LLAMA COPIAR ULTIMO
+----------------------------------
+El boton nunca copio lo de ayer: busca el ultimo parte de esa obra, sea de
+cuando sea. Si el ultimo fue el viernes, copia el viernes. Ahora se llama como
+lo que hace. Y al lado tiene un boton nuevo, NUEVA OBRA, que antes solo estaba
+escondido en el dialogo de arranque y en el fondo de la pestana de obras.
+
+La botonera del parte diario queda en dos filas:
+
+  COPIAR ULTIMO   |   NUEVA OBRA      borde fino, las dos al 50%
+  PDF DEL DIA                          ambar, ancho completo
+
+
+TUTORIAL REPARTIDO
+------------------
+Lo nuevo no va al final en dos pantallas sueltas: cada cosa esta en la
+pantalla que le toca, y el recorrido sigue siendo de diez.
+
+  El primer dia          "Copiar ultimo", donde se habla de que pasa manana.
+  Seis pasos             el paso 1 dice que puedes anadir otra obra al mismo
+                         dia; el paso 6, que el croquis viene plegado.
+  Que es cada tarjeta    la tarjeta "Partes anteriores" explica su buscador.
+  Una ficha por obra     casilla nueva "Cambiar de obra": nueva obra, el aviso
+                         de que renombrar la obra activa no crea otra, y dos
+                         obras el mismo dia.
+  Avisos y copias        casilla nueva "Datos y copias": la copia de seguridad
+                         y que borra exactamente "Vaciar y empezar de cero".
+
+La pantalla de novedades se ha reescrito con esta ronda entera.
+
+
+WIDGET DE ANDROID
+-----------------
+En APK/widget/ esta el widget entero, sin tocar todavia nada del proyecto:
+Widget.java, WidgetFila.java, FotoRapida.java, los layouts, los xml de
+configuracion, los drawables y los colores de dia y de noche. Con el
+MainActivity.java y el AndroidManifest.xml ya modificados, y un LEEME.txt que
+dice que fichero va en que carpeta y cuales son los cuatro trozos que se le
+han anadido al MainActivity.
+
+Dos tamanos: cuadro 4x2 y fila 4x1. Obra en grande, fecha, tareas que quedan,
+y el boton de camara a toda altura a la derecha; el 4x2 lleva debajo PARTE DE
+HOY y APUNTAR TRABAJO. Blanco de dia y oscuro de noche. Se pone rojo entero
+cuando pasa la hora del aviso y el parte no esta cerrado.
+
+Lo que no puede hacer: el widget vive fuera del WebView y no puede leer el
+localStorage, asi que solo se entera de los cambios cuando la app se abre o se
+cierra, mas un repintado cada media hora. Y las fotos de la camara rapida no
+entran en el parte en el momento: se quedan en cola y entran al abrir la app.
+
+Del lado de la app web ya esta todo hecho: sincroWidget() manda el estado al
+guardar, accionWidget() recibe los toques y fotosWidget() mete las fotos en el
+parte de hoy.
+
+
+sw.js: CACHE mi-parte-1.2-v6 -> mi-parte-1.2-v7.
+AndroidManifest: versionCode 9 -> 10, versionName 1.2.
+
+
+ONCE WIDGETS DE ANDROID
+-----------------------
+En APK/widget/ esta el paquete entero, sin tocar todavia nada del proyecto:
+las clases java, los layouts, los xml de configuracion, los drawables y los
+colores de dia y de noche, mas el MainActivity.java y el AndroidManifest.xml
+ya modificados y un LEEME.txt que dice que fichero va en que carpeta.
+
+  PARTE DE HOY        4x2 y 4x1. Obra, fecha, tareas que quedan y camara.
+  FICHAR              4x1. ENTRADA y SALIDA sellan la hora exacta del movil.
+  TAREAS PENDIENTES   4x3 con scroll. Tocas una linea y se tacha.
+  MATERIAL PENDIENTE  4x3 con scroll. La obra activa arriba, el resto debajo.
+  A VIGILAR           4x2. Quien acumula rojos en cuatro semanas y en que
+                      criterio. Solo se mira.
+  LA SEMANA           4x2. Lunes a domingo en columnas, con las dos cifras.
+  FOTO RAPIDA         1x1. Dispara en rafaga hasta que le das a atras.
+  INCIDENCIA          1x1. Abre el paso 5 con una linea nueva.
+  OBRA ACTIVA         4x1. El nombre en grande.
+  RESUMEN             4x3. Seis cifras y ningun boton dentro: solo se mira.
+
+Blanco de dia y oscuro de noche, siguiendo al movil. Se ponen rojos enteros
+solo PARTE DE HOY y RESUMEN, cuando pasa la hora del aviso y el parte no esta
+cerrado. En FICHAR, el ambar va en el boton que toca ahora: ENTRADA mientras no
+hayas fichado, SALIDA en cuanto la entrada esta puesta.
+
+Del lado de la app: sincroWidget() manda el estado al guardar, accionWidget()
+recibe los toques y colaWidget() mete en el parte lo que se hizo con la app
+cerrada, en el parte del DIA en que se hizo, y saca un aviso con todo lo que
+ha entrado.
+
+Lo que no pueden hacer: el widget vive fuera del WebView y no puede leer el
+localStorage, asi que solo se entera de los cambios cuando la app se abre o se
+cierra, mas un repintado cada media hora.
+
+Probado en navegador con "Prueba widgets.dc.html": abre la app de verdad y la
+llama por donde la llaman los widgets. Veinte comprobaciones, todas en verde.
+Un fallo encontrado y arreglado: las fotos de la rafaga entraban en el parte
+pero la app se quedaba donde estaba; ahora abre el paso 6, que es donde se les
+pone el pie.
+
+
+TUTORIAL DE LOS WIDGETS, APARTE
+-------------------------------
+En Ajustes, al final, debajo de "Como funciona la app", hay una tarjeta nueva:
+LOS WIDGETS DEL MOVIL. No toca el tutorial de la app y no sale solo al abrir:
+solo cuando lo buscas. Seis pantallas con sus puntos y arrastre lateral.
+
+  1. La app sin abrir la app     que es un widget y los tres pasos para ponerlo.
+  2. Cual es cada uno            los once en dos grupos, para mirar y para
+                                 tocar, con su tamano en casillas.
+  3. Entrada y salida de un toque la hora exacta, el ambar que va en el boton
+                                 que toca, y que pasa con dos obras el mismo dia.
+  4. Tachar sin abrir nada       las tres listas, con el aviso de que A VIGILAR
+                                 ensena nombres en la pantalla de inicio.
+  5. Foto e incidencia           los dos iconos de una casilla.
+  6. Van un paso por detras      que solo se enteran al abrir o cerrar la app,
+                                 la cola y cuando se ponen rojos.
+
+
+sw.js: CACHE mi-parte-1.2-v7 -> mi-parte-1.2-v9.

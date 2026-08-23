@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cuadro 4x2: tres lineas de texto, el boton de camara a toda altura a la
+     derecha, y debajo los dos botones de texto. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wFondo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_fondo"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/wObra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.03"
+                android:textColor="@color/w_texto"
+                android:text="OBRA" />
+
+            <TextView
+                android:id="@+id/wFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="12sp"
+                android:textColor="@color/w_flojo"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/wTareas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="12sp"
+                android:textColor="@color/w_flojo"
+                android:text="" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/wFoto"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/widget_boton"
+            android:padding="14dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_camara"
+            android:contentDescription="Foto rapida" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/wParte"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/widget_boton_hueco"
+            android:gravity="center"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:textColor="@color/w_texto"
+            android:text="PARTE DE HOY" />
+
+        <TextView
+            android:id="@+id/wTrabajo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/widget_boton_hueco"
+            android:gravity="center"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:textColor="@color/w_texto"
+            android:text="APUNTAR TRABAJO" />
+    </LinearLayout>
+</LinearLayout>

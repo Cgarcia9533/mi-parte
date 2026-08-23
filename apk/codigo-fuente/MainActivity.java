@@ -104,6 +104,8 @@ public class MainActivity extends Activity {
         web.setWebViewClient(new Cliente());
         web.setWebChromeClient(new Cromo());
 
+        accionPendiente = b == null && getIntent() != null ? getIntent().getStringExtra("accion") : null;
+
         web.loadUrl(BASE + "index.html");
     }
 
@@ -136,6 +138,13 @@ public class MainActivity extends Activity {
                 return new WebResourceResponse("text/plain", "utf-8",
                         new ByteArrayInputStream(new byte[0]));
             }
+        }
+
+        @Override
+        public void onPageFinished(WebView v, String url) {
+            // La pagina ya existe: es el momento de pasarle lo que traia el widget.
+            paginaLista = true;
+            sueltaPendientes();
         }
 
         @Override
@@ -693,6 +702,16 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void abrirFuera(String url) { MainActivity.this.abrirFuera(url); }
 
+        /** La app web manda aqui lo que tiene que pintar el widget cada vez que
+         *  guarda: obra, fecha, tareas pendientes y si el parte esta cerrado.
+         *  El widget vive fuera del WebView y no puede leer localStorage, asi
+         *  que esta es la unica via. */
+        @JavascriptInterface
+        public void syncWidget(String json) {
+            WidgetDatos.guarda(MainActivity.this, json);
+            Widgets.refresca(MainActivity.this);
+        }
+
         @JavascriptInterface
         public void toast(final String txt) {
             runOnUiThread(new Runnable() {
@@ -984,5 +1003,47 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         Alarms.reprograma(this);
+        Widgets.refresca(this);
+    }
+
+    // ---------------- widget ----------------
+
+    private String accionPendiente;
+    private boolean paginaLista;
+
+    @Override
+    protected void onNewIntent(Intent i) {
+        super.onNewIntent(i);
+        setIntent(i);
+        if (i != null && i.getStringExtra("accion") != null) accionPendiente = i.getStringExtra("accion");
+        sueltaPendientes();
+    }
+
+    /** Pasa a la app web la accion del widget y las fotos que haya sacado la
+     *  camara rapida. Si la pagina aun no esta cargada, espera a onPageFinished. */
+    private void sueltaPendientes() {
+        if (!paginaLista) return;
+        final String accion = accionPendiente;
+        accionPendiente = null;
+        final String cola = WidgetDatos.recoge(this);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    if (cola != null) {
+                        // Fichajes, tareas tachadas, material y fotos de la rafaga.
+                        // La app web los mete en el parte del dia en que se hicieron
+                        // y saca un aviso con todo lo que ha entrado.
+                        web.evaluateJavascript("window.MiParteCola&&window.MiParteCola(" + cola + ")", null);
+                    }
+                    if (accion != null && !accion.isEmpty() && !"foto".equals(accion)) {
+                        // Sin esto el .focus() del JS pone el cursor pero el
+                        // teclado no sube: el WebView no tiene el foco de entrada.
+                        web.requestFocus();
+                        web.evaluateJavascript("window.MiParteAccion&&window.MiParteAccion('"
+                                + accion.replace("'", "") + "')", null);
+                    }
+                } catch (Exception ignored) { }
+            }
+        });
     }
 }
