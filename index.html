@@ -5472,7 +5472,7 @@ class Component extends DCLogic {
         pasos: seis.filter(Boolean).length,
         ops: (p.ops || []).length,
         incAbiertas: (p.incidencias || []).filter(i => (i.pend || 'no') === 'si').length,
-        tareas: (db.tareas || []).filter(t => !t.hecha).map(t => t.txt || ''),
+        tareas: (db.tareas || []).map(t => ({ txt: t.txt || '', hecha: !!t.hecha })),
         material: pend.slice(0, 40),
         semana: semana,
         semanaJor: semana.reduce((a, b) => a + b.jor, 0),
@@ -5502,12 +5502,27 @@ class Component extends DCLogic {
       if (f.tipo === 'salida') { p.salida = f.hora; dicho.push('salida ' + f.hora); }
       else if (!p.entrada) { p.entrada = f.hora; dicho.push('entrada ' + f.hora); }
     });
+    let nN = 0;
+    (c.nuevas || []).forEach(x => {
+      const s = String(x || '').trim();
+      if (!s) return;
+      if ((db.tareas || []).some(y => (y.txt || '') === s)) return;
+      db.tareas = (db.tareas || []).concat([{ txt: s, hecha: false }]);
+      nN++;
+    });
+    if (nN) dicho.push(nN + (nN === 1 ? ' tarea nueva' : ' tareas nuevas'));
     let nT = 0;
     (c.tareas || []).forEach(txt => {
       const t = (db.tareas || []).find(x => (x.txt || '') === txt && !x.hecha);
       if (t) { t.hecha = true; nT++; }
     });
     if (nT) dicho.push(nT + (nT === 1 ? ' tarea tachada' : ' tareas tachadas'));
+    let nD = 0;
+    (c.destareas || []).forEach(txt => {
+      const t = (db.tareas || []).find(x => (x.txt || '') === txt && x.hecha);
+      if (t) { t.hecha = false; nD++; }
+    });
+    if (nD) dicho.push(nD + (nD === 1 ? ' tarea sin tachar' : ' tareas sin tachar'));
     let nM = 0;
     (c.material || []).forEach(m => {
       const p = parteDe(m.dia || hoyKey());
