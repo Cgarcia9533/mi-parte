@@ -3025,7 +3025,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ oActivar }}" style="display:{{ oActivaDisp }};padding:15px;text-align:center;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#23231f;cursor:pointer">Trabajar en esta obra</div>
 <div style="display:flex;gap:8px">
 <div sc-camel-on-click="{{ oResumen }}" style="flex:1;text-align:center;padding:14px;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#23231f;cursor:pointer">Resumen en PDF</div>
-<div sc-camel-on-click="{{ oFinTog }}" style="flex:1;text-align:center;padding:14px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">{{ oFinLab }}</div>
+<div sc-camel-on-click="{{ oFinTog }}" style="flex:1;text-align:center;padding:14px;border:1px solid {{ oFinEdge }};border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:{{ oFinCol }};cursor:pointer">{{ oFinLab }}</div>
 </div>
 <div sc-camel-on-click="{{ oBorrar }}" style="padding:13px;text-align:center;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);border:1px solid var(--line);border-radius:12px;cursor:pointer">Borrar la obra</div>
 </div>
@@ -6370,6 +6370,8 @@ class Component extends DCLogic {
       fotoPie: (s.foto || {}).pie || '',
       cerrarFoto: () => this.setState({ foto: null }),
       oFinLab: oVer.fin ? 'Reabrir la obra' : 'Marcar terminada',
+      oFinEdge: oVer.fin ? 'var(--green)' : 'var(--line)',
+      oFinCol: oVer.fin ? 'var(--green)' : 'var(--ink)',
       oFinTog: () => this.terminaObra(oVer.id, !oVer.fin),
       oBorrar: () => this.pideBorrarObra(oVer.id),
       dispBarra: s.view === 'asistente' ? 'block' : 'none',
