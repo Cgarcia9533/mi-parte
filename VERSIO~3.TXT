@@ -1,0 +1,181 @@
+MI PARTE 1.1 — LA VOZ DE UN PARTE, NO DE UN TUTORIAL
+====================================================
+
+Encargo B: cambia la voz y la presentacion, no la estructura. Mismas pantallas,
+mismo asistente de seis pasos, mismas tarjetas y mismo orden. No hay nada que
+reaprender.
+
+NO SE HA TOCADO: el motor del PDF, IndexedDB, el puente nativo, el service
+worker (solo el numero de cache), la logica de avisos, los seis pasos ni el
+orden de las tarjetas. Ni una linea de Java.
+
+
+1. UN SOLO NOMBRE POR COSA: VALORACION
+--------------------------------------
+Fuera "semaforo" y fuera "clasificacion" como nombre de la valoracion por
+criterios. Los tres colores siguen siendo verde, ambar y rojo.
+
+  Avisos del semaforo · 4 semanas   ->  Avisos de valoracion · 4 semanas
+  Semaforo del dia · 5 criterios    ->  Valoracion del dia · 5 criterios
+  Semaforo acumulado                ->  Valoracion acumulada
+  El semaforo, en tres colores      ->  La valoracion, en tres colores  (tutorial)
+  Clasificacion del equipo · hoy    ->  Valoracion del equipo
+  ...ponerles el semaforo           ->  ...ponerles la valoracion
+  los cinco criterios del semaforo  ->  los cinco criterios de valoracion
+
+En el PDF no habia que cambiar nada: no aparecia ni "semaforo" ni
+"clasificacion" en ningun texto del documento generado.
+
+La palabra "semaforo" ya no sale en ninguna pantalla. Lo que SI sigue en el
+codigo es el identificador interno: data-tarjeta="semaforo", el id 'semaforo'
+de TARJETAS y el metodo semaforo(). No se han renombrado a proposito: ese id
+es lo que esta guardado en la base con el orden y las tarjetas escondidas de
+cada usuario (db.inicio.orden). Cambiarlo le resetea el inicio a quien ya usa
+la app. No se ve por ningun lado.
+
+2. FUERA EL INGLES
+------------------
+  Ranking · ultimas 4 semanas  ->  Clasificacion · ultimas 4 semanas
+
+Era la unica palabra en ingles. "Clasificacion" queda libre para esto, que es
+lo que de verdad es: la tabla de operarios ordenada.
+
+3. FUERA LOS SUBTITULOS QUE EXPLICAN
+------------------------------------
+  Parte de hoy · jueves 14 de agosto        ->  Parte diario
+  El parte del dia, sin papel               ->  (se queda: es titulo del tutorial)
+  Cosas por hacer + "Apunta aqui lo que..." ->  Pendientes
+  Partes anteriores · toca para abrir...    ->  Partes anteriores
+  Se ven en el inicio · manten pulsado...   ->  Se ven en el inicio
+  Material que quedo pendiente              ->  Material pendiente
+  Lo que llevas en esta obra                ->  Resumen de la obra
+  Repasar el tutorial · version 1.0.1       ->  Repasar el tutorial + v1.1 en gris
+  Semana en curso · horas                   ->  Semana en curso
+
+Dos decisiones que no venian escritas en el encargo:
+
+  - "Semana en curso · horas": quitado el "· horas" porque el dato de la
+    derecha ya dice "37:30 h". Si lo quieres de vuelta, es una linea.
+  - La tarjeta Pendientes vacia decia "Apunta aqui lo que no se te puede
+    olvidar". Dejarla en blanco parecia averiada, asi que ahora dice
+    "Sin pendientes.", con la misma forma que "Sin horas apuntadas esta
+    semana" o "Todavia no hay partes guardados".
+
+El tutorial se queda con su tono cercano y sus ocho titulos, menos el que
+manda la regla 1 (el del semaforo).
+
+4. EL DATO A LA VISTA
+---------------------
+Cada tarjeta del inicio ensena su numero a la derecha, en gris, con cifras de
+ancho fijo. Si el numero es cero no se ensena nada.
+
+  Parte diario           4 de 6        pasos con algo escrito
+  Pendientes             3             tareas sin marcar
+  Material pendiente     12 lineas     (ya estaba, ahora en gris y no en ambar)
+  Valoracion del equipo  2 en ambar    o "2 en rojo" si hay rojos, o "todo verde"
+  Semana en curso        37:30 h
+  Partes anteriores      47 partes     todos los guardados menos el de hoy
+
+El "2 en rojo" no estaba en el encargo: si alguien tiene rojo hoy, eso es lo
+que hay que ver antes que el ambar.
+
+5. LA CABECERA, COMO UN DOCUMENTO
+---------------------------------
+  MI PARTE
+  NAVE 3 · MERCABARNA
+  14/08/2026 · Parte n.º 47                            [ABIERTO]
+
+La obra va con su cliente al lado, en mayusculas, y debajo la fecha con el
+correlativo de partes de ESA obra, en cifras de ancho fijo. El numero se saca
+de los partes que ya tiene la obra (diasObra): no se guarda nada nuevo en la
+base.
+
+A la derecha, la chapa de estado:
+  ABIERTO  ambar  mientras falte algun paso
+  CERRADO  verde  con los seis hechos
+  14/08/2026  rojo  cuando estas en un dia que no es hoy
+
+"Cerrado" es lo mismo que ya decidia el aviso de las 19:00: los seis pasos con
+algo escrito. No hay logica nueva ni un campo "cerrado" en la base.
+
+La chapa solo sale en el inicio y en el asistente. En Operarios, Materiales,
+Ajustes, Semana, Obras y las fichas la cabecera se queda como estaba (con su
+cliente y su pedido debajo).
+
+Nombres largos: la obra corta con puntos suspensivos y la chapa no se mueve.
+Probado a 320 px de ancho con un nombre de 100 caracteres.
+
+6. BARRA DE AVANCE EN LA TARJETA DEL PARTE
+------------------------------------------
+Seis segmentos de 3 px justo debajo de la cabecera de la tarjeta, ambar los
+hechos y gris los que faltan. Sin numeros dentro y sin porcentajes. Es la
+misma barra de arriba del asistente, contada por pasos en vez de por posicion.
+
+
+LO QUE NO CAMBIA DEL ESTILO
+---------------------------
+Paleta intacta, no se ha tocado ni una variable de :root. Tarjetas con el mismo
+radio, la misma sombra y los mismos tamanos de toque. No se ha reducido ningun
+boton ni juntado ninguna fila: se sigue usando con guantes.
+
+
+LAS CINCO COSAS QUE ROMPEN EL APK
+---------------------------------
+1. Pila de fuentes: INTACTA. Las 361 apariciones de
+   system-ui,-apple-system,'Segoe UI',Roboto,sans-serif siguen ahi letra por
+   letra. Hay 3 mas (364 en total) en los trozos nuevos, escritas igual.
+2. HTML plano: __bundler y documentElement.replaceWith salen 0 veces.
+3. Animaciones horizontales: sigue habiendo UN solo translateX, el del carrusel
+   del tutorial, dentro de su overflow:hidden. La barra de seis segmentos no
+   anima y no crece: son seis divs flex:1 dentro de la tarjeta.
+4. Rejillas: no se ha tocado ninguna. Los minmax(0,1fr) y los min-width:0 del
+   inicio y del asistente estan como estaban.
+5. sw.js: CACHE mi-parte-1.0.1-v1 -> mi-parte-1.1-v1.
+
+Metodos nativos: ninguno nuevo. No hace falta tocar Java.
+
+
+PARA QUIEN COMPILA EL APK
+-------------------------
+  APK/proyecto/assets/index.html, sw.js y manifest.json van copiados, mismo
+  md5 que los de la raiz.
+
+  AndroidManifest.xml NO viene en este paquete (no estaba en el que recibi):
+  hay que poner versionCode 3 y versionName 1.1 a mano.
+
+  VER pasa de '1.0.1' a '1.1', asi que a cada usuario le sale UNA vez la
+  pantalla de novedades del tutorial al actualizar. La lista NOVEDADES esta
+  reescrita con los seis cambios de esta version. La clave de localStorage
+  sigue siendo 'miparte:tutorial:1.0' (es solo la clave; dentro se guarda VER).
+
+
+SIN PROBAR — MIRALO TU EN EL MOVIL
+----------------------------------
+Nadie ha tenido un Fold delante. Todo lo de abajo esta comprobado en navegador
+de escritorio y en ancho de 320 px, no en Android ni dentro del APK.
+
+  1. Que la letra del sistema sigue aplicandose (que el APK encuentra la pila
+     de fuentes). Es lo primero que hay que mirar: si falla, se ve en cuanto
+     abres la app.
+  2. Que la cabecera no se descuadra con la letra grande del sistema puesta al
+     maximo: la chapa de estado es lo que puede quedar apretado.
+  3. Que la pantalla no se arrastra de lado al entrar en el parte desde el
+     inicio y desde el historial, de pie y tumbado.
+  4. Que el numero de parte cuadra con lo que esperas en una obra con muchos
+     dias, y que en un dia sin obra asignada no sale un numero raro.
+  5. Que la chapa dice CERRADO cuando cierras los seis pasos, y la fecha en
+     rojo cuando abres un parte de otro dia.
+  6. Que el orden de las tarjetas del inicio y las que tenias escondidas
+     siguen como las dejaste (no deberian moverse: los ids no han cambiado).
+  7. El PDF del dia y el resumen de obra: no se ha tocado el motor, pero
+     conviene sacar uno de cada y mirar que sale igual que antes.
+  8. La pantalla de novedades del tutorial, que sale sola una vez.
+
+
+UNA COSA QUE TE DEJO DECIDIR
+----------------------------
+En el paso 1 del asistente hay un bloque que se llama "Valoracion de la
+jornada" (Bien / Regular / Mal, la jornada entera). Ahora que la valoracion por
+criterios se llama "valoracion", son dos cosas con la misma palabra en pasos
+distintos. No lo he cambiado porque el encargo no lo pedia y cualquier nombre
+nuevo me lo estaria inventando. Si quieres, dime como llamarlo.

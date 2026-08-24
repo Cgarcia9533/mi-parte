@@ -1,0 +1,640 @@
+MI PARTE 1.2 — LOS DOS PDF, REHECHOS
+====================================
+
+Encargo: que los dos PDF se entiendan de un vistazo y que no se parezcan entre
+ellos. La 1.1 (voz y presentacion de la app) va dentro: nadie la ha instalado
+todavia, asi que se entrega todo junto.
+
+NO SE HA TOCADO: IndexedDB, el puente nativo, la logica de avisos, el service
+worker (solo el numero de cache), los seis pasos, el orden de las tarjetas ni
+el zip de fotos (su CRC32 sigue igual). Ni una linea de Java: lo unico que hay
+que anadir esta al final, en MIRALO TU.
+
+
+EL MOTOR: DOS DIBUJOS SEPARADOS
+-------------------------------
+Antes habia UN dibujo. Los dos documentos eran la misma lista plana de bloques
+(h2 / txt / sub), y por eso costaba leerlos y por eso eran iguales.
+
+Ahora la fontaneria del PDF (fuentes base, XObjects de las fotos, paginas,
+xref, el Blob) sigue donde estaba, y encima hay dos dibujos independientes:
+
+  pdfDibujaParte(D, imgs, obra)   el parte del dia
+  pdfDibujaResumen(D, r)          el resumen de obra
+
+Los dos usan el mismo juego de herramientas nuevo (D): texto con ancho medido
+de verdad (tabla de anchos de Helvetica, para poder alinear cifras a la
+derecha), corte de linea por ancho y no por numero de letras, recorte con
+puntos suspensivos, reglas, cajas, rellenos, la marca y colocacion de imagenes.
+
+pdfBloques, pdfTexto y resumenBloques se han borrado: ya no los usa nadie.
+
+
+EL PARTE DEL DIA (maqueta A)
+----------------------------
+  Membrete       marca + PARTE DIARIO DE MONTAJE + fecha. En las hojas 2 y
+                 siguientes se anade el nombre de la obra en pequeno.
+  Cabeza         obra en mayusculas, cliente y pedido, ubicacion.
+                 (Los telefonos ya no salen aqui: los dejaste fuera.)
+  Banda          cuatro cifras en un recuadro, solo en la hoja 1:
+                 PARTE N.º . HORARIO . OPERARIOS . INCIDENCIAS
+                 Si no hay incidencias abiertas pone "ninguna" en gris.
+  Trabajos       agrupados por zona, con la hora delante de cada linea.
+  Operarios      tabla: operario, categoria, normales, extras, total, y fila
+                 de TOTAL con regla gruesa. Sin valoracion, como pediste.
+  Material       tabla: descripcion, cantidad, referencia y estado en texto.
+                 Lo pendiente se repite en su propio bloque al final.
+  Incidencias    las pendientes van dentro de un recuadro con la palabra
+                 PENDIENTE a la derecha; causa y accion debajo, en gris.
+  EPIs           una linea.
+  Croquis        hoja entera para el.
+  Fotos          cuatro por hoja, en rejilla, con el pie entero bajo cada una.
+  Conformidad    hoja aparte al final, SOLO si hay fotos o croquis:
+                 CONFORMIDAD DEL PARTE, el n.º de parte y la fecha, los cuatro
+                 totales (jornada, operarios, entre todos, extras),
+                 OBSERVACIONES con tres renglones, las dos firmas y, debajo en
+                 pequeno, "La firma confirma las horas y los trabajos anotados."
+                 Sin fotos ni croquis, las dos rayas de firma van justo debajo
+                 del texto y no hay hoja de conformidad.
+  Pie            MI PARTE . obra . Parte n.º . fecha . Pagina X de Y
+
+Horas en hh:mm. El PDF no dice si el parte esta cerrado.
+
+DOS COSAS QUE NO SE PUEDEN HACER CON LO QUE GUARDA LA APP
+  - "30 min de comida" no existe como dato: era una frase del tutorial. La
+    casilla del horario pone las horas y "08:00 a 17:30" debajo. Si quieres el
+    rato de comida, hay que anadir el campo en el paso 1.
+  - "Recibido: 12/08" tampoco: recibido y colocado son SI/NO, sin fecha. El
+    estado sale en texto: "Recibido . colocado", "Recibido . sin colocar" o
+    "Pendiente de recibir".
+
+
+EL RESUMEN DE OBRA (maqueta R2)
+-------------------------------
+Membrete propio, de expediente: un recuadro que empieza con una banda oscura
+("RESUMEN DE OBRA", la fecha de emision y cuantos partes) y que dentro lleva la
+obra, el cliente con el pedido y la ubicacion, las fechas de la obra y las
+cuatro cifras grandes: DIAS, HORAS DE OBRA, ENTRE TODOS, EXTRAS. Todo en el
+mismo marco: nada mas verlo se sabe que no es un parte del dia.
+
+Secciones, en este orden: horas por operario (tabla con dias, normales, extras
+y total, con su fila de TOTAL), trabajos por zona a dos columnas, material
+gastado, material pendiente, incidencias con su fecha y notas de la obra.
+Firmas debajo del texto, sin hoja de conformidad. A4 vertical, sin imagenes.
+Debajo del membrete va CONTACTOS, a dos columnas: nombre a la izquierda y
+telefono alineado a la derecha, en negrita. Solo sale si la obra tiene alguno.
+
+
+EL TUTORIAL
+-----------
+Antes eran nueve pantallas escritas para alguien que ya conocia la app: no
+decian por donde se empieza ni de donde salen los operarios y el material.
+Ahora son diez, en el orden en que uno se encuentra las cosas:
+
+   1. Que es esto                   6. La valoracion, en tres colores
+   2. El primer dia        NUEVA    7. Que es cada tarjeta
+   3. Como se lee la cabecera       8. Los dos documentos
+   4. Seis pasos, en orden          9. Una ficha por obra
+   5. Las dos listas       NUEVA   10. Avisos y copias
+
+  - "El primer dia": el camino de cero a PDF en cuatro pasos numerados (alta
+    de la obra, apuntar cuadrilla y material, rellenar los seis pasos, cerrar
+    y sacar el PDF), y el aviso de que al dia siguiente el parte sale ya
+    relleno con lo de ayer.
+  - "Las dos listas": que los operarios y el material se apuntan UNA vez en
+    las pestanas de abajo y valen para todas las obras. Era el hueco mas
+    grande: sin esto, alguien nuevo se queda parado en el paso 2.
+  - Fuera la pantalla de arrastrar tarjetas para reordenarlas. Enseñaba una
+    preferencia, no como funciona la app, y ocupaba una de nueve. Para no
+    perder la funcion, la pantalla de las tarjetas dice ahora que se ordenan
+    y se esconden en Ajustes > Tarjetas del inicio, arrastrando o con
+    "Quitar". Con la diapositiva se ha borrado su codigo (tutOrdDown,
+    TUT_ORD, tutOrden y el estado ord/drag/movido).
+  - Obras pasa por delante de Ajustes: primero se entiende el trabajo, luego
+    se configura.
+  - El ejemplo del paso 1 decia "30 min de comida", un dato que la app no
+    guarda. Ahora habla del horario de entrada y salida.
+  - La primera pantalla decia "Ocho pantallas y sabes usarla" cuando ya eran
+    nueve. Dice diez, que es lo que hay.
+  - El enlace del tutorial en Ajustes tenia la version escrita a mano ("v1.1")
+    y se quedaba atras en cada entrega. Ahora la lee de VER.
+  - Los puntos del pie se generan de TUT_N en vez de estar contados a mano:
+    anadir o quitar una pantalla ya no descuadra el indicador.
+
+El tono no se ha tocado: frases cortas, vocabulario de obra, sin signos de
+admiracion. Los ejemplos que se tocan (los seis pasos, los colores, las
+tarjetas) siguen funcionando igual.
+
+
+LA APP
+------
+  - Fuera la hoja HTML de imprimir por el sistema, su CSS de @media print y el
+    parte en texto plano. El PDF propio es la unica salida.
+  - Fuera el metodo imprime() y la llamada a window.print(). Nadie la llamaba
+    ya desde ningun boton.
+  - La hoja de exportar sirve para los dos documentos. Arriba "Ver el PDF" y
+    debajo, en pequeno, "Compartir"; luego guardar en el movil y OneDrive.
+    Si el APK no tiene el metodo nuevo, "Ver el PDF" no aparece y el boton
+    grande vuelve a ser "Compartir el PDF".
+  - "Resumen en PDF" ya no suelta el zip: abre la misma hoja de botones.
+  - El zip de fotos tiene su propio boton en la ficha de la obra, con la cuenta
+    al lado ("128 fotos . 12 croquis"). Al lado, "Ver las fotos" despliega las
+    miniaturas ahi mismo (no se cargan hasta que lo pulsas) y tocando una se
+    abre grande. Ojo: si tienes carpeta de OneDrive elegida, el zip se sube
+    ahi directamente, que es lo que hacia antes el resumen.
+  - Nombres de fichero: el parte se queda como estaba
+    ("Parte 2026-08-21 - Nave 3.pdf"). El resumen y el zip llevan la fecha de
+    hoy: "Resumen Nave 3 2026-08-21.pdf", "Fotos Nave 3 2026-08-21.zip".
+
+
+EPIS Y HERRAMIENTAS
+-------------------
+Los EPIs estaban a medias: la lista salia de una constante del codigo (EPIS)
+mas lo que el usuario anadiera desde dentro del parte (episExtra). No habia
+donde verlos ni ordenarlos, y las herramientas no existian.
+
+Ahora las dos cosas son APARTADOS de la lista de materiales, con sus chapas
+en la fila de arriba, colocadas antes de "otro":
+
+  REMATE  PANEL  TORNILLERIA  SELLANTE  PERFILERIA  EPIS  HERRAMIENTAS  OTRO
+
+En esos dos apartados la ficha es mas corta: solo el nombre y la ✕, porque
+una referencia y una unidad no dicen nada de un casco ni de una amoladora. El
+boton de abajo cambia de rotulo segun donde estes: "+ Nuevo EPI",
+"+ Nueva herramienta" o "+ Nuevo material".
+
+Lo que apuntes ahi es lo que se puede marcar en el parte, y al momento:
+  - EPIs: siguen en el paso 5, "Repaso de EPIs", como estaban.
+  - Herramientas: bloque nuevo en el paso 3, "Herramientas del dia", con el
+    mismo tocar-para-marcar que los EPIs.
+Si vacias un apartado, el parte lo dice: "Se anaden en Material > EPIs".
+
+En el PDF del parte, las herramientas marcadas salen en su propia linea
+justo despues de "EPIs revisados", con el mismo trato. No lo pediste: si
+sobra, se quita en una linea.
+
+QUE SE HA IDO DEL PARTE
+El paso 5 tenia dentro un campo "Otro EPI: escribelo aqui" con su boton, y
+una ✕ en cada EPI para borrarlo. Se han quitado los dos: la lista se gestiona
+en Material y el parte es para marcar lo del dia. Si los quieres de vuelta,
+dilo.
+
+UN FALLO QUE SE COLO Y SE HA CORREGIDO
+Al quitar el campo "Otro EPI" del paso 5 quedo un &lt;/div&gt; de cierre de mas.
+Eso cerraba el contenedor de la app antes de tiempo y TODAS las pantallas
+salian empujadas hacia abajo, con un hueco negro enorme arriba. Ya esta
+cuadrado: la plantilla tiene el mismo numero de div abiertos que cerrados
+(377 y 377).
+
+
+LOS DATOS DE QUIEN YA USA LA APP
+Los ocho EPIs de siempre se dan de alta con su id de antes (e0...e7) y los
+que cada uno hubiera anadido conservan el suyo. Asi los partes ya guardados
+siguen ensenando los EPIs que llevaban: no se pierde ni una marca. Las
+herramientas entran con ids nuevos (h0...h7).
+
+La migracion corre en los cuatro sitios por donde entran datos: el arranque,
+la carga de IndexedDB, la carga de una copia de seguridad y el vaciado. El
+primer intento solo la puso en el arranque y no hacia nada, porque los datos
+de verdad llegan despues desde IndexedDB.
+
+
+LA NUBE, NO ONEDRIVE
+--------------------
+El boton decia "Guardar en OneDrive" y en el tutorial "Guardarlo o subirlo a
+OneDrive". Ahora en toda la app se llama "Guardar en la nube", y OneDrive solo
+aparece como EJEMPLO junto a Drive y Dropbox.
+
+Lo bueno es que no hace falta Java: el metodo nativo eligeCarpetaOneDrive abre
+el selector de carpetas de Android, y ese selector ya deja entrar en cualquier
+nube que tengas instalada. El nombre del metodo dice OneDrive, pero lo que
+hace es generico. Por eso:
+
+  - El boton hace EXACTAMENTE lo de antes: llama al metodo nativo y este se
+    encarga. Si hay carpeta fija, va ahi; si no, el propio Android saca su
+    selector. La app no se mete en medio.
+  - Debajo del boton se lee a donde va cuando hay carpeta fija:
+    "Va a «Partes 2026»". Si no hay, no pone nada.
+  - "Cambiar", al lado, sigue sirviendo para cambiar de carpeta o de nube.
+
+INTENTO FALLIDO, YA CORREGIDO
+Una version intermedia hacia que el boton, si no habia carpeta fija, abriera
+primero el selector con un aviso ("Elige tu nube..."). Estaba mal por dos
+razones: OneDrive no permite fijar una carpeta desde otra app, asi que la
+carpeta fija esta SIEMPRE vacia en ese caso y el aviso salia cada vez; y el
+selector daba un error de Android que antes no aparecia porque nadie lo
+llamaba. Fuera las dos cosas: el boton vuelve a llamar directamente al metodo
+nativo, que ya hacia lo correcto.
+
+Los tres metodos nativos (guardaOneDrive, carpetaOneDrive,
+eligeCarpetaOneDrive) NO se han tocado ni renombrado: son el contrato con el
+APK y cambiarles el nombre lo rompe. Solo ha cambiado el modo interno de la
+exportacion, de 'onedrive' a 'nube', que vive entero en el index.html.
+
+
+LA RUEDA DENTADA
+----------------
+La barra de abajo ya tenia sus cuatro iconos. Tres se han rehecho:
+
+  Ajustes      era un circulo con radios; ahora es una rueda dentada de ocho
+               dientes, trazo de 1,6 px como los demas.
+  Operarios    el casco no se leia como un casco por mucho que se retocara.
+               Fuera el casco: ahora es un peon de ajedrez (cabeza, collarin,
+               cuerpo acampanado y base), que a 23 px se reconoce solo.
+  Material     era un cubo en perspectiva; ahora es una caja de herramientas
+               de frente, con su asa arriba, la tapa y el cierre.
+
+La cabecera llevaba OTRA rueda distinta, dibujada con radios gruesos. Eran dos
+dibujos para lo mismo. Ahora las dos son la misma rueda, con el trazo un poco
+mas grueso (1,85) en la cabecera porque va sobre fondo oscuro.
+
+Los dos son SVG escritos en el propio index.html: no se pide nada a internet
+y no hay tipografia de iconos, que es de las cosas que rompen el APK. Los
+otros tres iconos no se han tocado, y no se han anadido iconos en ningun otro
+sitio: en las tarjetas y en las tablas el dato de la derecha es lo que se mira.
+
+
+LAS CINCO COSAS QUE ROMPEN EL APK
+---------------------------------
+1. Pila de fuentes: intacta. 360 apariciones, todas letra por letra
+   (system-ui,-apple-system,'Segoe UI',Roboto,sans-serif). Eran 364 en la 1.1;
+   las cuatro que faltan estaban dentro de la hoja de impresion que se ha
+   borrado. Ninguna se ha modificado.
+2. HTML plano: __bundler y documentElement.replaceWith siguen a 0.
+3. Animaciones horizontales: sigue habiendo un solo translateX, el del
+   carrusel del tutorial, dentro de su overflow:hidden.
+4. Rejillas: no se ha tocado ninguna.
+5. sw.js: CACHE mi-parte-1.1-v1 -> mi-parte-1.2-v4.
+
+
+PARA QUIEN COMPILA EL APK
+-------------------------
+  APK/proyecto/assets/index.html, sw.js y manifest.json copiados, mismo md5
+  que los de la raiz.
+
+  AndroidManifest.xml: versionCode 4 y versionName 1.2 (no viene en este
+  paquete, hay que ponerlo a mano).
+
+  METODO NATIVO NUEVO: verPdf(String b64, String nombre) -> boolean
+  Es lo unico que hace falta en Java. Lo que tiene que hacer:
+    1. escribir el PDF en la cache de la app (getCacheDir(), no en Descargas:
+       pediste que Android lo limpie solo);
+    2. sacar el content:// con el FileProvider que ya usa PdfProvider;
+    3. Intent ACTION_VIEW con setDataAndType(uri, "application/pdf") y
+       FLAG_GRANT_READ_URI_PERMISSION, envuelto en Intent.createChooser para
+       que salga el selector de lector de PDF;
+    4. devolver true si arranca algo, false si no hay ninguna app que abra PDF.
+  Mientras el metodo no exista, la app esconde el boton "Ver el PDF" y no
+  llama a nada: no hay fallo silencioso. En el navegador (sin puente) el boton
+  si sale y abre el PDF en una pestana nueva.
+
+  VER pasa a '1.2': a cada usuario le sale UNA vez la pantalla de novedades,
+  con los cambios del PDF y los de la 1.1 juntos.
+
+
+SIN PROBAR — MIRALO TU EN EL MOVIL
+----------------------------------
+Comprobado en navegador de escritorio: los dos PDF se generan sin error, con
+las paginas que toca, sin ninguna coordenada fuera de la hoja y sin NaN; la
+galeria de fotos de la obra abre, ensena las miniaturas y la foto grande.
+Nada de esto se ha visto en Android ni dentro del APK, y NINGUNO de los dos
+PDF se ha abierto en un lector de PDF de verdad: se ha revisado el fichero por
+dentro, no impreso.
+
+  1. Abrir un parte del dia con fotos y croquis y mirar las cuatro hojas:
+     texto, croquis, rejilla de fotos y conformidad.
+  2. Que los acentos salgan bien (van en WinAnsi, como siempre) y que las
+     cifras de las tablas queden cuadradas a la derecha.
+  3. Un parte largo (muchos trabajos y material) para ver los saltos de hoja:
+     que la cabecera de cada tabla se repita y que nada quede pisando el pie.
+  4. Nombres de obra muy largos en el membrete y en el pie.
+  5. El resumen de una obra con muchas zonas: las dos columnas y sus saltos.
+  6. "Ver el PDF": hasta que se recompile el APK, el boton no debe aparecer
+     en el movil. En Chrome si.
+  7. El zip de fotos desde la ficha, con y sin carpeta de OneDrive elegida.
+  8. Que el PDF sigue llegando a OneDrive y compartiendose como antes.
+ 10. El tutorial entero de punta a punta: las diez pantallas pasan bien con el
+     dedo, los tres ejemplos que se tocan responden y los puntos del pie
+     cuentan diez. Comprobado en navegador, no en el movil.
+  9. Fotos pesadas: cuatro por hoja multiplican el trabajo de dibujo. Mira que
+     un parte con 12 fotos no tarde demasiado ni se quede sin memoria.
+ 11. LO MAS IMPORTANTE de esta entrega: abre la app con TUS datos de verdad y
+     comprueba que los EPIs que ya tenias marcados en partes viejos siguen
+     marcados, y que los EPIs que hubieras anadido tu siguen en la lista. La
+     migracion esta probada en navegador con datos de ejemplo, no con tu base.
+     Saca antes una copia de seguridad desde Ajustes.
+ 12. Que los cuatro iconos de la barra se distinguen a un brazo de distancia y
+     con el movil al sol: el peon y la caja de herramientas son los que hay
+     que mirar.
+ 13. Marcar herramientas en el paso 3 y comprobar que salen en el PDF.
+ 14. Con TU carpeta ya elegida, que "Guardar en la nube" sigue subiendo a
+     OneDrive igual que antes y que debajo se lee el nombre de tu carpeta.
+ 15. En un movil sin carpeta elegida (o dandole a "Cambiar"), que el selector
+     de Android deja entrar en otras nubes y que al elegir una carpeta de,
+     por ejemplo, Drive, el guardado va ahi. Esto depende de que nubes tenga
+     instaladas el movil: no se ha podido probar.
+
+
+LISTA DE MATERIAL: MAS FACIL DE EDITAR
+--------------------------------------
+La pantalla de Material era una lista plana de 36 fichas, todas con sus casillas
+abiertas al mismo tiempo, y el tipo de cada material no se veia por ningun lado:
+habia que filtrar con las pastillas de arriba para saber donde estaba cada cosa.
+Y el material nuevo salia siempre con el tipo del filtro que tuvieras puesto,
+sin manera de cambiarlo despues.
+
+Ahora:
+
+  Buscador     arriba, por descripcion o referencia, con su X para vaciarlo.
+  Filtros      la fila de pastillas se queda, pero ahora filtra la lista
+               entera: TODO o un apartado.
+  Apartados    la lista va agrupada, con el nombre del apartado y cuantas
+               fichas tiene, y un "+ Anadir" en cada cabecera que crea la
+               ficha YA en ese apartado y como primera linea del grupo, con
+               el editor abierto.
+  Ficha        cada linea se toca para desplegarla. Los campos llevan su
+               etiqueta encima (Descripcion, Referencia, Unidad), la unidad
+               se elige tocando ud / m2 / ml / kg y solo se escribe si es
+               otra distinta, y hay un desplegable APARTADO para mover un
+               material de sitio, que antes no se podia hacer.
+  Borrar       dentro de la ficha, no como una X suelta al lado de los campos.
+
+Los EPIs y las herramientas solo ensenan Descripcion y Apartado: no llevan
+referencia ni unidad, como hasta ahora.
+
+En el paso 4 del parte no se ha tocado nada: las pastillas de tipo y el
+buscador de ese paso siguen igual.
+
+
+EL FALLO DE LOS EPIS QUE VOLVIAN SOLOS
+--------------------------------------
+Sintoma: vaciabas la app con "Vaciar y empezar de cero", los EPIs y las
+herramientas desaparecian, y al cerrar y volver a abrir estaban otra vez ahi.
+
+Causa: migraEpisHerr() corre en cada arranque y sembraba los EPIs y las
+herramientas de fabrica siempre que no encontrara NINGUNO en la lista. Vaciar
+la app dejaba la lista sin ellos, y el arranque siguiente los volvia a meter.
+Lo mismo pasaba si los borrabas tu uno a uno.
+
+Arreglo: la migracion se marca hecha una sola vez (db.vEpiHerr = 2) y no
+vuelve a sembrar nada. Lo que borras se queda borrado. La semilla de fabrica
+ya trae los EPIs y las herramientas dentro de materiales, asi que "Vaciar y
+empezar de cero" los devuelve en el momento, a la vista, y no a escondidas
+al reabrir.
+
+El aviso de vaciar decia que se borraban los operarios y los materiales, y no
+es verdad: vuelven los de ejemplo. Ahora lo dice tal cual.
+
+  MIRALO TU: al actualizar, que tus EPIs y herramientas propios sigan en la
+  lista y que los marcados en partes viejos sigan marcados. La migracion
+  antigua se respeta: solo se le pone la marca de hecha.
+
+
+VACIAR SOLO VACIA LOS PARTES
+----------------------------
+"Vaciar y empezar de cero" devolvia la app a fabrica: los partes se iban, si,
+pero los operarios y los materiales volvian a ser los de ejemplo. Cada vez que
+reseteabas te salian otra vez los cinco operarios de muestra y habia que
+borrarlos a mano.
+
+Ahora el boton solo borra LOS PARTES. Con ellos se van las fotos, los croquis,
+las incidencias, las horas y el material apuntado de cada dia, que es lo que
+va dentro del parte.
+
+  SE BORRA         todos los partes guardados, con sus fotos y croquis.
+  NO SE TOCA       operarios, materiales, EPIs, herramientas, obras, ajustes
+                   (avisos, carpeta de la nube), tarjetas del inicio, zonas y
+                   tareas.
+
+El aviso de confirmacion lo dice tal cual, y el titulo del dialogo ya no es
+"Vaciar la app" sino "Vaciar los partes". Quien quiera la app de fabrica lo
+hace desde los ajustes de Android o reinstalando, que para eso estan.
+
+De paso, al vaciar vuelve al inicio con la fecha de hoy y recalcula el espacio
+ocupado, que antes se quedaba con la cifra vieja.
+
+
+LAS CASILLAS DE EPIS NO MARCABAN
+--------------------------------
+Sintoma: en el paso 5, "Repaso de EPIs", tocar una casilla no hacia nada.
+
+Causa: al rehacer la lista de materiales, el bloque que prepara los EPIs del
+paso 5 se quedo sin el manejador del toque. La plantilla llamaba a e.toggle y
+ese toggle no existia, asi que el toque caia en el vacio sin dar ningun error.
+
+Arreglo: vuelve el toggle, y ahora borra la clave en vez de guardarla en false
+cuando desmarcas, para no dejar basura en el parte. Probado en navegador:
+marca y desmarca, y lo marcado sale en el PDF.
+
+
+TELEFONOS EN EL RESUMEN
+-----------------------
+El resumen de obra no llevaba los contactos: se quitaron a proposito en la
+maqueta R2 y ahora los quieres. Van en un bloque CONTACTOS justo debajo del
+membrete, antes de las horas por operario, a dos columnas y con el telefono
+cuadrado a la derecha. Si la obra no tiene contactos, el bloque no aparece y
+el resumen queda como estaba.
+
+
+EL BOTON YA NO DICE "COPIAR AYER"
+---------------------------------
+Nunca copio lo de ayer, aunque lo pusiera. Lo que hace es buscar el ultimo
+parte guardado DE ESA MISMA OBRA, sea de cuando sea: si el ultimo fue el
+viernes, copia el viernes; si vuelves de tres semanas de vacaciones, copia el
+de hace tres semanas. El domingo no aparece porque el domingo no hay parte.
+Si la obra todavia no tiene ningun parte, avisa de que no hay nada que copiar.
+
+El boton ahora dice COPIAR ULTIMO, que es lo que hace. Cambiado tambien en el
+texto del tutorial.
+
+
+BOTON DE NUEVA OBRA EN EL INICIO
+--------------------------------
+Ya existia una via para abrir obra: el dialogo "¿En que obra estas hoy?" que
+salta al abrir la app cuando el parte de hoy esta en blanco y hay partes de
+dias anteriores. Ahi, debajo de las obras en marcha, esta la opcion "Otra
+obra, nueva". El problema es que ese dialogo sale una vez al dia como mucho:
+si lo cierras o si el parte de hoy ya tiene algo, para abrir obra hay que
+irse a la pestana Obras y bajar del todo.
+
+Ahora el inicio lleva el boton siempre a mano. La botonera del parte diario
+queda en dos filas:
+
+  COPIAR ULTIMO   |   NUEVA OBRA      borde fino, las dos al 50%
+  PDF DEL DIA                          ambar, ancho completo
+
+NUEVA OBRA hace lo mismo que la opcion del dialogo: crea la obra, la deja
+activa, arrastra al parte de hoy la cuadrilla y el horario del ultimo parte
+(lo demas en blanco) y abre su ficha para que le pongas nombre y cliente.
+
+
+sw.js: CACHE mi-parte-1.2-v4 -> mi-parte-1.2-v5.
+
+
+EL CROQUIS VIENE PLEGADO
+------------------------
+El lienzo del croquis se comia media pantalla del paso 6 aunque no dibujaras
+nada, y las fotos quedaban debajo del todo.
+
+Ahora el croquis es una cabecera de una linea: franja ambar, cuadro con lapiz,
+CROQUIS en negrita y un boton DIBUJAR en ambar macizo. Debajo, "Toca para
+dibujar a mano" si esta vacio, o el titulo y el numero de trazos si ya hay
+algo. Se abre tocando y se vuelve a cerrar solo al salir del paso 6, asi que
+cada vez que entras lo encuentras plegado. Las fotos suben y quedan a la vista.
+
+
+BUSCADOR EN LOS PARTES
+----------------------
+La tarjeta "Partes anteriores" del inicio lleva un buscador. Escribes dos
+letras y la lista de dias se cambia por resultados de TODOS los partes
+guardados. Sin acentos y sin mayusculas: da igual como lo escribas.
+
+Mira en: trabajos y zonas, material, incidencias (el hecho, la causa, la
+accion y el tipo), pies de foto, titulos de croquis, notas de cada operario,
+nombres de operario y nombre, cliente y pedido de la obra.
+
+Cada resultado dice de que dia es y de que parte del parte sale, y al tocarlo
+te lleva a ese dia y a ese paso. Tope de 40 resultados.
+
+
+UN DIA, DOS OBRAS
+-----------------
+Habia un hueco: un parte por dia y un parte lleva una obra. Si por la manana
+estabas en una nave y por la tarde en otra, no cabia.
+
+Ahora el dia se puede partir. Al final del paso 1, debajo del horario, hay una
+casilla con "Anadir": eliges la obra y se crea el segundo parte del dia, con
+su horario, su cuadrilla y su PDF aparte. Le trae el ultimo parte de esa obra,
+como hace "Copiar ultimo".
+
+Con dos partes, arriba del paso 1 salen las dos obras del dia: tocas una y
+saltas a su parte. "Quitar" borra el segundo y deja el primero intacto. Las
+horas de la semana suman los dos.
+
+Por dentro, la clave del parte pasa a ser "2026-08-22" para el primero y
+"2026-08-22#2" para el segundo. Todo lo que leia la clave como fecha pasa por
+soloDia(), asi que el historial, la semana, los avisos y los PDF siguen
+contando bien.
+
+Nada se crea hasta que tocas una obra: si sales por "Ahora no", el dia se
+queda exactamente como estaba.
+
+
+COPIAR AYER SE LLAMA COPIAR ULTIMO
+----------------------------------
+El boton nunca copio lo de ayer: busca el ultimo parte de esa obra, sea de
+cuando sea. Si el ultimo fue el viernes, copia el viernes. Ahora se llama como
+lo que hace. Y al lado tiene un boton nuevo, NUEVA OBRA, que antes solo estaba
+escondido en el dialogo de arranque y en el fondo de la pestana de obras.
+
+La botonera del parte diario queda en dos filas:
+
+  COPIAR ULTIMO   |   NUEVA OBRA      borde fino, las dos al 50%
+  PDF DEL DIA                          ambar, ancho completo
+
+
+TUTORIAL REPARTIDO
+------------------
+Lo nuevo no va al final en dos pantallas sueltas: cada cosa esta en la
+pantalla que le toca, y el recorrido sigue siendo de diez.
+
+  El primer dia          "Copiar ultimo", donde se habla de que pasa manana.
+  Seis pasos             el paso 1 dice que puedes anadir otra obra al mismo
+                         dia; el paso 6, que el croquis viene plegado.
+  Que es cada tarjeta    la tarjeta "Partes anteriores" explica su buscador.
+  Una ficha por obra     casilla nueva "Cambiar de obra": nueva obra, el aviso
+                         de que renombrar la obra activa no crea otra, y dos
+                         obras el mismo dia.
+  Avisos y copias        casilla nueva "Datos y copias": la copia de seguridad
+                         y que borra exactamente "Vaciar y empezar de cero".
+
+La pantalla de novedades se ha reescrito con esta ronda entera.
+
+
+WIDGET DE ANDROID
+-----------------
+En APK/widget/ esta el widget entero, sin tocar todavia nada del proyecto:
+Widget.java, WidgetFila.java, FotoRapida.java, los layouts, los xml de
+configuracion, los drawables y los colores de dia y de noche. Con el
+MainActivity.java y el AndroidManifest.xml ya modificados, y un LEEME.txt que
+dice que fichero va en que carpeta y cuales son los cuatro trozos que se le
+han anadido al MainActivity.
+
+Dos tamanos: cuadro 4x2 y fila 4x1. Obra en grande, fecha, tareas que quedan,
+y el boton de camara a toda altura a la derecha; el 4x2 lleva debajo PARTE DE
+HOY y APUNTAR TRABAJO. Blanco de dia y oscuro de noche. Se pone rojo entero
+cuando pasa la hora del aviso y el parte no esta cerrado.
+
+Lo que no puede hacer: el widget vive fuera del WebView y no puede leer el
+localStorage, asi que solo se entera de los cambios cuando la app se abre o se
+cierra, mas un repintado cada media hora. Y las fotos de la camara rapida no
+entran en el parte en el momento: se quedan en cola y entran al abrir la app.
+
+Del lado de la app web ya esta todo hecho: sincroWidget() manda el estado al
+guardar, accionWidget() recibe los toques y fotosWidget() mete las fotos en el
+parte de hoy.
+
+
+sw.js: CACHE mi-parte-1.2-v6 -> mi-parte-1.2-v7.
+AndroidManifest: versionCode 9 -> 10, versionName 1.2.
+
+
+ONCE WIDGETS DE ANDROID
+-----------------------
+En APK/widget/ esta el paquete entero, sin tocar todavia nada del proyecto:
+las clases java, los layouts, los xml de configuracion, los drawables y los
+colores de dia y de noche, mas el MainActivity.java y el AndroidManifest.xml
+ya modificados y un LEEME.txt que dice que fichero va en que carpeta.
+
+  PARTE DE HOY        4x2 y 4x1. Obra, fecha, tareas que quedan y camara.
+  FICHAR              4x1. ENTRADA y SALIDA sellan la hora exacta del movil.
+  TAREAS PENDIENTES   4x3 con scroll. Tocas una linea y se tacha.
+  MATERIAL PENDIENTE  4x3 con scroll. La obra activa arriba, el resto debajo.
+  A VIGILAR           4x2. Quien acumula rojos en cuatro semanas y en que
+                      criterio. Solo se mira.
+  LA SEMANA           4x2. Lunes a domingo en columnas, con las dos cifras.
+  FOTO RAPIDA         1x1. Dispara en rafaga hasta que le das a atras.
+  INCIDENCIA          1x1. Abre el paso 5 con una linea nueva.
+  OBRA ACTIVA         4x1. El nombre en grande.
+  RESUMEN             4x3. Seis cifras y ningun boton dentro: solo se mira.
+
+Blanco de dia y oscuro de noche, siguiendo al movil. Se ponen rojos enteros
+solo PARTE DE HOY y RESUMEN, cuando pasa la hora del aviso y el parte no esta
+cerrado. En FICHAR, el ambar va en el boton que toca ahora: ENTRADA mientras no
+hayas fichado, SALIDA en cuanto la entrada esta puesta.
+
+Del lado de la app: sincroWidget() manda el estado al guardar, accionWidget()
+recibe los toques y colaWidget() mete en el parte lo que se hizo con la app
+cerrada, en el parte del DIA en que se hizo, y saca un aviso con todo lo que
+ha entrado.
+
+Lo que no pueden hacer: el widget vive fuera del WebView y no puede leer el
+localStorage, asi que solo se entera de los cambios cuando la app se abre o se
+cierra, mas un repintado cada media hora.
+
+Probado en navegador con "Prueba widgets.dc.html": abre la app de verdad y la
+llama por donde la llaman los widgets. Veinte comprobaciones, todas en verde.
+Un fallo encontrado y arreglado: las fotos de la rafaga entraban en el parte
+pero la app se quedaba donde estaba; ahora abre el paso 6, que es donde se les
+pone el pie.
+
+
+TUTORIAL DE LOS WIDGETS, APARTE
+-------------------------------
+En Ajustes, al final, debajo de "Como funciona la app", hay una tarjeta nueva:
+LOS WIDGETS DEL MOVIL. No toca el tutorial de la app y no sale solo al abrir:
+solo cuando lo buscas. Seis pantallas con sus puntos y arrastre lateral.
+
+  1. La app sin abrir la app     que es un widget y los tres pasos para ponerlo.
+  2. Cual es cada uno            los once en dos grupos, para mirar y para
+                                 tocar, con su tamano en casillas.
+  3. Entrada y salida de un toque la hora exacta, el ambar que va en el boton
+                                 que toca, y que pasa con dos obras el mismo dia.
+  4. Tachar sin abrir nada       las tres listas, con el aviso de que A VIGILAR
+                                 ensena nombres en la pantalla de inicio.
+  5. Foto e incidencia           los dos iconos de una casilla.
+  6. Van un paso por detras      que solo se enteran al abrir o cerrar la app,
+                                 la cola y cuando se ponen rojos.
+
+
+sw.js: CACHE mi-parte-1.2-v7 -> mi-parte-1.2-v9.

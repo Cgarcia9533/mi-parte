@@ -1,0 +1,143 @@
+MI PARTE 1.3.4  ·  versionCode 23
+==================================
+
+  sha256      c2372446ac5d8d1eb03957867511946438fbb219b3ce3d89a686b003ed14676c
+  certificado 1cc8c054...2c57   (el de siempre: se instala encima)
+
+
+«MEMORIA DEL MOVIL LLENA»: NO ERA EL MOVIL, ERAN LAS FOTOS
+------------------------------------------------------------
+Tenias razon en sospechar: el movil tiene sitio y la app decia 29 MB de 500.
+El numero no mentia. Lo que pasa es que ese 29 MB ERA UNA SOLA FOTO.
+
+Mira tu propia captura: 1 FOTOS, 29 MB. Una foto de 200 MP sale de la camara
+en unos 20 MB, y al meterla en base64 (que es como se guarda) engorda un
+tercio: 29 MB. Con dos o tres, la app tiene que copiar de golpe 60 o 90 MB
+cada vez que guarda, y ahi es donde se cae. No es el disco del movil: es el
+pegote.
+
+LO GORDO ES POR QUE PASABA
+La app YA hacia lo correcto por el otro camino. Cuando metes una foto desde
+dentro de la app (el boton de añadir foto), el codigo la reduce a 2000 px y
+la recomprime al 82% ANTES de guardarla. Unos 0,4 MB.
+
+El atajo de la camara del widget —el mio— se saltaba ese paso y mandaba el
+JPEG tal cual. O sea: dos caminos para lo mismo y solo uno hacia el trabajo.
+Tu dijiste «con las 3 fotos he usado el mismo sistema, foto desde el widget»,
+y era justo el camino sin reducir.
+
+Ahora el widget hace lo mismo que la app: 2000 px, calidad 82. De 29 MB a
+menos de medio MB por foto. Unas setenta veces menos.
+
+Detalles que importan y que no se ven:
+  - La foto NO se decodifica entera nunca. 200 MP en memoria serian 800 MB y
+    el movil se cae antes de empezar. Se decodifica ya reducida (inSampleSize),
+    con un pico de 12 MB en el caso de 200 MP.
+  - El giro va en el EXIF del original y se pierde al recomprimir. Se aplica a
+    mano, o las fotos saldrian tumbadas.
+  - Todo eso va en un hilo aparte: si no, la camara se quedaria colgada un par
+    de segundos entre foto y foto.
+
+
+TU IDEA DE GUARDAR EL ORIGINAL PARA EL ZIP: NO ARREGLA NADA
+-------------------------------------------------------------
+Te lo digo claro porque me lo pediste y no te sirve.
+
+«Que la app me la enseñe reducida pero que en el zip vaya en calidad
+original» significa que el original de 29 MB sigue dentro de la app. Y el
+original de 29 MB es EXACTAMENTE lo que la rompe. Ensañarla reducida no ahorra
+ni un byte: lo que ocupa es lo que hay guardado, no lo que se ve.
+
+Y aunque cupiera: el PDF del dia ya baja las fotos a 1100 px por su cuenta,
+porque un parte con fotos de 200 MP pesaria cientos de MB y no habria manera
+de mandarlo por correo ni por WhatsApp. Nadie va a mirar un parte de obra al
+200%.
+
+LO QUE SI HE HECHO, QUE ES MEJOR
+El original ya no se tira. Hasta ahora FotoRapida lo guardaba en un fichero
+temporal y LO BORRABA: cada foto de 200 MP que hacias desde el widget se
+perdia en cuanto entraba reducida... no, peor: entraba entera y se perdia el
+fichero. Ahora:
+
+    disparo desde el widget
+      ├─ original de 200 MP  ->  galeria del movil, album «Mi Parte»
+      └─ copia de 2000 px    ->  el parte de la app   (~0,4 MB)
+
+Asi el original esta a salvo, se respalda con tus fotos de siempre, lo tienes
+en la galeria para mandarlo suelto si algun dia hace falta, y la app deja de
+ahogarse. En Android 10 y siguientes no hace falta ningun permiso para eso.
+
+
+LA FOTO DE 29 MB QUE YA TIENES
+--------------------------------
+Sigue ocupando 29 MB: esto arregla las que hagas a partir de ahora, no las
+guardadas. Borrala del parte y vuelve a hacerla, y recuperas los 29 MB de
+golpe. Si prefieres que te haga un boton de «encoger las fotos que ya tengo»,
+dimelo y lo meto.
+
+
+EL TECLADO QUE SALTA SOLO EN «CROQUIS Y FOTOS»
+------------------------------------------------
+Quitado. Al meter una foto ya no se salta al cuadro del pie: escribes cuando
+tu toques el cuadro, y no antes.
+
+De paso he tapado el motivo real de que te saltara AL ENTRAR en la pestaña,
+que era un fallo de los que no se ven: la app apuntaba «hay que enfocar el pie
+numero N» y solo borraba ese apunte SI encontraba el cuadro. Si no lo
+encontraba (porque no estabas en esa pantalla), el apunte se quedaba ahi
+esperando, y saltaba mucho despues, en cuanto entrabas. Ahora el apunte se
+gasta en el acto, se encuentre o no.
+
+Lo mismo pasaba con el foco de la linea de trabajo (APUNTAR TRABAJO). Ese lo
+he dejado funcionando —ahi el teclado SI lo quieres— pero ya no se puede
+quedar colgado para saltarte encima media hora despues.
+
+
+TODO LO QUE HE TOCADO DE index.html (van cinco)
+-------------------------------------------------
+Enteras en APK/mis-cambios/. Dale esta lista a Claude Design o te las pisa:
+
+  1. sincroWidget    las tareas se mandan con su estado: {txt, hecha}
+  2. colaWidget      bloque "nuevas": mete las tareas escritas en el widget
+  3. colaWidget      bloque "destareas": les quita la marca a las destachadas
+  4. ficha de obra   oFinEdge y oFinCol, y el style del boton usa esas dos
+  5. addFoto y componentDidUpdate: fuera el enfocaPie (el teclado automatico)
+
+Y sw.js: la cache pasa a 'mi-parte-1.3.4-v13'.
+
+
+COMPROBADO SOBRE EL APK FIRMADO
+---------------------------------
+  reduce · guardaEnGaleria · giroExif · procesa      en el dex
+  ExifInterface · BitmapFactory · Matrix · MediaStore en el dex
+  is_pending · relative_path · mime_type · "/Mi Parte" y la llamada a
+    ContentResolver.update que lo hace visible en la galeria
+  en el bytecode de reduce: const 2000, inSampleSize, postScale, postRotate,
+    compress con calidad 82, encodeToString
+  enfocaPie: 0 apariciones en el index.html EMPAQUETADO
+  versionCode 23 · ELEGIR OBRA sigue en el layout · 60 clases, sin un aviso
+  apksigner verify pasa, mismo certificado
+
+Y la cuenta de la reduccion, simulada con los mismos numeros del codigo:
+
+  foto 200 MP 16320x12240 -> decodifica 2040x1530 (12 MB) -> guarda 2000x1500
+  foto 108 MP 12000x9000  -> decodifica 3000x2250 (26 MB) -> guarda 2000x1500
+  foto  12 MP  4000x3000  -> decodifica 2000x1500 (11 MB) -> guarda 2000x1500
+
+Nunca monta el bitmap entero. Ese era el otro sitio donde se podia caer.
+
+
+PARA PROBARLO
+---------------
+FOTOS     Haz cuatro o cinco fotos seguidas desde el widget, a 200 MP. Deben
+          entrar todas sin el mensaje rojo. En Ajustes, cada foto tiene que
+          subir el contador medio MB, no 29.
+          Y mira la galeria: album «Mi Parte» con los originales enteros.
+
+GIRO      Haz una en vertical y otra en horizontal. Tienen que salir derechas
+          en el parte. Si alguna sale tumbada, dimelo: es el EXIF.
+
+TECLADO   Entra en «Croquis y fotos». No debe salir el teclado. Solo cuando
+          toques el cuadro del pie.
+
+Copia de seguridad antes de instalar.
