@@ -2242,6 +2242,12 @@ a{color:var(--amber)}a:hover{color:var(--ink)}
 @keyframes pasoIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes velo{from{opacity:0}to{opacity:1}}
 @keyframes sube{from{transform:translateY(102%)}to{transform:none}}
+@keyframes mesDer0{from{opacity:.15;transform:translateX(34px)}to{opacity:1;transform:none}}
+@keyframes mesDer1{from{opacity:.15;transform:translateX(34px)}to{opacity:1;transform:none}}
+@keyframes mesIzq0{from{opacity:.15;transform:translateX(-34px)}to{opacity:1;transform:none}}
+@keyframes mesIzq1{from{opacity:.15;transform:translateX(-34px)}to{opacity:1;transform:none}}
+@keyframes diaIn0{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes diaIn1{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important}}
 a{color:var(--amber);text-decoration:none}
 a:hover{color:var(--ink)}
@@ -2383,6 +2389,30 @@ a:hover{color:var(--ink)}
 </sc-if>
 </div>
 
+<div data-tarjeta="agenda" style="order:{{ cAgenda.o }};display:{{ cAgenda.disp }};grid-row:{{ cAgenda.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
+<div sc-camel-on-click="{{ irAgenda }}" style="pointer-events:{{ cAgenda.pe }};display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Agenda · {{ agCardMes }}</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ agCardSub }}</span>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)">Abrir ›</span>
+</span>
+</div>
+<div style="padding:11px 12px 12px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+<sc-for list="{{ agDows }}" as="d" hint-placeholder-count="7">
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{{ d.col }};padding-bottom:2px">{{ d.l }}</span>
+</sc-for>
+<sc-for list="{{ agMini }}" as="c" hint-placeholder-count="42">
+<span sc-camel-on-click="{{ c.ir }}" style="display:flex;align-items:center;justify-content:center;height:22px;border-radius:6px;border:1px solid {{ c.edge }};background:{{ c.fondo }};opacity:{{ c.op }};cursor:pointer;transition:background .2s ease">
+<span style="font:{{ c.peso }} 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:{{ c.ink }};font-variant-numeric:tabular-nums;line-height:1">{{ c.num }}</span>
+</span>
+</sc-for>
+</div>
+<div sc-camel-on-click="{{ irAgenda }}" style="display:flex;align-items:center;gap:9px;padding:11px 14px;border-top:1px solid var(--line);cursor:pointer">
+<span style="width:3px;height:22px;border-radius:2px;background:{{ agProxCol }};flex:none"></span>
+<span style="font:400 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ agProx }}</span>
+</div>
+</div>
+
 <div data-tarjeta="tareas" style="order:{{ cTareas.o }};display:{{ cTareas.disp }};grid-row:{{ cTareas.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Pendientes</span>
@@ -2477,9 +2507,9 @@ a:hover{color:var(--ink)}
 
 <div style="padding:14px;min-width:0;display:flex;flex-direction:column;gap:14px">
 
-<div style="gap:6px;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;display:{{ dispChips }}">
+<div data-cinta="pasos" style="gap:6px;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;display:{{ dispChips }}">
 <sc-for list="{{ pasos }}" as="p" hint-placeholder-count="6">
-<div sc-camel-on-click="{{ p.ir }}" style="flex:none;padding:9px 12px;border:1px solid {{ p.chipEdge }};border-radius:999px;background:{{ p.chipBg }};color:{{ p.chipInk }};transition:background .18s ease,color .18s ease,border-color .18s ease;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">{{ p.n }} · {{ p.lab }}</div>
+<div sc-camel-on-click="{{ p.ir }}" data-chip="{{ p.n }}" style="flex:none;padding:9px 12px;border:1px solid {{ p.chipEdge }};border-radius:999px;background:{{ p.chipBg }};color:{{ p.chipInk }};transition:background .18s ease,color .18s ease,border-color .18s ease;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">{{ p.n }} · {{ p.lab }}</div>
 </sc-for>
 </div>
 
@@ -2922,6 +2952,17 @@ a:hover{color:var(--ink)}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:5px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Color en la agenda</span>
+<input type="color" value="{{ oColor }}" sc-camel-on-change="{{ setOColor }}" style="width:100%;height:46px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);padding:5px;cursor:pointer">
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Fin de plazo</span>
+<input type="date" value="{{ oPlazo }}" sc-camel-on-change="{{ setOPlazo }}" style="width:100%;height:46px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 12px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:0 10px">
+</div>
+</div>
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:{{ oPlazoCol }};margin-top:-4px">{{ oPlazoTxt }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Ubicación</span>
 <div style="display:flex;gap:8px">
 <input value="{{ oUbic }}" sc-camel-on-change="{{ setOUbic }}" placeholder="Dirección o enlace de Google Maps" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
@@ -3269,6 +3310,86 @@ Cargar una copia
 </div>
 </sc-if>
 
+<sc-if value="{{ vAgenda }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;flex:1;min-height:0;animation:vistaIn .24s ease-out both">
+
+<div style="display:grid;grid-template-columns:1fr 74px 1fr;align-items:center;gap:8px;padding:12px 14px 9px">
+<span sc-camel-on-click="{{ irMesPrev }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer">‹ {{ agMesPrev }}</span>
+<span sc-camel-on-click="{{ irHoyAgenda }}" style="visibility:{{ dispIrHoy }};text-align:center;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber);border-radius:999px;padding:7px 0;cursor:pointer;transition:background .18s ease,color .18s ease" style-hover="background:var(--amber);color:#23231f">Hoy</span>
+<span sc-camel-on-click="{{ irMesSig }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer">{{ agMesSig }} ›</span>
+</div>
+
+<div style="display:{{ agVencDisp }};align-items:center;gap:10px;margin:0 14px 10px;border:1px solid var(--red);border-radius:12px;padding:11px 13px">
+<span style="width:9px;height:9px;border-radius:50%;background:var(--red);flex:none"></span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);flex:1">{{ agVencTxt }}</span>
+<span sc-camel-on-click="{{ togVenc }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">{{ agVencLab }}</span>
+</div>
+
+<div sc-camel-on-touch-start="{{ agIni }}" sc-camel-on-touch-move="{{ agMov }}" sc-camel-on-touch-end="{{ agFin }}" sc-camel-on-touch-cancel="{{ agFin }}" style="padding:0 10px 12px;touch-action:pan-y">
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;transform:{{ agTx }}">
+<sc-for list="{{ agDows }}" as="d" hint-placeholder-count="7">
+<span style="text-align:center;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ d.col }};padding-bottom:3px">{{ d.l }}</span>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;transform:{{ agTx }};animation:{{ agMesAnim }}">
+<sc-for list="{{ agCeldas }}" as="c" hint-placeholder-count="42">
+<div sc-camel-on-click="{{ c.ir }}" sc-camel-on-double-click="{{ c.abrir }}" style="position:relative;overflow:hidden;box-sizing:border-box;min-height:52px;border:1.5px solid {{ c.edge }};background:{{ c.fondo }};border-radius:10px;display:flex;align-items:flex-start;justify-content:center;padding:7px 2px;opacity:{{ c.op }};cursor:pointer;transition:background .2s ease,border-color .2s ease" style-active="transform:scale(.94)">
+<span style="font:{{ c.peso }} 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:{{ c.ink }};font-variant-numeric:tabular-nums">{{ c.num }}</span>
+<div style="display:{{ c.dispExtras }};position:absolute;left:7px;right:7px;bottom:5px;height:4px;border-radius:2px;overflow:hidden;gap:2px">
+<sc-for list="{{ c.extras }}" as="e" hint-placeholder-count="0">
+<div style="flex:1;background:{{ e.col }}"></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--card);border-top:1px solid var(--line);animation:{{ agDiaAnim }}">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ agDiaTxt }}</span>
+<span style="background:{{ agDiaChipBg }};color:{{ agDiaChipInk }};font:700 8px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:5px 9px;flex:none">{{ agDiaChip }}</span>
+</div>
+
+<sc-if value="{{ agVencOn }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ agVencLista }}" as="v" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line)">
+<span sc-camel-on-click="{{ v.hacer }}" style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--red);flex:none;cursor:pointer"></span>
+<div sc-camel-on-click="{{ v.ir }}" style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;cursor:pointer">
+<span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">{{ v.txt }}</span>
+<span style="font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--red)">{{ v.fecha }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ agDiaOn }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ agItems }}" as="it" hint-placeholder-count="2">
+<div sc-camel-on-click="{{ it.ir }}" style="display:flex;align-items:stretch;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer">
+<span style="width:3px;border-radius:2px;background:{{ it.col }};flex:none"></span>
+<span style="width:72px;flex:none;font:600 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:{{ it.horaCol }};padding-top:3px;line-height:1.4">{{ it.hora }}</span>
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);text-decoration:{{ it.deco }}">{{ it.tit }}</span>
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.sub }}</span>
+</div>
+<span style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none;align-self:center">{{ it.flecha }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ agVacio }}" hint-placeholder-val="{{ true }}">
+<div style="padding:18px 14px;font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Este día está limpio. Lo que apuntes aquí se puede mandar al calendario del móvil.</div>
+</sc-if>
+</div>
+</sc-if>
+
+<div sc-camel-on-click="{{ addCita }}" style="margin:12px 14px calc(14px + env(safe-area-inset-bottom));padding:15px;text-align:center;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#23231f;cursor:pointer">Apuntar cita este día</div>
+</div>
+
+</div>
+</sc-if>
+
 <div style="margin-top:auto;position:sticky;bottom:0;z-index:6;display:flex;flex-direction:column">
 <sc-if value="{{ vAsistente }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;gap:8px;padding:10px;background:var(--paper);border-top:1px solid var(--line)">
@@ -3285,6 +3406,134 @@ Cargar una copia
 </sc-for>
 </div>
 </div>
+
+<sc-if value="{{ vCita }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:44;background:var(--paper);display:flex;flex-direction:column;animation:sube .26s cubic-bezier(.2,.85,.25,1) both">
+<div style="background:var(--band);color:var(--bandink);padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:12px;flex:none">
+<div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">{{ citaCab }}</span>
+<span style="font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--banddim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ citaResumen }}</span>
+</div>
+<span sc-camel-on-click="{{ cerrarCita }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;border:1px solid #55534a;border-radius:999px;padding:9px 14px;flex:none;cursor:pointer">Cerrar</span>
+</div>
+
+<div style="flex:1;min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px">
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:center;gap:11px">
+<input value="{{ citaTit }}" sc-camel-on-change="{{ setCitaTit }}" placeholder="{{ citaPh }}" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<div title="Color de la casilla" style="position:relative;width:46px;height:46px;flex:none;border-radius:999px;display:flex;align-items:center;justify-content:center;opacity:{{ citaColorOp }};background:conic-gradient(#d0472a,#d08a2a,#c8b32e,#3f7f5f,#2f8f8a,#4a6fa5,#7a5aa8,#b03a6a,#d0472a);transition:opacity .2s ease" style-active="transform:scale(.93)">
+<div style="width:32px;height:32px;border-radius:999px;background:{{ citaColor }};border:2.5px solid var(--card)"></div>
+<input type="color" value="{{ citaColor }}" sc-camel-on-change="{{ setCitaColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:none;padding:0;margin:0;background:transparent;cursor:pointer">
+</div>
+</div>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Qué es</span>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ citaTipos }}" as="t" hint-placeholder-count="7">
+<span sc-camel-on-click="{{ t.set }}" style="border:1px solid {{ t.edge }};background:{{ t.bg }};color:{{ t.ink }};border-radius:999px;padding:9px 12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.06em;cursor:pointer">{{ t.lab }}</span>
+</sc-for>
+</div>
+<div style="display:{{ dispOps }};flex-direction:column;gap:7px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Quién falta</span>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ citaOps }}" as="o" hint-placeholder-count="3">
+<span sc-camel-on-click="{{ o.set }}" style="border:1px solid {{ o.edge }};background:{{ o.bg }};color:{{ o.ink }};border-radius:999px;padding:9px 12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer">{{ o.lab }}</span>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Cuándo</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)">Del día</span>
+<input type="date" value="{{ citaDia }}" sc-camel-on-change="{{ setCitaDia }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="display:flex;align-items:center;gap:8px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)">Al día
+<span sc-camel-on-click="{{ quitaDiaFin }}" style="display:{{ dispQuitaFin }};font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;color:var(--amber);cursor:pointer">quitar</span>
+</span>
+<input type="date" value="{{ citaDiaFin }}" sc-camel-on-change="{{ setCitaDiaFin }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+</div>
+</div>
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);margin-top:-3px">{{ citaRangoTxt }}</span>
+<div sc-camel-on-click="{{ togCitaTodo }}" style="display:flex;align-items:center;gap:11px;cursor:pointer">
+<span style="width:22px;height:22px;border-radius:6px;border:1.5px solid {{ citaTodoEdge }};background:{{ citaTodoBg }};color:#23231f;display:flex;align-items:center;justify-content:center;font:700 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none">{{ citaTodoMark }}</span>
+<span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">Todo el día, sin hora</span>
+</div>
+<div style="display:{{ dispHoras }};grid-template-columns:1fr 1fr;gap:10px">
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Desde</span>
+<input type="time" value="{{ citaIni }}" sc-camel-on-change="{{ setCitaIni }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:12px">
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Hasta</span>
+<input type="time" value="{{ citaFin }}" sc-camel-on-change="{{ setCitaFin }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:12px">
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:11px">
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Se repite cada semana</span>
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ citaRepTxt }}</span>
+</div>
+<input type="number" min="1" max="52" value="{{ citaRep }}" sc-camel-on-change="{{ setCitaRep }}" style="width:82px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:12px;text-align:center">
+</div>
+</div>
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">De qué obra</span>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ citaObras }}" as="o" hint-placeholder-count="2">
+<span sc-camel-on-click="{{ o.set }}" style="display:flex;align-items:center;gap:7px;border:1px solid {{ o.edge }};background:{{ o.bg }};color:{{ o.ink }};border-radius:999px;padding:9px 12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer">
+<span style="width:8px;height:8px;border-radius:50%;background:{{ o.punto }};flex:none"></span>{{ o.lab }}</span>
+</sc-for>
+</div>
+
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Dónde</span>
+<div style="display:flex;gap:8px">
+<input value="{{ citaLugar }}" sc-camel-on-change="{{ setCitaLugar }}" placeholder="Sitio, si no es la obra" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<span sc-camel-on-click="{{ quitaLugar }}" style="display:{{ dispQuitaLugar }};align-items:center;justify-content:center;width:44px;border:1px solid var(--line);border-radius:12px;font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none;cursor:pointer">✕</span>
+<span sc-camel-on-click="{{ ponLugarObra }}" style="display:{{ dispLugarObra }};align-items:center;padding:0 14px;border:1px solid var(--amber);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);flex:none;cursor:pointer">La obra</span>
+</div>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Con quién</span>
+<div style="display:flex;gap:8px">
+<input value="{{ citaQuien }}" sc-camel-on-change="{{ setCitaQuien }}" placeholder="Nombre" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<span sc-camel-on-click="{{ quitaQuien }}" style="display:{{ dispQuitaQuien }};align-items:center;justify-content:center;width:44px;border:1px solid var(--line);border-radius:12px;font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none;cursor:pointer">✕</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ citaContactos }}" as="c" hint-placeholder-count="0">
+<span sc-camel-on-click="{{ c.set }}" style="display:flex;align-items:center;gap:7px;border:1px solid {{ c.edge }};background:{{ c.bg }};color:{{ c.ink }};border-radius:999px;padding:8px 11px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer">{{ c.lab }}<span style="font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">{{ c.mark }}</span></span>
+</sc-for>
+</div>
+<span style="display:{{ dispTelCita }};font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">Teléfono en el aviso: {{ citaTel }}</span>
+</div>
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Avisarme</span>
+<div style="display:flex;flex-wrap:wrap;gap:7px">
+<sc-for list="{{ citaAvisos }}" as="a" hint-placeholder-count="5">
+<span sc-camel-on-click="{{ a.set }}" style="border:1px solid {{ a.edge }};background:{{ a.bg }};color:{{ a.ink }};border-radius:999px;padding:9px 12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer">{{ a.lab }}</span>
+</sc-for>
+</div>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Nota</span>
+<textarea value="{{ citaNota }}" sc-camel-on-change="{{ setCitaNota }}" rows="3" placeholder="Lo que haga falta recordar" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px;resize:vertical"></textarea>
+</div>
+
+<div sc-camel-on-click="{{ exportarCita }}" style="display:flex;align-items:center;gap:11px;padding:15px 14px;border:1px solid var(--amber);border-radius:14px;cursor:pointer">
+<span style="font:700 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);flex:1;min-width:0">Exportar a otro calendario</span>
+<span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--amber);flex:none">›</span>
+</div>
+
+<div sc-camel-on-click="{{ borrarCita }}" style="display:{{ dispBorrarCita }};padding:14px;text-align:center;border:1px solid var(--line);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Borrar la cita</div>
+</div>
+
+<div style="flex:none;display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)">
+<div sc-camel-on-click="{{ cerrarCita }}" style="width:96px;text-align:center;padding:16px 0;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Dejarlo</div>
+<div sc-camel-on-click="{{ guardarCita }}" style="flex:1;text-align:center;padding:16px;background:var(--amber);border-radius:12px;color:#23231f;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Guardar</div>
+</div>
+</div>
+</sc-if>
 
 <sc-if value="{{ vHoja }}" hint-placeholder-val="{{ false }}">
 <div sc-camel-on-click="{{ cerrarHoja }}" style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
@@ -3368,7 +3617,7 @@ Cargar una copia
 <div style="flex:0 0 100%;width:100%;height:100%;box-sizing:border-box;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:13px;opacity:{{ t1.op }};transform:translateY({{ t1.ty }});transition:opacity .3s ease .1s,transform .4s cubic-bezier(.3,.9,.25,1) .1s">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Qué es esto</span>
 <span style="font:600 23px/1.15 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)">Parte diario de montaje</span>
-<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Rellenas el parte a pie de obra y al cerrarlo sale el PDF. Todo se guarda en este teléfono: funciona igual dentro de una nave sin cobertura. Diez pantallas y sabes usarla.</span>
+<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Rellenas el parte a pie de obra y al cerrarlo sale el PDF. Todo se guarda en este teléfono: funciona igual dentro de una nave sin cobertura. Once pantallas y sabes usarla.</span>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;flex:none">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Lo que conviene saber</div>
 <div style="display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid var(--line)">
@@ -3635,6 +3884,52 @@ Cargar una copia
 </div>
 </div>
 <div style="flex:0 0 100%;width:100%;height:100%;box-sizing:border-box;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:13px;opacity:{{ t11.op }};transform:translateY({{ t11.ty }});transition:opacity .3s ease .1s,transform .4s cubic-bezier(.3,.9,.25,1) .1s">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Agenda</span>
+<span style="font:600 23px/1.15 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)">El mes, y lo que viene</span>
+<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Desde la tarjeta «Agenda» del inicio se abre el calendario. Cada casilla se pinta del color de lo que hay ese día: el de la obra si es de una obra, y si no, el que le pongas tú. Deslizas de lado para cambiar de mes.</span>
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;flex:none">
+<div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);display:flex;justify-content:space-between">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Agosto</span>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)">Hoy</span>
+</div>
+<div style="padding:11px 12px 13px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--dim)">L</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--dim)">M</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--dim)">X</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--dim)">J</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--dim)">V</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--amber)">S</span>
+<span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;color:var(--amber)">D</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">17</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">18</span>
+<span style="height:34px;border-radius:9px;background:#d08a2a80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">19</span>
+<span style="height:34px;border-radius:9px;background:#d08a2a80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">20</span>
+<span style="height:34px;border-radius:9px;background:#b8402e80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">21</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">22</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">23</span>
+<span style="height:34px;border-radius:9px;border:1.5px solid var(--amber);background:#d08a2acc;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">24</span>
+<span style="height:34px;border-radius:9px;background:#2f8f8a80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">25</span>
+<span style="height:34px;border-radius:9px;background:#2f8f8a80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">26</span>
+<span style="height:34px;border-radius:9px;background:#2f8f8a80;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">27</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">28</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">29</span>
+<span style="height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">30</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--line)">
+<span style="width:3px;height:26px;border-radius:2px;background:#2f8f8a;flex:none"></span>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+<span style="font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)">Vacaciones · K. Ordóñez</span>
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">25 al 27 de agosto · tres días, una sola cita</span>
+</div>
+</div>
+</div>
+<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Tocando un día ves lo que hay: el parte con su horario, las citas, los plazos y quién ha llevado un rojo. Doble toque abre lo que haya, y si el día está vacío, apunta una cita nueva. En la cita eliges obra, horas o todo el día, con quién, cada cuánto se repite y cuándo quieres que te avise.</span>
+<div style="border:1px solid var(--amber);border-radius:16px;padding:13px 14px;display:flex;flex-direction:column;gap:4px;flex:none">
+<span style="font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)">Exportar a otro calendario</span>
+<span style="font:400 11.5px/1.55 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Cada cita se manda al calendario del móvil por la hoja de compartir: Samsung, Google, Outlook o PlanPop. Va con la obra, la dirección, el teléfono del contacto y el recordatorio dentro.</span>
+</div>
+</div>
+<div style="flex:0 0 100%;width:100%;height:100%;box-sizing:border-box;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:13px;opacity:{{ t12.op }};transform:translateY({{ t12.ty }});transition:opacity .3s ease .1s,transform .4s cubic-bezier(.3,.9,.25,1) .1s">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Novedades</span>
 <span style="font:600 23px/1.15 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)">Lo que ha cambiado</span>
 <span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Se ha actualizado la app. Esto es lo nuevo desde la última vez que la abriste.</span>
@@ -3682,7 +3977,7 @@ Cargar una copia
 <div style="flex:0 0 100%;width:100%;height:100%;box-sizing:border-box;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:13px;opacity:{{ w1.op }};transform:translateY({{ w1.ty }});transition:opacity .3s ease .1s,transform .4s cubic-bezier(.3,.9,.25,1) .1s">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Qué son</span>
 <span style="font:600 23px/1.15 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)">La app sin abrir la app</span>
-<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Un widget es un recuadro de la app que vive en la pantalla de inicio del móvil. Se mira de un vistazo, con guantes y sin desbloquear nada más. Hay once y pones los que te sirvan.</span>
+<span style="font:400 12px/1.65 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Un widget es un recuadro de la app que vive en la pantalla de inicio del móvil. Se mira de un vistazo, con guantes y sin desbloquear nada más. Hay doce y pones los que te sirvan.</span>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;flex:none">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Cómo se pone uno</div>
 <div style="display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid var(--line)">
@@ -3844,7 +4139,7 @@ Cargar una copia
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:412,&quot;height&quot;:915}}">
 const KEY = 'miparte:v1';
 const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-const VER = '1.2';
+const VER = '1.5';
 const svgIco = d => React.createElement('svg', {
   viewBox: '0 0 24 24', width: 23, height: 23, fill: 'none', stroke: 'currentColor',
   strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round',
@@ -3857,9 +4152,10 @@ const ICO_TAB = {
   ajustes: svgIco('<path d="M9.99 5.82L10.58 3.06L13.42 3.06L14.01 5.82A6.5 6.5 0 0 1 14.95 6.21L17.32 4.68L19.32 6.68L17.79 9.05A6.5 6.5 0 0 1 18.18 9.99L20.94 10.58L20.94 13.42L18.18 14.01A6.5 6.5 0 0 1 17.79 14.95L19.32 17.32L17.32 19.32L14.95 17.79A6.5 6.5 0 0 1 14.01 18.18L13.42 20.94L10.58 20.94L9.99 18.18A6.5 6.5 0 0 1 9.05 17.79L6.68 19.32L4.68 17.32L6.21 14.95A6.5 6.5 0 0 1 5.82 14.01L3.06 13.42L3.06 10.58L5.82 9.99A6.5 6.5 0 0 1 6.21 9.05L4.68 6.68L6.68 4.68L9.05 6.21Z"></path><circle cx="12" cy="12" r="2.75"></circle>')
 };
 const VISTO = 'miparte:tutorial:1.0';
-const TUT_N = 10; // pantallas del recorrido; la 11ª es la de novedades
+const TUT_N = 11; // pantallas del recorrido; la 12ª es la de novedades
 const TUTW_N = 6; // el tutorial de los widgets, aparte del de la app
 const TUTW_MIRAR = [
+  ['Próxima cita', 'Lo primero que tienes por delante en la agenda: cuándo es, de qué va, la obra y el sitio, con la raya del color de la obra. Al tocarlo se abre la agenda en ese día. Si no hay nada apuntado, sale el botón de apuntar una cita.', '4x2'],
   ['Parte de hoy', 'Obra, fecha y tareas que quedan, con el botón de cámara al lado. En 4x2 lleva además dos botones.', '4x2 / 4x1'],
   ['Resumen', 'El día y la semana en seis cifras: pasos del parte, operarios, horario, horas, tareas y material. Ningún botón dentro.', '4x3'],
   ['La semana', 'Lunes a domingo en columnas. La jornada en grande y las horas de toda la cuadrilla debajo.', '4x2'],
@@ -3874,6 +4170,12 @@ const TUTW_TOCAR = [
   ['Incidencia', 'Abre el paso 5 con una línea nueva.', '1x1']
 ];
 const NOVEDADES = [
+  'AGENDA. Tarjeta nueva en el inicio, entre «Semana en curso» y «Pendientes»: la rejilla del mes con los días ocupados. Se abre el calendario entero tocándola.',
+  'Cada casilla se pinta del color de lo que hay ese día. El color lo manda la obra y se elige en su ficha; una cita sin obra lleva el que le pongas tú, con la rueda de color de al lado del título.',
+  'Doble toque en un día: abre lo que haya, te deja elegir si hay varias cosas, y si está vacío apunta una cita nueva.',
+  'Las citas van del día que digas al día que digas: unas vacaciones de dos semanas son UNA cita. Se repiten cada semana las veces que quieras y avisan con la notificación de la app.',
+  'Cada cita se exporta al calendario del móvil (Samsung, Google, Outlook, PlanPop) con la obra, la dirección, el teléfono del contacto y el recordatorio dentro.',
+  'La ficha de la obra tiene color y fin de plazo. El plazo sale en el calendario con los días que quedan.',
   'Un día puede llevar dos obras. Cada una tiene su propio parte, con su horario, su cuadrilla y su PDF. Se añade al final del paso 1, debajo del horario.',
   'La tarjeta «Partes anteriores» del inicio lleva buscador: escribes dos letras y busca en todos los partes guardados — trabajos, zonas, material, incidencias, pies de foto, croquis, notas y obras.',
   'El botón «Copiar ayer» ahora se llama «Copiar último», que es lo que siempre hizo: trae el último parte de esa obra, sea de cuándo sea. El lunes te trae el viernes.',
@@ -3893,7 +4195,7 @@ const TUT_PASOS = [
   ['Incidencias y EPIs', '«La grúa llegó 2 h tarde» o «Sin luz toda la mañana». Aquí apuntas también los EPIs que has repartido.'],
   ['Croquis y fotos', 'El croquis viene plegado: lo abres con «Dibujar» y dibujas a mano con el dedo. Debajo, las fotos del día con su pie. Todo se pega al final del PDF.']
 ];
-const TUT_TARJ = [['parte', 'Parte diario'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
+const TUT_TARJ = [['parte', 'Parte diario'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['agenda', 'Agenda'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
 const TUT_TAREAS = ['Pedir la grúa para el jueves', 'Llamar al jefe de obra', 'Reponer guantes anticorte'];
 function tFila(o) {
   return Object.assign({
@@ -3907,7 +4209,7 @@ function matRec(m) { return m.rec !== undefined ? !!m.rec : m.estado !== 'pend';
 function matCol(m) { return m.col !== undefined ? !!m.col : m.estado !== 'pend'; }
 function matFalta(m) { return !matRec(m) ? 'PENDIENTE DE RECIBIR' : (!matCol(m) ? 'SIN COLOCAR' : ''); }
 function obraVacia(nom) {
-  return { id: 'ob' + Date.now().toString(36) + Math.floor(Math.random() * 900 + 100), nombre: nom || '', cliente: '', pedido: '', ubicacion: '', contactos: [], notas: '', fin: '' };
+  return { id: 'ob' + Date.now().toString(36) + Math.floor(Math.random() * 900 + 100), nombre: nom || '', cliente: '', pedido: '', ubicacion: '', contactos: [], notas: '', fin: '', plazo: '', color: COLORES_OBRA[Math.floor(Math.random() * COLORES_OBRA.length)] };
 }
 function migraEpisHerr(datos) {
   const db = datos.db;
@@ -3987,7 +4289,7 @@ async function idbGuarda(v) {
     tx.onabort = () => ko(tx.error);
   });
 }
-const TARJETAS = [['parte', 'Parte diario'], ['semaforo', 'Valoración del equipo'], ['avisos', 'Avisos de valoración'], ['semana', 'Semana en curso'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
+const TARJETAS = [['parte', 'Parte diario'], ['semaforo', 'Valoración del equipo'], ['avisos', 'Avisos de valoración'], ['semana', 'Semana en curso'], ['agenda', 'Agenda'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
 const RAPIDOS = ['Buen trabajo', 'Baja / ausente', 'Mal con la máquina'];
 function mapsUrl(v) {
   const t = String(v || '').trim();
@@ -4003,6 +4305,78 @@ const ROTULO_TIPO = { epi: 'EPIs', herramienta: 'Herramientas' };
 const TIPOS_INC = ['Grúa / descarga', 'Material', 'Plano / cambio', 'Personal', 'Meteo', 'Otro oficio', 'Avería', 'Seguridad'];
 const CATS = ['Encargado', 'Oficial 1ª montador', 'Oficial 2ª montador', 'Ayudante', 'Peón', 'Gruista / carretillero'];
 const PASOS = ['Obra y horario', 'Operarios', 'Trabajos', 'Material', 'Incidencias y EPIs', 'Croquis y fotos'];
+// ---------- agenda ----------
+// [clave, nombre largo, nombre corto (el que va delante en el .ics)]
+const TIPOS_CITA = [
+  ['visita', 'Visita del jefe de obra', 'Visita'],
+  ['prl', 'Inspección / PRL', 'PRL'],
+  ['reunion', 'Reunión', 'Reunión'],
+  ['medica', 'Revisión médica', 'Médica'],
+  ['plazo', 'Fin de plazo', 'Plazo'],
+  ['vacaciones', 'Vacaciones', 'Vacaciones'],
+  ['ausencia', 'Ausencia de operario', 'Ausencia'],
+  ['otro', 'Otro', 'Otro']
+];
+function tipoCita(k) { return TIPOS_CITA.find(t => t[0] === k) || TIPOS_CITA[TIPOS_CITA.length - 1]; }
+// La rejilla pinta la casilla entera con transparencia, así que aquí van
+// colores de verdad y no variables de CSS.
+const COL_TIPO = { visita: '#d08a2a', prl: '#b8402e', reunion: '#4a6fa5', medica: '#3f7f5f', plazo: '#d08a2a', vacaciones: '#2f8f8a', ausencia: '#8a8880', otro: '#8a8880' };
+const COL_FIJO = { ambar: '#d08a2a', rojo: '#b8402e', verde: '#3f7f5f', gris: '#8a8880' };
+/** Un color con transparencia, para el fondo de la casilla del día. */
+function tinta(col, a) {
+  const h = String(col || '').trim();
+  if (h.charAt(0) !== '#') return h;
+  const s = h.length === 4 ? '#' + h[1] + h[1] + h[2] + h[2] + h[3] + h[3] : h.slice(0, 7);
+  return s + a;
+}
+
+const AVISOS_CITA = [['', 'Sin aviso'], ['ini', 'Al empezar'], ['1h', '1 hora antes'], ['vispera', 'El día antes, a las 19:00'], ['semana', 'Una semana antes']];
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const DIASEM = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+const DIASEM_L = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+// colores de arranque de las obras; en la ficha se cambia por el que quieras
+const COLORES_OBRA = ['#d08a2a', '#3f7f6a', '#a4523c', '#4a6fa5', '#7a6aa8', '#8a8f3a'];
+function sumaDias(k, n) { const d = new Date(soloDia(k) + 'T12:00:00'); d.setDate(d.getDate() + n); return hoyKey(d); }
+function diasEntre(a, b) { return Math.round((new Date(soloDia(b) + 'T12:00:00') - new Date(soloDia(a) + 'T12:00:00')) / 86400000); }
+function dowLun(k) { return (new Date(soloDia(k) + 'T12:00:00').getDay() + 6) % 7; }
+function nomMes(m) { const p = String(m).split('-'); return MESES[Number(p[1]) - 1] + ' ' + p[0]; }
+function minsDe(h) { const p = String(h || '').split(':'); return p.length < 2 ? -1 : Number(p[0]) * 60 + Number(p[1]); }
+function masMin(h, n) { let m = minsDe(h); if (m < 0) m = 540; m = (m + n + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+function citaVacia(dia, obraId) {
+  return {
+    id: 'ci' + Date.now().toString(36) + Math.floor(Math.random() * 900 + 100),
+    dia: dia || hoyKey(), diaFin: '', tipo: 'visita', tit: '', obraId: obraId || '',
+    todoDia: false, ini: '09:00', fin: '10:00', dur: 1, rep: 1, color: '',
+    lugar: '', quien: '', tel: '', opId: '', avisa: 'vispera', nota: ''
+  };
+}
+/** Cuántos días seguidos ocupa una cita. */
+function durCita(c) {
+  if (c.diaFin && c.diaFin > c.dia) return diasEntre(c.dia, c.diaFin) + 1;
+  return Math.max(1, Number(c.dur) || 1);
+}
+function migraAgenda(datos) {
+  if (!datos || !datos.db) return datos;
+  const db = datos.db;
+  if (!Array.isArray(db.citas)) db.citas = [];
+  (db.obras || []).forEach((o, i) => {
+    if (typeof o.color !== 'string' || !o.color) o.color = COLORES_OBRA[i % COLORES_OBRA.length];
+    if (typeof o.plazo !== 'string') o.plazo = '';
+  });
+  (db.tareas || []).forEach(t => { if (typeof t.dia !== 'string') t.dia = ''; });
+  (db.citas || []).forEach(c => {
+    if (typeof c.color !== 'string') c.color = '';
+    if (typeof c.diaFin !== 'string') c.diaFin = (Number(c.dur) || 1) > 1 ? sumaDias(c.dia, (Number(c.dur) || 1) - 1) : '';
+  });
+  if (!db.inicio) db.inicio = { orden: TARJETAS.map(t => t[0]), pleg: {} };
+  const or = db.inicio.orden;
+  // la tarjeta nueva se cuela detrás de «Semana en curso», no al final del todo
+  if (Array.isArray(or) && or.indexOf('agenda') < 0) {
+    const i = or.indexOf('semana');
+    or.splice(i >= 0 ? i + 1 : or.length, 0, 'agenda');
+  }
+  return datos;
+}
 const OPS = [
   ['Andrés Villalba Moro', 'Oficial 1ª montador', 'Montajes Cubierta Norte SL', '612 445 908', 'Encargado de línea de vida'],
   ['Rubén Casanova Gil', 'Oficial 1ª montador', 'Montajes Cubierta Norte SL', '645 210 337', 'Carné de plataforma elevadora'],
@@ -4073,6 +4447,43 @@ function horasEntre(a, b) {
   return m / 60;
 }
 const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+// La jornada normal. Lo que pase de aqui son horas extra: si la cuadrilla
+// trabaja de 8 a 17, son 8 normales y 1 extra, no 9 normales.
+// De que pantalla cuelga cada pantalla. El boton ATRAS de Android sube un
+// escalon por aqui en vez de cerrar la app. Si has llegado a una ficha desde
+// otro sitio, se usa ese sitio (this.desde) y esto es solo el respaldo.
+const PADRE = {
+  asistente: 'inicio',
+  agenda: 'inicio',
+  semana: 'inicio',
+  obras: 'inicio',
+  obra: 'obras',
+  operarios: 'inicio',
+  ficha: 'operarios',
+  materiales: 'inicio',
+  ajustes: 'inicio'
+};
+const JORNADA = 8;
+const ordinarias = hd => Math.min(hd || 0, JORNADA);
+const extraDelDia = p => {
+  const e = horasEntre(p.entrada, p.salida) - JORNADA;
+  return e > 0.004 ? Math.round(e * 100) / 100 : 0;
+};
+// Lo que cuenta un operario ese dia: las normales de la cuadrilla mas SUS
+// horas extra. La extra ya no se suma encima de la jornada entera.
+const horasOp = (hd, o) => ordinarias(hd) + num((o || {}).extra);
+// Rellena las horas extra de los que no se hayan tocado a mano. Si tu escribes
+// en la casilla, esa se queda como la dejes y ya no se vuelve a tocar.
+function ponExtras(p) {
+  if (!p || !p.entrada || !p.salida) return;
+  const e = extraDelDia(p);
+  const txt = e ? String(e).replace('.', ',') : '';
+  (p.ops || []).forEach(o => {
+    if (o.extraAuto === false) return;
+    o.extra = txt;
+    o.extraAuto = true;
+  });
+}
 const fmtH = n => { const t = Math.round((n || 0) * 60), s = t < 0 ? '-' : '', a = Math.abs(t); return s + Math.floor(a / 60) + ':' + String(a % 60).padStart(2, '0'); };
 
 class Component extends DCLogic {
@@ -4085,12 +4496,14 @@ class Component extends DCLogic {
     if (!base.db.episExtra) base.db.episExtra = [];
   migraEpisHerr(base);
     migraObras(base);
+    migraAgenda(base);
     this.state = {
       db: base.db, partes: base.partes || {}, view: 'inicio', paso: 1, dia: hoyKey(), obraVer: null, verFin: false,
       buscaOp: '', buscaBd: '', tipoMat: null, ficha: null, tareaNueva: '', matResalta: null,
       buscaMat: '', matEdit: null, filtroMat: null, croAbierto: false, qBusca: '',
       herr: 'lapiz', zoom: 1, pan: { x: 0, y: 0 }, avisoCerrado: false, ancho: 0,
-      hoja: null, hojaObra: null, dlg: null, cargando: false, odCarp: '', tut: null, oFotos: false, foto: null
+      hoja: null, hojaObra: null, dlg: null, cargando: false, odCarp: '', tut: null, oFotos: false, foto: null,
+      agDia: hoyKey(), agMes: hoyKey().slice(0, 7), agVenc: false, cita: null, citaNueva: false, agDX: 0
     };
     this.canvasRef = React.createRef();
     this.ptrs = new Map();
@@ -4104,6 +4517,11 @@ class Component extends DCLogic {
     window.MiParteCola = j => {
       try { this.colaWidget(typeof j === 'string' ? JSON.parse(j) : j); } catch (e) { }
     };
+    // El boton ATRAS del movil. Devuelve true si la app se ha encargado; si
+    // devuelve false, Android cierra la app (solo pasa estando en inicio).
+    window.MiParteAtras = () => { try { return this.atras(); } catch (e) { return false; } };
+    this.desde = {};       // a donde volver desde cada pantalla
+    this.volviendo = false;
     setTimeout(() => this.sincroWidget(), 400);
     this.onResize = () => this.setState({ ancho: window.innerWidth });
     window.addEventListener('resize', this.onResize);
@@ -4119,6 +4537,17 @@ class Component extends DCLogic {
     setTimeout(() => this.compruebaAviso(), 4000);
   }
   componentDidUpdate(prevProps, prevEstado) {
+    // De donde se ha llegado a la pantalla de ahora, para que ATRAS devuelva
+    // al sitio bueno. No se apunta cuando el cambio ES un atras: si no, se
+    // montaria un bucle de dos pantallas dandose la vuelta la una a la otra.
+    if (!this.volviendo && prevEstado && prevEstado.view !== this.state.view) {
+      this.desde[this.state.view] = prevEstado.view;
+    }
+    this.volviendo = false;
+    if (this.state.view === 'asistente'
+        && (prevEstado.paso !== this.state.paso || prevEstado.view !== 'asistente')) {
+      this.centraPaso(this.state.paso);
+    }
     this.pinta(); this.mideInicio();
     // al salir de la ficha de obra, las fotos se vuelven a esconder
     if (this.state.oFotos && this.state.view !== 'obra') this.setState({ oFotos: false });
@@ -4151,6 +4580,7 @@ class Component extends DCLogic {
       if (guardado && guardado.db) {
         migraEpisHerr(guardado);
         migraObras(guardado);
+        migraAgenda(guardado);
         this.setState({ db: guardado.db, partes: guardado.partes || {} });
       } else {
         try {
@@ -4181,7 +4611,7 @@ class Component extends DCLogic {
       try {
         const e = await navigator.storage.estimate();
         usados = e.usage || 0;
-        tope = Math.min(e.quota || 0, 500 * 1024 * 1024);
+        tope = Math.min(e.quota || 0, 4 * 1024 * 1024 * 1024);
       } catch (x) { }
     }
     if (!tope) { usados = (localStorage.getItem(KEY) || '').length; tope = 5 * 1024 * 1024; }
@@ -4313,6 +4743,7 @@ class Component extends DCLogic {
     const p = JSON.parse(JSON.stringify(this.parte()));
     mut(p);
     if (!p.obraId) p.obraId = this.state.db.obraId;
+    ponExtras(p);
     partes[this.state.dia] = p;
     this.setState({ partes }, () => this.guarda());
   }
@@ -4604,7 +5035,7 @@ class Component extends DCLogic {
         const f = this.state.db.operarios.find(x => x.id === o.id);
         if (!f) return;
         map[o.id] = map[o.id] || { nom: f.nom, h: 0, ext: 0, dias: 0 };
-        map[o.id].h += hd + num(o.extra);
+        map[o.id].h += horasOp(hd, o);
         map[o.id].ext += num(o.extra);
         map[o.id].dias++;
       });
@@ -4730,7 +5161,7 @@ class Component extends DCLogic {
     const nP = this.nParteDe(s.dia, p.obraId || obra.id || '');
     const fecha = dmy(s.dia);
     const nOps = p.ops.length;
-    const mano = p.ops.reduce((a, o) => a + hd + num(o.extra), 0);
+    const mano = p.ops.reduce((a, o) => a + horasOp(hd, o), 0);
     const extras = p.ops.reduce((a, o) => a + num(o.extra), 0);
     const incs = p.incidencias.filter(i => i.inc || i.causa || i.accion);
     const abiertas = incs.filter(i => i.pend === 'si').length;
@@ -4813,14 +5244,14 @@ class Component extends DCLogic {
         if (D.y < 100) { D.nueva(cab); cabTab(); }
         D.txt(D.recorta(f.nom, cC - cO - 10, 9.2), cO, D.y, 9.2);
         D.txt(D.recorta(f.cat || '', 128, 8), cC, D.y, 8, false, '0.35');
-        D.txtD(fmtH(hd), cN, D.y, 9.2);
+        D.txtD(fmtH(ordinarias(hd)), cN, D.y, 9.2);
         D.txtD(num(o.extra) ? fmtH(num(o.extra)) : '-', cE, D.y, 9.2);
-        D.txtD(fmtH(hd + num(o.extra)), cT, D.y, 9.2, true);
+        D.txtD(fmtH(horasOp(hd, o)), cT, D.y, 9.2, true);
         D.y -= 6; D.linea(M, D.y, R, 0.5, '0.83'); D.y -= 13;
       });
       D.y += 6; D.linea(M, D.y, R, 0.7, '0.1'); D.y -= 14;
       D.txt('TOTAL', cO, D.y, 8, true);
-      D.txtD(fmtH(hd * nOps), cN, D.y, 9.2, true);
+      D.txtD(fmtH(ordinarias(hd) * nOps), cN, D.y, 9.2, true);
       D.txtD(extras ? fmtH(extras) : '-', cE, D.y, 9.2, true);
       D.txtD(fmtH(mano), cT, D.y, 9.2, true);
       D.y -= 8;
@@ -5144,8 +5575,8 @@ class Component extends DCLogic {
       (p.ops || []).forEach(o => {
         const f = (db.operarios || []).find(x => x.id === o.id);
         porOp[o.id] = porOp[o.id] || { nom: f ? f.nom : 'Operario', cat: f ? f.cat : '', h: 0, ext: 0, dias: 0 };
-        porOp[o.id].h += hd; porOp[o.id].ext += num(o.extra); porOp[o.id].dias++;
-        extras += num(o.extra); mano += hd + num(o.extra);
+        porOp[o.id].h += ordinarias(hd); porOp[o.id].ext += num(o.extra); porOp[o.id].dias++;
+        extras += num(o.extra); mano += horasOp(hd, o);
       });
       (p.trabajos || []).forEach(t => {
         const z = String(t.zona || '').trim() || 'Sin zona', s = String(t.texto || '').trim();
@@ -5420,7 +5851,7 @@ class Component extends DCLogic {
         const q = s.partes[x] || {};
         const hd = horasEntre(q.entrada, q.salida);
         jor += hd;
-        (q.ops || []).forEach(o => { todos += hd + num(o.extra); });
+        (q.ops || []).forEach(o => { todos += horasOp(hd, o); });
       });
       return { lab, jor, todos, hoy: k === hoy };
     });
@@ -5477,7 +5908,8 @@ class Component extends DCLogic {
         vigilar: vigilar.slice(0, 20),
         cerrado: seis.every(Boolean),
         hora: horas[horas.length - 1] || '19:00',
-        avisa: !!aj.notif
+        avisa: !!aj.notif,
+        cita: this.proximaCita(hoy)
       }));
     } catch (e) { }
   }
@@ -5550,7 +5982,115 @@ class Component extends DCLogic {
       this.aviso('Entrado desde los widgets', 'Se ha metido en el parte: ' + dicho.join(', ') + '.');
     });
   }
+  /** Trae a la vista la pastilla del paso en el que estas.
+   *
+   *  La cinta de pasos no cabe en la pantalla y se desplaza a un lado. Al
+   *  cambiar de paso, la pastilla que se enciende puede quedarse fuera del
+   *  encuadre y hay que ir a buscarla con el dedo. Esto la centra sola.
+   *
+   *  Solo se hace al CAMBIAR de paso: mientras rellenas, la cinta se queda
+   *  donde tu la hayas dejado. Si la mueves con el dedo, manda tu. */
+  /** Trae a la vista la pastilla naranja: la del paso en el que estas.
+   *
+   *  NO la centra. Solo la mueve si asoma por un lado, y lo justo para que
+   *  entre entera con un dedo de aire. Si ya se ve, no toca nada: centrar
+   *  siempre hacia bailar la cinta entera en cada paso, y quedaba tosco.
+   *
+   *  Se dispara solo por lo que haces tu para cambiar de pestaña: tocar una
+   *  pastilla, SIGUIENTE PASO o la flecha de atras. Mientras rellenas, la
+   *  cinta se queda donde tu la hayas dejado con el pulgar.
+   *
+   *  El paso de destino va como argumento y no se mira this.state: cuando se
+   *  llama desde el propio toque, el estado aun no se ha actualizado. */
+  centraPaso(paso, intento) {
+    const n = paso || this.state.paso;
+    const vez = intento || 0;
+    requestAnimationFrame(() => {
+      try {
+        const cinta = document.querySelector('[data-cinta="pasos"]');
+        const chip = cinta && cinta.querySelector('[data-chip="' + String(n).padStart(2, '0') + '"]');
+        if (!cinta || !chip || !cinta.clientWidth) {
+          if (vez < 8) setTimeout(() => this.centraPaso(n, vez + 1), 40);
+          return;
+        }
+        const c = cinta.getBoundingClientRect(), r = chip.getBoundingClientRect();
+        const AIRE = 16;
+        const izq = r.left - c.left, der = izq + r.width;
+        let mueve = 0;
+        if (izq < AIRE) mueve = izq - AIRE;
+        else if (der > c.width - AIRE) mueve = der - (c.width - AIRE);
+        if (!mueve) return;                       // ya se ve entera: quieta
+        const tope = Math.max(0, cinta.scrollWidth - cinta.clientWidth);
+        this.deslizaCinta(cinta, Math.max(0, Math.min(cinta.scrollLeft + mueve, tope)));
+      } catch (e) { }
+    });
+  }
+
+  /** Desliza la cinta hasta ahi, con su propia animacion.
+   *
+   *  No se usa scrollTo({behavior:'smooth'}) porque si tienes las animaciones
+   *  del movil reducidas (o la escala de animacion a cero), Android lo
+   *  convierte en un salto seco y se ve feo. Esto anima siempre igual.
+   *
+   *  Y se corta en cuanto pones el dedo encima: si estas arrastrando, mandas
+   *  tu, no la animacion. */
+  deslizaCinta(cinta, dest) {
+    if (this.animCinta) { cancelAnimationFrame(this.animCinta); this.animCinta = null; }
+    const ini = cinta.scrollLeft, d = dest - ini;
+    if (Math.abs(d) < 2) return;
+    if (!cinta.__corta) {
+      cinta.__corta = true;
+      const corta = () => {
+        if (this.animCinta) { cancelAnimationFrame(this.animCinta); this.animCinta = null; }
+      };
+      cinta.addEventListener('pointerdown', corta, { passive: true });
+      cinta.addEventListener('touchstart', corta, { passive: true });
+      cinta.addEventListener('wheel', corta, { passive: true });
+    }
+    const reloj = () => (typeof performance !== 'undefined' && performance.now)
+      ? performance.now() : Date.now();
+    const t0 = reloj(), DUR = 240;
+    const marco = () => {
+      let k = (reloj() - t0) / DUR;
+      if (k >= 1) { cinta.scrollLeft = dest; this.animCinta = null; return; }
+      k = 1 - Math.pow(1 - k, 3);           // frena al llegar
+      cinta.scrollLeft = ini + d * k;
+      this.animCinta = requestAnimationFrame(marco);
+    };
+    this.animCinta = requestAnimationFrame(marco);
+  }
+  /** El boton ATRAS del movil. true = ya me he encargado yo.
+   *
+   *  Orden: primero se cierra lo que este encima (una foto abierta, un aviso),
+   *  luego se retrocede un paso del asistente, y si no, se sube un escalon.
+   *  Solo devuelve false estando en inicio, que es cuando cerrar la app SI es
+   *  lo que toca. */
+  atras() {
+    const s = this.state;
+    if (s.foto) { this.setState({ foto: null }); return true; }
+    if (s.dlg) { this.setState({ dlg: null }); return true; }
+    if (s.cita) { this.setState({ cita: null }); return true; }
+    if (s.tut) { this.setState({ tut: null }); return true; }
+    if (s.view === 'inicio') return false;
+    let dest = this.desde[s.view] || PADRE[s.view] || 'inicio';
+    if (dest === s.view) dest = PADRE[s.view] || 'inicio';
+    const salto = { view: dest };
+    if (dest !== 'ficha') salto.ficha = null;
+    if (dest !== 'obra') salto.obraVer = null;
+    this.volviendo = true;
+    this.setState(salto);
+    return true;
+  }
   accionWidget(a) {
+    // agenda:2026-08-26 abre el calendario en ese día; citanueva, con la ficha
+    if (a === 'agenda' || a.indexOf('agenda:') === 0) {
+      return this.abreAgenda(a.split(':')[1] || hoyKey());
+    }
+    if (a === 'citanueva' || a.indexOf('citanueva:') === 0) {
+      const d = a.split(':')[1] || hoyKey();
+      this.abreAgenda(d);
+      return setTimeout(() => this.nuevaCita(d), 240);
+    }
     if (a === 'tareas') return this.setState({ view: 'inicio', dia: hoyKey() });
     if (a === 'obras') return this.setState({ view: 'obras', obraVer: null, ficha: null });
     if (a === 'equipo') return this.setState({ view: 'operarios', ficha: null });
@@ -5975,6 +6515,8 @@ class Component extends DCLogic {
     const aj = this.state.db.ajustes || {};
     if (!aj.notif) return;
     if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    // las citas avisan todos los días, no solo los del parte
+    try { this.compruebaCitas(); } catch (e) { }
     if (((aj.dias || '1111111')[(new Date().getDay() + 6) % 7] || '1') !== '1') return;
     const dia = hoyKey();
     const p = this.parte(dia);
@@ -6038,6 +6580,15 @@ class Component extends DCLogic {
         nota: 'Tu lista de recados: no va en el parte y no la ve nadie. La escribes abajo, tocas el cuadro para tacharla y «Borrar las hechas» limpia lo hecho. Toca los cuadros de arriba y verás.'
       });
     }
+    if (id === 'agenda') return Object.assign({}, base, {
+      cab: 'Agenda · Agosto', der: 'Abrir ›', derCol: A,
+      filas: [
+        tFila({ izq: 'Mié 26 · 09:00', der: 'PRL · andamios', estDisp: 'flex', est: 'Nave 3', estCol: I }),
+        tFila({ izq: 'Vie 28', der: 'Vacaciones · K. Ordóñez', estDisp: 'flex', est: '5 días', estCol: D }),
+        tFila({ izq: 'Lun 31', der: 'Fin de plazo · Nave 3', estDisp: 'flex', est: 'plazo', estCol: A })
+      ],
+      nota: 'El mes de un vistazo, con un punto de color por cada día ocupado. Toca y se abre el calendario entero.'
+    });
     if (id === 'matpend') return Object.assign({}, base, {
       borde: A, cab: 'Material pendiente', der: '2 líneas', derCol: D,
       filas: [
@@ -6093,6 +6644,334 @@ class Component extends DCLogic {
     this.setState({ tut: null });
   }
   // ---------- render ----------
+  // ---------- agenda ----------
+  /** Las citas de verdad que caen entre dos fechas: una cita que se repite
+   *  cada semana N veces sale N veces, y una de varios días sale una vez con
+   *  su duración. */
+  citasExpandidas(desde, hasta) {
+    const out = [];
+    (this.state.db.citas || []).forEach(c => {
+      if (!c || !c.dia) return;
+      const veces = Math.max(1, Number(c.rep) || 1);
+      const dur = durCita(c);
+      for (let v = 0; v < veces; v++) {
+        const ini = sumaDias(c.dia, v * 7);
+        if (ini > hasta) break;
+        if (sumaDias(ini, dur - 1) < desde) continue;
+        out.push({ c, ini, dur, v });
+      }
+    });
+    return out;
+  }
+  /** Todo lo que hay que pintar, día por día: partes, citas, tareas con
+   *  fecha, plazos de obra, obras terminadas y valoraciones en rojo. */
+  eventosEntre(desde, hasta) {
+    const s = this.state, db = s.db, mapa = {}, hoy = hoyKey();
+    const pon = (dia, it) => { if (dia < desde || dia > hasta) return; (mapa[dia] = mapa[dia] || []).push(it); };
+    const obraDe = id => (db.obras || []).find(o => o.id === id);
+    Object.keys(s.partes).forEach(k => {
+      const dia = soloDia(k);
+      if (dia < desde || dia > hasta) return;
+      const pt = s.partes[k] || {}, o = obraDe(pt.obraId);
+      if (!this.hayDatos(pt) && dia !== hoy) return;
+      const m = minsDe(pt.entrada);
+      pon(dia, {
+        k: 'p' + k, tipo: 'parte', col: (o && o.color) || COL_FIJO.ambar, ord: m < 0 ? 1 : m,
+        hora: pt.entrada ? pt.entrada + (pt.salida ? '–' + pt.salida : '') : '',
+        tit: (o && o.nombre) || 'Parte del día',
+        sub: ['Parte',
+          (pt.ops || []).length ? (pt.ops || []).length + ((pt.ops || []).length === 1 ? ' operario' : ' operarios') : 'sin cuadrilla',
+          (pt.trabajos || []).filter(t => t.texto).length ? (pt.trabajos || []).filter(t => t.texto).length + ((pt.trabajos || []).filter(t => t.texto).length === 1 ? ' trabajo' : ' trabajos') : ''].filter(Boolean).join(' · '),
+        ir: () => this.setState({ view: 'asistente', dia: k, paso: 1 })
+      });
+      (pt.ops || []).forEach(op => {
+        if (this.global(op.crit) !== 'r') return;
+        const f = (db.operarios || []).find(x => x.id === op.id) || {};
+        pon(dia, {
+          k: 'r' + k + op.id, tipo: 'rojo', col: COL_FIJO.rojo, ord: (m < 0 ? 1 : m) + 0.5, hora: '',
+          tit: f.nom || 'Operario', sub: 'Valoración en rojo',
+          ir: () => this.setState({ view: 'ficha', ficha: op.id })
+        });
+      });
+    });
+    this.citasExpandidas(desde, hasta).forEach(({ c, ini, dur, v }) => {
+      const o = obraDe(c.obraId);
+      const tl = tipoCita(c.tipo);
+      const op = (db.operarios || []).find(x => x.id === c.opId);
+      for (let d = 0; d < dur; d++) {
+        const dia = sumaDias(ini, d);
+        if (dia < desde || dia > hasta) continue;
+        const conHora = !c.todoDia && d === 0 && minsDe(c.ini) >= 0;
+        pon(dia, {
+          // manda el color de la obra; si no tiene obra, el que le hayas puesto
+          k: 'c' + c.id + '-' + v + '-' + d, tipo: 'cita', col: (o && o.color) || c.color || COL_TIPO[c.tipo] || COL_FIJO.gris,
+          ord: conHora ? minsDe(c.ini) : -1,
+          hora: conHora ? (c.ini || '') + (c.fin ? '–' + c.fin : '') : '',
+          tit: c.tit || tl[1],
+          sub: [tl[2], op ? op.nom : '', o ? o.nombre : '', c.lugar,
+            dur > 1 ? 'día ' + (d + 1) + ' de ' + dur : '',
+            (Number(c.rep) || 1) > 1 ? 'semana ' + (v + 1) + ' de ' + Math.max(1, Number(c.rep) || 1) : ''].filter(Boolean).join(' · '),
+          cita: c, ir: () => this.abreCita(c)
+        });
+      }
+    });
+    (db.tareas || []).forEach((t, i) => {
+      if (!t || !t.dia || t.dia < desde || t.dia > hasta) return;
+      pon(t.dia, {
+        k: 't' + i, tipo: 'tarea', col: t.hecha ? COL_FIJO.verde : (t.dia < hoy ? COL_FIJO.rojo : COL_FIJO.gris),
+        ord: 2000, hora: '', tit: t.txt, deco: t.hecha ? 'line-through' : 'none',
+        sub: t.hecha ? 'Tarea hecha' : (t.dia < hoy ? 'Tarea sin hacer' : 'Tarea'),
+        ir: () => this.setDb(d => { d.tareas[i].hecha = !d.tareas[i].hecha; })
+      });
+    });
+    (db.obras || []).forEach(o => {
+      if (o.plazo) pon(o.plazo, {
+        k: 'z' + o.id, tipo: 'plazo', col: o.color || COL_FIJO.ambar, ord: -2, hora: '',
+        tit: o.nombre || 'Obra sin nombre', sub: 'Fin de plazo previsto',
+        ir: () => this.setState({ view: 'obra', obraVer: o.id, oFotos: false })
+      });
+      if (o.fin) pon(o.fin, {
+        k: 'f' + o.id, tipo: 'fin', col: COL_FIJO.verde, ord: -2, hora: '',
+        tit: o.nombre || 'Obra sin nombre', sub: 'Obra terminada',
+        ir: () => this.setState({ view: 'obra', obraVer: o.id, oFotos: false })
+      });
+    });
+    Object.keys(mapa).forEach(k => mapa[k].sort((a, b) => a.ord - b.ord));
+    return mapa;
+  }
+  /** Lo primero que viene por delante, para el widget de próxima cita. Solo
+   *  citas y plazos: los partes ya tienen sus propios widgets. */
+  proximaCita(hoy) {
+    const h = hoy || hoyKey();
+    try {
+      const m = this.eventosEntre(h, sumaDias(h, 90));
+      for (let i = 0; i <= 90; i++) {
+        const d = sumaDias(h, i);
+        const l = (m[d] || []).filter(x => x.tipo === 'cita' || x.tipo === 'plazo');
+        if (!l.length) continue;
+        const it = l[0];
+        return {
+          dia: d, fecha: fechaCorta(d), hora: it.hora || '',
+          tit: it.tit || '', sub: it.sub || '', col: it.col || COL_FIJO.ambar,
+          txtHoy: 'HOY', txtManana: 'MAÑANA'
+        };
+      }
+    } catch (e) { }
+    return null;
+  }
+  abreAgenda(dia) {
+    const d = dia || this.state.agDia || hoyKey();
+    this.setState({ view: 'agenda', agDia: d, agMes: d.slice(0, 7), agVenc: false, cita: null });
+  }
+  mueveMes(n) {
+    const p = String(this.state.agMes || hoyKey().slice(0, 7)).split('-');
+    const d = new Date(Number(p[0]), Number(p[1]) - 1 + n, 1);
+    // el nombre de la animación alterna para que se repita al pasar dos meses
+    // seguidos hacia el mismo lado
+    this.mTick = (this.mTick || 0) ^ 1;
+    this.setState({
+      agMes: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'),
+      agVenc: false, agAnim: (n > 0 ? 'mesDer' : 'mesIzq') + this.mTick
+    });
+  }
+  /** Doble toque en una casilla: si está vacía, cita nueva; si tiene una cosa,
+   *  la abre; si tiene varias, te deja elegir. */
+  abreCasilla(dia) {
+    const its = (this.eventosEntre(dia, dia) || {})[dia] || [];
+    if (!its.length) return this.nuevaCita(dia);
+    if (its.length === 1) return its[0].ir();
+    this.setState({
+      dlg: {
+        tit: fechaCorta(dia).toLowerCase(),
+        txt: 'Ese día tiene ' + its.length + ' cosas apuntadas. ¿Cuál abro?',
+        cancel: true, cancelLab: 'Cerrar',
+        lista: its.map(it => ({
+          lab: it.tit,
+          sub: [it.hora || 'todo el día', it.sub].filter(Boolean).join('  ·  '),
+          on: () => { const f = it.ir; this.setState({ dlg: null }, () => { if (f) f(); }); }
+        }))
+      }
+    });
+  }
+  vaAlDia(d) {
+    this.dTick = (this.dTick || 0) ^ 1;
+    this.setState({ agDia: d, agMes: d.slice(0, 7), agVenc: false, agDiaAnim: 'diaIn' + this.dTick });
+  }
+  // arrastrar la rejilla de lado para cambiar de mes
+  agIni(e) {
+    const t = e.touches ? e.touches[0] : e;
+    this.agP = { x: t.clientX, y: t.clientY, on: false };
+  }
+  agMov(e) {
+    if (!this.agP) return;
+    const t = e.touches ? e.touches[0] : e;
+    const dx = t.clientX - this.agP.x, dy = t.clientY - this.agP.y;
+    if (!this.agP.on && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) this.agP.on = true;
+    if (!this.agP.on) return;
+    if (e.cancelable) e.preventDefault();
+    this.setState({ agDX: Math.max(-140, Math.min(140, dx)) });
+  }
+  agFin() {
+    const dx = this.state.agDX;
+    this.agP = null;
+    if (Math.abs(dx) > 46) this.mueveMes(dx < 0 ? 1 : -1);
+    if (dx) this.setState({ agDX: 0 });
+  }
+  // ---------- fichas de cita ----------
+  abreCita(c) { this.setState({ cita: JSON.parse(JSON.stringify(c)), citaNueva: false }); }
+  nuevaCita(dia) {
+    const db = this.state.db;
+    const d = dia || this.state.agDia || hoyKey();
+    // arranca con la última obra que tocaste en una cita, y su color
+    const obraId = this.ultObra != null ? this.ultObra : (db.ultObraCita != null ? db.ultObraCita : db.obraId);
+    const c = citaVacia(d, obraId);
+    c.color = this.ultColor || db.ultColorCita || '';
+    this.setState({ cita: c, citaNueva: true });
+  }
+  setCita(mut) {
+    const c = JSON.parse(JSON.stringify(this.state.cita || {}));
+    mut(c);
+    this.setState({ cita: c });
+  }
+  guardaCita() {
+    const c = this.state.cita;
+    if (!c) return;
+    const tl = tipoCita(c.tipo);
+    const lim = Object.assign({}, c, {
+      tit: String(c.tit || '').trim() || tl[1],
+      rep: Math.max(1, Math.min(52, Number(c.rep) || 1)),
+      diaFin: c.diaFin && c.diaFin > c.dia ? c.diaFin : '',
+      dur: 1
+    });
+    lim.dur = durCita(lim);
+    if (!lim.todoDia && lim.fin && minsDe(lim.fin) <= minsDe(lim.ini)) lim.fin = masMin(lim.ini, 60);
+    this.ultObra = lim.obraId;
+    this.ultColor = lim.color || '';
+    this.setDb(d => {
+      d.citas = d.citas || [];
+      const i = d.citas.findIndex(x => x.id === lim.id);
+      if (i >= 0) d.citas[i] = lim; else d.citas.push(lim);
+      d.ultObraCita = lim.obraId;
+      d.ultColorCita = lim.color || '';
+    });
+    this.setState({ cita: null, agDia: lim.dia, agMes: lim.dia.slice(0, 7) });
+  }
+  borraCita() {
+    const c = this.state.cita;
+    if (!c) return;
+    this.pregunta('¿Borrar la cita?', 'Se quita de la agenda. Lo que ya hayas mandado a otro calendario se queda allí.', () => {
+      this.setDb(d => { d.citas = (d.citas || []).filter(x => x.id !== c.id); });
+      this.setState({ cita: null, dlg: null });
+    }, 'Sí, borrar');
+  }
+  // ---------- exportar a otros calendarios ----------
+  icsCita(c) {
+    const db = this.state.db;
+    const o = (db.obras || []).find(x => x.id === c.obraId);
+    const op = (db.operarios || []).find(x => x.id === c.opId);
+    const tl = tipoCita(c.tipo);
+    const esc = v => String(v == null ? '' : v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+    const p2 = n => String(n).padStart(2, '0');
+    const d = new Date();
+    const sello = d.getUTCFullYear() + p2(d.getUTCMonth() + 1) + p2(d.getUTCDate()) + 'T' +
+      p2(d.getUTCHours()) + p2(d.getUTCMinutes()) + p2(d.getUTCSeconds()) + 'Z';
+    const fx = k => String(k).replace(/-/g, '');
+    const hm = h => String(h || '09:00').replace(':', '') + '00';
+    const titulo = (c.tipo !== 'otro' ? tl[2] + ' · ' : '') + (c.tit || tl[1]) + (op ? ' · ' + op.nom : '');
+    const lugar = [c.lugar, o ? o.nombre : '', o ? o.ubicacion : ''].filter(Boolean).join(' · ');
+    const desc = [
+      c.quien ? 'Con: ' + c.quien + (c.tel ? ' · ' + c.tel : '') : (c.tel ? 'Teléfono: ' + c.tel : ''),
+      o && o.cliente ? 'Cliente: ' + o.cliente : '',
+      this.contactosTxt(o || {}) ? 'Contactos de la obra: ' + this.contactosTxt(o || {}) : '',
+      c.nota || '', 'Apuntado en Mi Parte'
+    ].filter(Boolean).join('\n');
+    const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Mi Parte//Agenda 1.5//ES', 'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH', 'BEGIN:VEVENT', 'UID:' + c.id + '@miparte', 'DTSTAMP:' + sello];
+    const dur = durCita(c);
+    if (c.todoDia) {
+      L.push('DTSTART;VALUE=DATE:' + fx(c.dia), 'DTEND;VALUE=DATE:' + fx(sumaDias(c.dia, dur)));
+    } else {
+      const fin = c.fin || masMin(c.ini, 60);
+      const dFin = dur > 1 ? sumaDias(c.dia, dur - 1) : (minsDe(fin) <= minsDe(c.ini) ? sumaDias(c.dia, 1) : c.dia);
+      L.push('DTSTART:' + fx(c.dia) + 'T' + hm(c.ini || '09:00'));
+      L.push('DTEND:' + fx(dFin) + 'T' + hm(fin));
+    }
+    if ((Number(c.rep) || 1) > 1) L.push('RRULE:FREQ=WEEKLY;COUNT=' + Math.max(1, Number(c.rep)));
+    L.push('SUMMARY:' + esc(titulo));
+    if (lugar) L.push('LOCATION:' + esc(lugar));
+    if (desc) L.push('DESCRIPTION:' + esc(desc));
+    const tr = this.triggerIcs(c);
+    if (tr) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(titulo), 'TRIGGER:' + tr, 'END:VALARM');
+    L.push('END:VEVENT', 'END:VCALENDAR');
+    // las líneas largas se parten a 73 caracteres, como manda el formato
+    const dobla = l => {
+      if (l.length <= 73) return l;
+      const t = [l.slice(0, 73)];
+      let r = l.slice(73);
+      while (r.length > 72) { t.push(' ' + r.slice(0, 72)); r = r.slice(72); }
+      if (r) t.push(' ' + r);
+      return t.join('\r\n');
+    };
+    return L.map(dobla).join('\r\n') + '\r\n';
+  }
+  triggerIcs(c) {
+    if (!c.avisa) return '';
+    if (c.avisa === 'ini') return '-PT0M';
+    if (c.avisa === '1h') return '-PT1H';
+    if (c.avisa === 'semana') return '-P7D';
+    if (c.avisa === 'vispera') {
+      if (c.todoDia) return '-P1D';
+      const m = minsDe(c.ini);
+      return '-PT' + ((m < 0 ? 540 : m) + 300) + 'M';   // hasta las 19:00 del día antes
+    }
+    return '';
+  }
+  async exportaCita(c) {
+    const cita = c || this.state.cita;
+    if (!cita) return;
+    const tl = tipoCita(cita.tipo);
+    const nom = (tl[2] + ' ' + (cita.tit || '') + ' ' + cita.dia).replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim() + '.ics';
+    try {
+      const blob = new Blob([this.icsCita(cita)], { type: 'text/calendar;charset=utf-8' });
+      await this.salida('compartir', blob, nom, 'text/calendar');
+    } catch (e) {
+      this.aviso('No se ha podido exportar', 'Prueba otra vez, o apunta la cita a mano en tu calendario.');
+    }
+  }
+  // ---------- avisos de las citas ----------
+  momentoAviso(c, ini) {
+    if (!c.avisa) return 0;
+    const base = new Date(ini + 'T' + (c.todoDia ? '09:00' : (c.ini || '09:00')) + ':00');
+    if (isNaN(base.getTime())) return 0;
+    if (c.avisa === 'ini') return base.getTime();
+    if (c.avisa === '1h') return base.getTime() - 3600000;
+    if (c.avisa === 'semana') return base.getTime() - 7 * 86400000;
+    if (c.avisa === 'vispera') { const d = new Date(ini + 'T19:00:00'); d.setDate(d.getDate() - 1); return d.getTime(); }
+    return 0;
+  }
+  compruebaCitas() {
+    const ahora = Date.now(), hoy = hoyKey();
+    let hechos = [];
+    try { hechos = JSON.parse(localStorage.getItem('miparte:citasavisadas') || '[]'); } catch (e) { }
+    if (!Array.isArray(hechos)) hechos = [];
+    const nuevos = [];
+    this.citasExpandidas(sumaDias(hoy, -2), sumaDias(hoy, 10)).forEach(({ c, ini }) => {
+      const t = this.momentoAviso(c, ini);
+      if (!t || ahora < t || ahora - t > 6 * 3600000) return;
+      const k = c.id + '@' + ini;
+      if (hechos.indexOf(k) >= 0 || nuevos.indexOf(k) >= 0) return;
+      nuevos.push(k);
+      const tl = tipoCita(c.tipo);
+      const hora = c.todoDia ? '' : ' a las ' + (c.ini || '');
+      const cuando = ini === hoy ? 'hoy' + hora
+        : ini === sumaDias(hoy, 1) ? 'mañana' + hora
+        : 'el ' + dmy(ini) + hora;
+      this.notifica((c.tipo !== 'otro' ? tl[2] + ' · ' : '') + (c.tit || tl[1]) + ', ' + cuando + '.');
+    });
+    if (nuevos.length) {
+      try { localStorage.setItem('miparte:citasavisadas', JSON.stringify(hechos.concat(nuevos).slice(-60))); } catch (e) { }
+    }
+  }
   renderVals() {
     const s = this.state, db = s.db, p = this.parte();
     const ancho = s.ancho || 400;
@@ -6120,7 +6999,7 @@ class Component extends DCLogic {
       chipEdge: s.paso === i + 1 ? 'var(--amber)' : 'var(--line)',
       chipBg: s.paso === i + 1 ? 'var(--amber)' : 'transparent',
       chipInk: s.paso === i + 1 ? '#23231f' : 'var(--dim)',
-      ir: () => this.setState({ view: 'asistente', paso: i + 1 })
+      ir: () => { this.setState({ view: 'asistente', paso: i + 1 }); this.centraPaso(i + 1); }
     }));
     const avisos = db.operarios.map(o => { const r = this.puntos(o.id, 28); return { o, r }; })
       .filter(x => x.r.pts >= 3)
@@ -6249,11 +7128,48 @@ class Component extends DCLogic {
     const resBusca = this.resultadosBusca(s.qBusca || '');
     const buscando = sinAcc(s.qBusca || '').trim().length >= 2;
     const ksDia = Object.keys(s.partes).filter(k => soloDia(k) === soloDia(s.dia)).sort();
+    // ---------- agenda ----------
+    const hoyK = hoyKey();
+    const agDia = s.agDia || hoyK;
+    const agMes = s.view === 'inicio' ? hoyK.slice(0, 7) : (s.agMes || agDia.slice(0, 7));
+    const agUno = agMes + '-01';
+    const agDesde = sumaDias(agUno, -dowLun(agUno));
+    const agHasta = sumaDias(agDesde, 41);
+    const enAgenda = s.view === 'agenda' || s.view === 'inicio';
+    const evs = enAgenda ? this.eventosEntre(agDesde, agHasta) : {};
+    const cel = [];
+    for (let i = 0; i < 42; i++) {
+      const d = sumaDias(agDesde, i), its = evs[d] || [], fuera = d.slice(0, 7) !== agMes, cols = [];
+      its.forEach(it => { if (cols.length < 4 && cols.indexOf(it.col) < 0) cols.push(it.col); });
+      cel.push({ d, its, fuera, cols });
+    }
+    const agItems = evs[agDia] || [];
+    const venc = (db.tareas || []).map((t, i) => ({ t, i })).filter(x => x.t.dia && !x.t.hecha && x.t.dia < hoyK);
+    const prox = (() => {
+      if (s.view !== 'inicio') return null;
+      const m = this.eventosEntre(hoyK, sumaDias(hoyK, 60));
+      for (let i = 0; i <= 60; i++) { const d = sumaDias(hoyK, i); if ((m[d] || []).length) return { d, it: m[d][0] }; }
+      return null;
+    })();
+    const nMes = cel.filter(c => !c.fuera).reduce((a, c) => a + c.its.length, 0);
+    const ci = s.cita;
+    const cTipo = ci ? tipoCita(ci.tipo) : TIPOS_CITA[0];
+    const cDur = ci ? durCita(ci) : 1;
+    const cObra = ci ? (db.obras || []).find(o => o.id === ci.obraId) : null;
+    const diaLargo = k => DIASEM_L[dowLun(k)] + ' ' + Number(k.slice(8)) + ' de ' + MESES[Number(k.slice(5, 7)) - 1].toLowerCase();
+    const item = it => ({
+      k: it.k, tit: it.tit, sub: it.sub, col: it.col, deco: it.deco || 'none',
+      hora: it.hora || (it.ord === -1 || it.ord === -2 ? 'Todo el día' : ''),
+      horaCol: it.hora ? 'var(--ink)' : 'var(--dim)',
+      ir: it.ir, flecha: it.tipo === 'tarea' ? '' : '›'
+    });
     return {
       // cabecera
-      cabTitulo: s.view === 'asistente' ? 'Paso ' + s.paso + ' de 6 · ' + PASOS[s.paso - 1] : s.view === 'inicio' ? 'Mi Parte' : { operarios: 'Base de operarios', materiales: 'Base de materiales', ajustes: 'Ajustes', ficha: 'Ficha de operario', semana: 'Resumen semanal', obras: 'Tus obras', obra: 'Ficha de la obra' }[s.view],
-      cabObra: s.view === 'ficha' ? fich.nom : (s.view === 'obra' ? (oVer.nombre || 'Obra sin nombre') : [obraDia.nombre || 'Obra sin nombre', esParte ? (obraDia.cliente || '') : ''].filter(Boolean).join(' · ')),
-      cabSub: s.view === 'ficha'
+      cabTitulo: s.view === 'asistente' ? 'Paso ' + s.paso + ' de 6 · ' + PASOS[s.paso - 1] : s.view === 'inicio' ? 'Mi Parte' : { operarios: 'Base de operarios', materiales: 'Base de materiales', ajustes: 'Ajustes', ficha: 'Ficha de operario', semana: 'Resumen semanal', obras: 'Tus obras', obra: 'Ficha de la obra', agenda: 'Agenda' }[s.view],
+      cabObra: s.view === 'agenda' ? nomMes(agMes) : (s.view === 'ficha' ? fich.nom : (s.view === 'obra' ? (oVer.nombre || 'Obra sin nombre') : [obraDia.nombre || 'Obra sin nombre', esParte ? (obraDia.cliente || '') : ''].filter(Boolean).join(' · '))),
+      cabSub: s.view === 'agenda'
+        ? (nMes ? nMes + (nMes === 1 ? ' cosa este mes' : ' cosas este mes') + '  ·  desliza para cambiar de mes' : 'Mes vacío  ·  desliza para cambiar de mes')
+        : s.view === 'ficha'
         ? fich.cat + ' · ' + fich.emp
         : (s.view === 'obra'
           ? ([oVer.cliente, oVer.pedido ? 'ped. ' + oVer.pedido : ''].filter(Boolean).join(' · ') || 'sin cliente')
@@ -6267,8 +7183,145 @@ class Component extends DCLogic {
       irInicio: () => this.setState({ view: s.view === 'inicio' ? 'ajustes' : 'inicio', ficha: null }),
       vInicio: s.view === 'inicio', vAsistente: s.view === 'asistente', vOperarios: s.view === 'operarios',
       vMateriales: s.view === 'materiales', vAjustes: s.view === 'ajustes', vFicha: s.view === 'ficha', vSemana: s.view === 'semana',
-      vObras: s.view === 'obras', vObra: s.view === 'obra',
-      irObras: () => { if (s.view === 'ficha') return; this.setState({ view: 'obras', obraVer: null, ficha: null }); },
+      vObras: s.view === 'obras', vObra: s.view === 'obra', vAgenda: s.view === 'agenda',
+      // ---------- agenda: rejilla del mes ----------
+      agDows: DIASEM.map((l, i) => ({ l, col: i >= 5 ? 'var(--amber)' : 'var(--dim)' })),
+      agTx: s.agDX ? 'translateX(' + s.agDX + 'px)' : 'none',
+      agIni: e => this.agIni(e), agMov: e => this.agMov(e), agFin: () => this.agFin(),
+      agMesPrev: (() => { const p = agMes.split('-'); const d = new Date(Number(p[0]), Number(p[1]) - 2, 1); return MESES[d.getMonth()]; })(),
+      agMesSig: (() => { const p = agMes.split('-'); const d = new Date(Number(p[0]), Number(p[1]), 1); return MESES[d.getMonth()]; })(),
+      irMesPrev: () => this.mueveMes(-1), irMesSig: () => this.mueveMes(1),
+      agCeldas: cel.map(c => ({
+        num: String(Number(c.d.slice(8))),
+        ink: c.fuera ? 'var(--dim)' : (c.d === hoyK ? 'var(--amber)' : 'var(--ink)'),
+        peso: c.d === hoyK ? '700' : '500',
+        op: c.fuera ? '.4' : '1',
+        bg: c.d === agDia ? 'var(--wash)' : 'transparent',
+        edge: c.d === agDia ? 'var(--amber)' : 'transparent',
+        // la casilla entera va del color de lo que hay ese día: tenue, y más
+        // fuerte cuando es el día elegido
+        // un solo color de fondo, el de lo primero del día; si hay más obras
+        // metidas ese día, van en la barrita de abajo
+        fondo: c.d === agDia ? (c.cols.length ? tinta(c.cols[0], 'cc') : 'var(--wash)') : (c.cols.length ? tinta(c.cols[0], '80') : 'transparent'),
+        extras: c.cols.slice(1, 4).map(col => ({ col: tinta(col, c.d === agDia ? 'ff' : 'cc') })),
+        dispExtras: c.cols.length > 1 ? 'flex' : 'none',
+        ir: () => this.vaAlDia(c.d),
+        abrir: () => this.abreCasilla(c.d)
+      })),
+      agMesAnim: s.agAnim ? s.agAnim + ' .3s cubic-bezier(.2,.85,.25,1) both' : 'none',
+      agDiaAnim: s.agDiaAnim ? s.agDiaAnim + ' .24s ease-out both' : 'none',
+      // ---------- agenda: el día ----------
+      agDiaTxt: diaLargo(agDia),
+      agDiaChip: agDia === hoyK ? 'Hoy' : (agDia === sumaDias(hoyK, 1) ? 'Mañana' : dmy(agDia)),
+      agDiaChipBg: agDia === hoyK ? 'var(--amber)' : 'var(--wash)',
+      agDiaChipInk: agDia === hoyK ? '#23231f' : 'var(--dim)',
+      dispIrHoy: agDia === hoyK && agMes === hoyK.slice(0, 7) ? 'hidden' : 'visible',
+      irHoyAgenda: () => this.vaAlDia(hoyK),
+      agItems: agItems.map(item),
+      agVacio: agItems.length === 0,
+      addCita: () => this.nuevaCita(agDia),
+      agVencDisp: venc.length ? 'flex' : 'none',
+      agVencTxt: venc.length + (venc.length === 1 ? ' cosa sin hacer' : ' cosas sin hacer'),
+      agVencLab: s.agVenc ? 'Cerrar' : 'Ver',
+      togVenc: () => this.setState({ agVenc: !s.agVenc }),
+      agVencOn: !!s.agVenc && venc.length > 0,
+      agVencLista: venc.map(({ t, i }) => ({
+        txt: t.txt, fecha: fechaCorta(t.dia) + ' · hace ' + Math.abs(diasEntre(t.dia, hoyK)) + ' días',
+        hacer: () => this.setDb(d => { d.tareas[i].hecha = true; }),
+        ir: () => this.vaAlDia(t.dia)
+      })),
+      // ---------- agenda: tarjeta del inicio ----------
+      cAgenda: tarjeta('agenda'),
+      irAgenda: () => this.abreAgenda(hoyK),
+      agCardMes: nomMes(agMes),
+      agCardSub: nMes ? String(nMes) : '',
+      agMini: cel.map(c => ({
+        num: String(Number(c.d.slice(8))),
+        ink: c.fuera ? 'var(--dim)' : (c.d === hoyK ? 'var(--amber)' : 'var(--ink)'),
+        peso: c.d === hoyK ? '700' : '400',
+        op: c.fuera ? '.35' : '1',
+        fondo: tinta(c.cols[0] || (c.d === hoyK ? COL_FIJO.ambar : ''), '73') || 'transparent',
+        edge: c.d === hoyK ? 'var(--amber)' : 'transparent',
+        ir: () => this.abreAgenda(c.d)
+      })),
+      agProx: prox ? (fechaCorta(prox.d) + (prox.it.hora ? ' · ' + prox.it.hora.split('–')[0] : '') + ' · ' + prox.it.tit) : 'Nada apuntado por delante',
+      agProxCol: prox ? prox.it.col : 'var(--line)',
+      // ---------- ficha de cita ----------
+      vCita: !!ci,
+      citaCab: s.citaNueva ? 'Cita nueva' : 'Cita de la agenda',
+      citaResumen: ci ? [
+        cDur > 1 ? dmy(ci.dia) + ' → ' + dmy(sumaDias(ci.dia, cDur - 1)) : dmy(ci.dia),
+        ci.todoDia ? (cDur > 1 ? cDur + ' días' : 'todo el día') : (ci.ini || '') + (ci.fin ? '–' + ci.fin : ''),
+        (Number(ci.rep) || 1) > 1 ? 'x' + ci.rep + ' semanas' : ''
+      ].filter(Boolean).join('  ·  ') : '',
+      citaTit: ci ? ci.tit : '',
+      citaPh: cTipo[1],
+      setCitaTit: e => { const v = e.target.value; this.setCita(c => { c.tit = v; }); },
+      citaTipos: TIPOS_CITA.map(t => Object.assign({ lab: t[1], corto: t[2] }, sel(!!ci && ci.tipo === t[0]), {
+        set: () => this.setCita(c => { c.tipo = t[0]; })
+      })),
+      citaObras: [{ id: '', nombre: 'Sin obra', color: 'var(--line)' }].concat(db.obras || []).map(o => Object.assign(
+        { lab: o.nombre || 'Obra sin nombre', punto: o.color || 'var(--line)' },
+        sel(!!ci && (ci.obraId || '') === o.id), {
+          set: () => { this.ultObra = o.id; this.setCita(c => { c.obraId = o.id; }); }
+        })),
+      citaDia: ci ? ci.dia : '',
+      setCitaDia: e => { const v = e.target.value; if (v) this.setCita(c => { c.dia = v; }); },
+      citaTodo: !!(ci && ci.todoDia),
+      citaTodoMark: ci && ci.todoDia ? '✓' : '',
+      citaTodoEdge: ci && ci.todoDia ? 'var(--amber)' : 'var(--line)',
+      citaTodoBg: ci && ci.todoDia ? 'var(--amber)' : 'transparent',
+      togCitaTodo: () => this.setCita(c => { c.todoDia = !c.todoDia; }),
+      dispHoras: ci && ci.todoDia ? 'none' : 'grid',
+      citaDiaFin: ci ? ci.diaFin : '',
+      setCitaDiaFin: e => { const v = e.target.value; this.setCita(c => { c.diaFin = v; if (v && v > c.dia) c.todoDia = true; }); },
+      quitaDiaFin: () => this.setCita(c => { c.diaFin = ''; }),
+      dispQuitaFin: ci && ci.diaFin ? 'flex' : 'none',
+      citaRangoTxt: cDur > 1 ? cDur + ' días seguidos, del ' + fechaCorta(ci.dia).toLowerCase() + ' al ' + fechaCorta(sumaDias(ci.dia, cDur - 1)).toLowerCase() : 'Un solo día',
+      citaColor: ci ? (ci.color || COL_TIPO[ci.tipo] || COL_FIJO.gris) : COL_FIJO.gris,
+      setCitaColor: e => { const v = e.target.value; this.ultColor = v; this.setCita(c => { c.color = v; }); },
+      citaColorOp: cObra ? '.5' : '1',
+      citaIni: ci ? ci.ini : '', citaFin: ci ? ci.fin : '',
+      setCitaIni: e => { const v = e.target.value; this.setCita(c => { c.ini = v; if (!c.fin || minsDe(c.fin) <= minsDe(v)) c.fin = masMin(v, 60); }); },
+      setCitaFin: e => { const v = e.target.value; this.setCita(c => { c.fin = v; }); },
+      citaRep: ci ? String(ci.rep || 1) : '1',
+      setCitaRep: e => { const v = e.target.value; this.setCita(c => { c.rep = v; }); },
+      citaRepTxt: ci && (Number(ci.rep) || 1) > 1 ? 'Cada ' + DIASEM_L[dowLun(ci.dia)].toLowerCase() + ', ' + ci.rep + ' semanas seguidas' : 'Una sola vez',
+      citaLugar: ci ? ci.lugar : '',
+      setCitaLugar: e => { const v = e.target.value; this.setCita(c => { c.lugar = v; }); },
+      dispLugarObra: cObra && cObra.ubicacion ? 'flex' : 'none',
+      ponLugarObra: () => this.setCita(c => { c.lugar = (cObra || {}).ubicacion || ''; }),
+      citaQuien: ci ? ci.quien : '',
+      setCitaQuien: e => { const v = e.target.value; this.setCita(c => { c.quien = v; c.tel = ''; }); },
+      quitaLugar: () => this.setCita(c => { c.lugar = ''; }),
+      dispQuitaLugar: ci && ci.lugar ? 'flex' : 'none',
+      quitaQuien: () => this.setCita(c => { c.quien = ''; c.tel = ''; }),
+      dispQuitaQuien: ci && (ci.quien || ci.tel) ? 'flex' : 'none',
+      citaContactos: ((cObra || {}).contactos || []).filter(c => (c.nom || '').trim()).map(c => {
+        const on = !!ci && ci.quien === c.nom;
+        return Object.assign({ lab: c.nom, mark: on ? '✕' : '' }, sel(on), {
+          set: () => this.setCita(x => {
+            if (x.quien === c.nom) { x.quien = ''; x.tel = ''; } else { x.quien = c.nom; x.tel = c.tel || ''; }
+          })
+        });
+      }),
+      citaTel: ci && ci.tel ? ci.tel : '',
+      dispTelCita: ci && ci.tel ? 'block' : 'none',
+      dispOps: ci && ci.tipo === 'ausencia' ? 'flex' : 'none',
+      citaOps: (db.operarios || []).filter(o => o.activo).map(o => Object.assign({ lab: o.nom },
+        sel(!!ci && ci.opId === o.id), { set: () => this.setCita(c => { c.opId = c.opId === o.id ? '' : o.id; }) })),
+      citaAvisos: AVISOS_CITA.map(a => Object.assign({ lab: a[1] }, sel(!!ci && (ci.avisa || '') === a[0]), {
+        set: () => this.setCita(c => { c.avisa = a[0]; })
+      })),
+      citaNota: ci ? ci.nota : '',
+      setCitaNota: e => { const v = e.target.value; this.setCita(c => { c.nota = v; }); },
+      guardarCita: () => this.guardaCita(),
+      borrarCita: () => this.borraCita(),
+      dispBorrarCita: s.citaNueva ? 'none' : 'block',
+      exportarCita: () => this.exportaCita(),
+      cerrarCita: () => this.setState({ cita: null }),
+      irObras: () => { if (s.view === 'ficha' || s.view === 'agenda') return; this.setState({ view: 'obras', obraVer: null, ficha: null }); },
+      agDiaOn: !(s.agVenc && venc.length > 0),
       obrasCab: (n => n + (n === 1 ? ' obra en marcha' : ' obras en marcha'))((db.obras || []).filter(o => !o.fin).length),
       obrasLista: (db.obras || []).filter(o => s.verFin || !o.fin)
         .sort((a, b) => String(uObras[b.id] || (b.id === db.obraId ? '9' : '')).localeCompare(String(uObras[a.id] || (a.id === db.obraId ? '9' : ''))))
@@ -6300,6 +7353,12 @@ class Component extends DCLogic {
       setOCliente: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.cliente = v; }); },
       setOPedido: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.pedido = v; }); },
       setOUbic: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.ubicacion = v; }); },
+      oColor: oVer.color || '#d08a2a',
+      setOColor: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.color = v; }); },
+      oPlazo: oVer.plazo || '',
+      setOPlazo: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.plazo = v; }); },
+      oPlazoTxt: oVer.plazo ? (oVer.plazo < hoyK ? 'El plazo ya pasó' : 'Quedan ' + diasEntre(hoyK, oVer.plazo) + ' días') : 'Sin plazo puesto',
+      oPlazoCol: oVer.plazo && oVer.plazo < hoyK ? 'var(--red)' : 'var(--dim)',
       setONotas: e => { const v = e.target.value; this.setObra(oVer.id, o => { o.notas = v; }); },
       oMapsHref: mapsUrl(oVer.ubicacion),
       oDispMapa: String(oVer.ubicacion || '').trim() ? 'flex' : 'none',
@@ -6564,7 +7623,7 @@ class Component extends DCLogic {
           'La eliges y el parte sale copiado del 27 de junio: la misma cuadrilla, las mismas zonas y el material que quedó pendiente. Dentro tienes los teléfonos del jefe de obra y todo lo de esa obra.'
         ][tut.obr]
         : 'Cada obra guarda sus datos, sus contactos y sus partes. Toca una para ver qué pasa al elegirla.',
-      t1: tSl(1), t2: tSl(2), t3: tSl(3), t4: tSl(4), t5: tSl(5), t6: tSl(6), t7: tSl(7), t8: tSl(8), t9: tSl(9), t10: tSl(10), t11: tSl(11),
+      t1: tSl(1), t2: tSl(2), t3: tSl(3), t4: tSl(4), t5: tSl(5), t6: tSl(6), t7: tSl(7), t8: tSl(8), t9: tSl(9), t10: tSl(10), t11: tSl(11), t12: tSl(12),
       tutDispPuntos: tPaso === TUT_N ? 'none' : 'flex',
       tutPuntos: Array.apply(null, { length: TUT_N }).map((x, i) => i).map(i => ({
         w: i === tPaso ? '24px' : '7px',
@@ -6642,10 +7701,14 @@ class Component extends DCLogic {
       p1: s.paso === 1, p2: s.paso === 2, p3: s.paso === 3, p4: s.paso === 4, p5: s.paso === 5, p6: s.paso === 6,
       textoAccion: s.paso === 6 ? 'PDF del día' : 'Siguiente paso',
       accionPrincipal: () => {
-        if (s.paso < 6) return this.setState({ paso: s.paso + 1 });
+        if (s.paso < 6) { this.centraPaso(s.paso + 1); return this.setState({ paso: s.paso + 1 }); }
         this.abreHoja();
       },
-      pasoAnterior: () => this.setState(st => ({ paso: Math.max(1, st.paso - 1) })),
+      pasoAnterior: () => this.setState(st => {
+        const n = Math.max(1, st.paso - 1);
+        this.centraPaso(n);
+        return { paso: n };
+      }),
       // paso 1
       paso1Eti: obraDia.id === db.obraId ? 'Obra activa' : 'Obra de este parte',
       obraNombre: obraDia.nombre, obraCliente: obraDia.cliente, obraPedido: obraDia.pedido,
@@ -6686,7 +7749,7 @@ class Component extends DCLogic {
         return Object.assign({
           nom: f.nom, cat: f.cat, extra: o.extra || '', obs: o.obs || '',
           quitar: () => this.setP(x => x.ops.splice(i, 1)),
-          setExtra: e => this.setP(x => { x.ops[i].extra = e.target.value; }),
+          setExtra: e => this.setP(x => { x.ops[i].extra = e.target.value; x.ops[i].extraAuto = false; }),
           setObs: e => this.setP(x => { x.ops[i].obs = e.target.value; }),
           rapidos: RAPIDOS.map(lab => ({ lab, set: () => this.setP(x => { const t = String(x.ops[i].obs || '').trim(); x.ops[i].obs = t ? t + ' · ' + lab : lab; }) })),
           crits: CRITS.map(([k, lab]) => ({
