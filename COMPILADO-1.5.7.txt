@@ -1,0 +1,105 @@
+MI PARTE 1.5.7  ·  versionCode 37
+==================================
+
+  APK  sha256  604c6a7d264e78f09ec9df26e2d6ae6c12312f993181475228f6eaa7367fa6a1
+  AAB  sha256  038f599717e4d6a9e3de70b179f883b77455198972f1228b892d539ff03c7132
+  certificado 1cc8c054...2c57
+
+
+PRIMERO AUDITE, LUEGO ESCRIBI
+-------------------------------
+Una politica de privacidad que no se corresponda con el codigo es peor que no
+tener ninguna: es una mentira firmada. Asi que antes de redactar nada mire que
+hace la app de verdad.
+
+  permisos declarados         ocho, listados abajo
+  llamadas a internet en Java ninguna: ni HttpURLConnection, ni sockets, nada
+  el muro del WebView         cualquier peticion cuyo host no sea el propio de
+                              la app devuelve una respuesta vacia. Esta en
+                              shouldInterceptRequest, MainActivity linea 128
+  lo que SI sale              tres cosas, y las tres las inicias tu:
+                                - el PDF y la copia, por el menu de compartir
+                                - la direccion, cuando pulsas IR, a tu app de
+                                  mapas
+                                - la foto original, a tu galeria, album «Mi Parte»
+
+Todo lo que dice la politica esta comprobado contra el codigo. No hay ni una
+frase puesta por quedar bien.
+
+
+LO QUE TIENES
+---------------
+1. privacidad.html          la version completa, para subir a GitHub Pages.
+                            Queda en cgarcia9533.github.io/mi-parte/privacidad.html
+                            Esa es la URL que te va a pedir Google Play.
+                            HTML validado: ninguna etiqueta sin cerrar.
+
+2. Dentro de la app         AJUSTES -> PRIVACIDAD, debajo de «Los widgets del
+                            movil». Abre una ventana con lo esencial y la
+                            direccion de la version larga.
+                            Funciona sin cobertura, que para una app offline
+                            es lo suyo.
+
+De paso, la ventana de avisos ahora respeta los saltos de linea y se puede
+desplazar si el texto es largo. Antes un texto largo se salia de la pantalla.
+
+
+TRES COSAS DE LA POLITICA QUE CONVIENE QUE LEAS
+-------------------------------------------------
+1. HE PUESTO TU CORREO como contacto, porque una politica sin contacto no
+   sirve y Play exige uno que funcione. Si no quieres tu correo personal en
+   una pagina publica, cambialo ANTES de subirla: esta en dos sitios del
+   privacidad.html, buscalo y listo.
+
+2. LOS DATOS DE TUS OPERARIOS son lo unico delicado de verdad. Sus nombres,
+   telefonos, horas y sobre todo las VALORACIONES y las notas del dia son
+   datos personales de otras personas. La app no los mueve de tu telefono,
+   pero eres tu quien decide que escribes y a quien le mandas el PDF. Si usas
+   esto en la empresa, en Europa eso tiene sus reglas. La politica lo dice
+   claro en vez de mirar para otro lado.
+
+3. NO SOY ABOGADO. El texto describe lo que la app hace, comprobado. No es un
+   documento juridico revisado por nadie.
+
+
+Y AHORA LO IMPORTANTE: TRES COSAS QUE TE VAN A FRENAR EN PLAY
+---------------------------------------------------------------
+Auditando los permisos me he encontrado esto, y es mejor que lo sepas ahora
+que cuando te rechacen la subida:
+
+  QUERY_ALL_PACKAGES
+     Google la trata como permiso sensible. Hay que justificarla en una
+     declaracion aparte y rechazan a mucha gente por ella. En tu app se usa
+     solo para preguntar «¿hay alguna camara?» antes de abrirla. Eso hoy se
+     hace con un bloque <queries> declarando los intents concretos, sin pedir
+     el permiso gordo. Es el cambio correcto y te quita el problema.
+
+  INTERNET
+     Declarado, pero la app no lo usa para nada: lo pide el componente sobre
+     el que esta montada. Queda feo al lado de una politica que dice «no
+     manda nada». Se puede probar a quitarlo, con cuidado: si resulta que el
+     WebView lo necesitaba, la app se queda en blanco y hay que devolverlo.
+
+  USE_EXACT_ALARM
+     Play tambien lo mira con lupa: es para despertadores y calendarios. Lo
+     tuyo son avisos de agenda, asi que hay argumento, pero hay que
+     escribirlo en la ficha.
+
+No he tocado ninguno de los tres. Cambiar permisos puede dejarte sin camara o
+sin app y no quiero hacerlo a ciegas la misma noche que te doy la politica.
+Dime y lo hago con calma, probando cada uno.
+
+Recuerda ademas lo del API 36: desde el 31 de agosto Play no admite apps
+nuevas por debajo, y tu apuntas a 34.
+
+
+PARA PROBARLO
+---------------
+1. AJUSTES, baja del todo: debajo de «Los widgets del movil» tiene que salir
+   PRIVACIDAD. Tocala y lee la ventana; tiene que poderse desplazar.
+2. Sube privacidad.html a la raiz de tu GitHub, al lado del index.html, y
+   comprueba que se ve en cgarcia9533.github.io/mi-parte/privacidad.html
+3. Y lo del croquis sigue esperando: dale a DESHACER y dime si el numero de
+   trazos del rotulo BAJA o NO BAJA.
+
+Copia de seguridad antes de instalar.

@@ -1,0 +1,51 @@
+MI PARTE 1.5.6  ·  dos cosas, nada mas
+========================================
+
+Partiendo de 1.5.5 tal cual lo tienes. Solo cambia index.html (y el nombre de
+la cache en sw.js). Nada de los widgets, del croquis ni del PDF se ha tocado
+por dentro.
+
+
+1. CHECK DE TRABAJO EN TALLER
+-------------------------------
+Paso 1 (Obra y horario), dentro de la tarjeta de la obra, justo debajo de la
+ubicacion:
+
+    [ ] TRABAJO EN TALLER
+        La jornada se ha hecho en el taller, aunque el parte sea de esta obra
+
+Se toca la caja entera. Al marcarlo el recuadro se pone ambar con su tick.
+El parte sigue siendo de la obra que tenga: la obra, el cliente, el pedido y
+el numero de parte no cambian.
+
+Donde se refleja:
+
+  · En el PDF del parte, en la cabecera, junto al cliente y el pedido, consta
+    siempre el sitio de la jornada: TRABAJO EN TALLER o TRABAJO EN OBRA.
+  · En PARTES ANTERIORES, la linea de ese dia empieza por «Taller · ...».
+
+Se guarda por parte y por dia, asi que no se arrastra al dia siguiente ni lo
+copia «Copiar ultimo». Los partes viejos salen como TRABAJO EN OBRA.
+
+
+2. BOTON «IR» EN LAS CITAS
+----------------------------
+En la cita, en el campo DONDE, al lado de «La obra», hay un boton IR igual
+que el de la ficha de la obra. Abre el sitio en el mapa.
+
+  · Si has escrito una direccion o pegado un enlace de Google Maps, va a eso.
+  · Si el campo esta vacio pero la cita es de una obra con ubicacion, va a la
+    ubicacion de la obra.
+  · El boton esta siempre en su sitio, tambien con «Sin obra» marcado. Cuando
+    no hay a donde ir se queda apagado en gris y no responde al toque.
+
+
+ARCHIVOS
+----------
+  index.html                        <- el unico con cambios de codigo
+  sw.js                             <- cache mi-parte-1.5.6-v26
+  manifest.json, iconos             <- copia sin tocar
+  APK/proyecto/assets/...           <- los mismos, listos para compilar
+
+Para el APK: versionCode 36, versionName 1.5.6 en el AndroidManifest.
+Copia de seguridad antes de instalar.

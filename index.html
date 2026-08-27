@@ -3,7 +3,7 @@
 <link rel="manifest" href="manifest.json">
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(e){console.warn("SW",e)})})}</script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 
 
@@ -2232,7 +2232,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <style>
 :root{--paper:#f4f2ec;--card:#fff;--field:#f7f5f0;--ink:#1a1a18;--dim:#6d6a63;--line:#d9d6cf;--band:#23231f;--bandink:#f2f0ea;--banddim:#a8a49a;--amber:#d08a2a;--wash:#efece5;--green:oklch(0.55 0.13 148);--red:oklch(0.53 0.17 27);--off:#454338;--sh:0 1px 2px rgba(28,26,20,.05),0 10px 22px -16px rgba(28,26,20,.30)}
 @media (prefers-color-scheme:dark){:root{--paper:#0f0f0c;--card:#1c1c16;--field:#232319;--ink:#ecebe3;--dim:#9a968c;--line:#33322a;--band:#000;--bandink:#f2f0ea;--banddim:#8d8a80;--amber:#e0a047;--wash:#26251d;--green:oklch(0.74 0.13 148);--red:oklch(0.7 0.17 27);--off:#4a473c;--sh:0 1px 2px rgba(0,0,0,.5)}}
-html,body{margin:0;background:var(--paper);-webkit-text-size-adjust:100%;overscroll-behavior:none}
+html,body{margin:0;background:var(--paper);-webkit-text-size-adjust:100%;overscroll-behavior:none;touch-action:pan-x pan-y}
 body{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 input,textarea,select,button{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-user-select:text;user-select:text;border-radius:10px}
 input:focus,textarea:focus,select:focus{border-color:var(--amber);outline:none}
@@ -2543,6 +2543,13 @@ a:hover{color:var(--ink)}
 <a href="{{ mapsHref }}" target="_blank" rel="noopener" style="display:{{ dispMapa }};align-items:center;padding:0 15px;border:1px solid var(--amber);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);flex:none">Ir</a>
 </div>
 </div>
+<div sc-camel-on-click="{{ toggleTaller }}" style="display:flex;align-items:center;gap:11px;border:1.5px solid {{ tallerEdge }};background:{{ tallerBg }};border-radius:12px;padding:12px;cursor:pointer">
+<span style="width:22px;height:22px;flex:none;border:1.5px solid {{ tallerEdge }};background:{{ tallerCaja }};border-radius:6px;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#23231f">{{ tallerMark }}</span>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ tallerInk }}">Trabajo en taller</span>
+<span style="font:400 10px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">La jornada se ha hecho en el taller, aunque el parte sea de esta obra</span>
+</div>
+</div>
 <div style="display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);padding-top:12px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Personas de contacto</span>
 <sc-for list="{{ contactos }}" as="c" hint-placeholder-count="1">
@@ -2788,7 +2795,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ borrarCroquis }}" style="padding:10px 13px;border:1px solid var(--line);border-radius:999px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);cursor:pointer">Borrar</div>
 <span style="margin-left:auto;font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding-right:4px">{{ zoomTexto }}</span>
 </div>
-<canvas ref="{{ canvasRef }}" sc-camel-on-pointer-down="{{ pDown }}" sc-camel-on-pointer-move="{{ pMove }}" sc-camel-on-pointer-up="{{ pUp }}" sc-camel-on-pointer-cancel="{{ pUp }}" style="width:100%;height:{{ altoCanvas }};display:block;touch-action:none;background:var(--card)"></canvas>
+<canvas ref="{{ canvasRef }}" data-croquis="1" sc-camel-on-pointer-down="{{ pDown }}" sc-camel-on-pointer-move="{{ pMove }}" sc-camel-on-pointer-up="{{ pUp }}" sc-camel-on-pointer-cancel="{{ pUp }}" style="width:100%;height:{{ altoCanvas }};display:block;touch-action:none;background:var(--card)"></canvas>
 <div style="display:flex;gap:10px;padding:11px;border-top:1px solid var(--line)">
 <input value="{{ croquisTitulo }}" sc-camel-on-change="{{ setCroquisTitulo }}" placeholder="Título del croquis" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <input value="{{ croquisEscala }}" sc-camel-on-change="{{ setCroquisEscala }}" placeholder="Escala" style="width:110px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
@@ -3307,6 +3314,8 @@ Cargar una copia
 <span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">›</span>
 </div>
 
+<div sc-camel-on-click="{{ verPrivacidad }}" style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer"> <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0"> <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Privacidad</span> <span style="font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">Qué guarda la app y qué no sale del móvil</span> </div> <span style="font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">›</span> </div>
+
 </div>
 </sc-if>
 
@@ -3495,6 +3504,7 @@ Cargar una copia
 <input value="{{ citaLugar }}" sc-camel-on-change="{{ setCitaLugar }}" placeholder="Sitio, si no es la obra" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <span sc-camel-on-click="{{ quitaLugar }}" style="display:{{ dispQuitaLugar }};align-items:center;justify-content:center;width:44px;border:1px solid var(--line);border-radius:12px;font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none;cursor:pointer">✕</span>
 <span sc-camel-on-click="{{ ponLugarObra }}" style="display:{{ dispLugarObra }};align-items:center;padding:0 14px;border:1px solid var(--amber);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);flex:none;cursor:pointer">La obra</span>
+<a href="{{ citaMapsHref }}" target="_blank" rel="noopener" style="display:flex;align-items:center;padding:0 14px;border:1px solid {{ citaMapaEdge }};border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ citaMapaInk }};flex:none;pointer-events:{{ citaMapaClic }}">Ir</a>
 </div>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Con quién</span>
 <div style="display:flex;gap:8px">
@@ -3574,7 +3584,7 @@ Cargar una copia
 <div style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:41;display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
 <div style="width:100%;max-width:520px;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:20px 18px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sube .28s cubic-bezier(.2,.85,.25,1) both">
 <span style="font:600 16px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)">{{ dlgTit }}</span>
-<span style="font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ dlgTxt }}</span>
+<span style="font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);white-space:pre-line;max-height:52vh;overflow-y:auto;overscroll-behavior:contain">{{ dlgTxt }}</span>
 <sc-if value="{{ dlgHayLista }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:7px;max-height:46vh;overflow:auto;padding-top:4px">
 <sc-for list="{{ dlgLista }}" as="o" hint-placeholder-count="2">
@@ -4437,7 +4447,7 @@ function semilla() {
   };
 }
 function parteVacio() {
-  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [] };
+  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [], taller: false };
 }
 function horasEntre(a, b) {
   if (!a || !b) return 0;
@@ -4447,6 +4457,18 @@ function horasEntre(a, b) {
   return m / 60;
 }
 const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+/** Copia de seguridad de un objeto de datos, para poder tocarlo sin romper el
+ *  estado de antes.
+ *
+ *  Antes era un JSON.stringify + JSON.parse. Eso convierte TODO a texto y lo
+ *  vuelve a leer, y en esta app «todo» incluye las fotos, que van dentro del
+ *  parte como texto en base64. Con unos cuantos partes con foto, cada copia
+ *  eran decenas de megas de texto ida y vuelta, y se hace una copia en CADA
+ *  cosa que tocas: cada trazo del croquis, cada deshacer, cada casilla.
+ *  structuredClone hace lo mismo sin pasar por texto. */
+const clona = typeof structuredClone === 'function'
+  ? v => { try { return structuredClone(v); } catch (e) { return JSON.parse(JSON.stringify(v)); } }
+  : v => JSON.parse(JSON.stringify(v));
 // La jornada normal. Lo que pase de aqui son horas extra: si la cuadrilla
 // trabaja de 8 a 17, son 8 normales y 1 extra, no 9 normales.
 // De que pantalla cuelga cada pantalla. El boton ATRAS de Android sube un
@@ -4463,6 +4485,23 @@ const PADRE = {
   materiales: 'inicio',
   ajustes: 'inicio'
 };
+// Lo que la app hace de verdad con tus datos. Escrito mirando el codigo, no
+// de memoria: no hay ninguna llamada a internet fuera de sus propios ficheros.
+const PRIVACIDAD = [
+  'Todo lo que apuntas se queda dentro de este telefono. No hay cuenta, no hay servidor, no hay publicidad y no se mide el uso.',
+  '',
+  'La app no manda nada a ninguna parte. Cualquier peticion a internet que no sean sus propios ficheros esta bloqueada por dentro.',
+  '',
+  'Del telefono solo sale lo que mandas tu: el PDF y la copia de seguridad, por el menu de compartir de Android y a donde tu elijas; y la direccion de una obra o cita cuando pulsas IR, que se la pasa a tu app de mapas.',
+  '',
+  'Las fotos: la copia reducida entra en el parte y el original entero se guarda en tu galeria, en el album «Mi Parte».',
+  '',
+  'Ojo con los operarios: sus nombres, telefonos, horas y valoraciones son datos de otras personas. La app no los mueve de aqui, pero tu decides que escribes y con quien compartes el PDF.',
+  '',
+  'Si desinstalas sin sacar copia, se pierde. No hay copia en ningun otro sitio.',
+  '',
+  'La version completa esta en cgarcia9533.github.io/mi-parte/privacidad.html'
+].join('\n');
 const JORNADA = 8;
 const ordinarias = hd => Math.min(hd || 0, JORNADA);
 const extraDelDia = p => {
@@ -4529,7 +4568,10 @@ class Component extends DCLogic {
     setTimeout(() => this.pinta(), 60);
     setTimeout(() => this.mideInicio(), 120);
     this.tick = setInterval(() => this.compruebaAviso(), 60000);
-    this.onVis = () => { if (!document.hidden) { this.compruebaAviso(); this.sincroNativo(); } };
+    this.onVis = () => {
+      if (document.hidden) { this.sincroYa(); return; }
+      this.compruebaAviso(); this.sincroNativo();
+    };
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('focus', this.onVis);
     this.arranca();
@@ -4548,7 +4590,12 @@ class Component extends DCLogic {
         && (prevEstado.paso !== this.state.paso || prevEstado.view !== 'asistente')) {
       this.centraPaso(this.state.paso);
     }
-    this.pinta(); this.mideInicio();
+    this.pinta(); this.repintaLuego(); this.mideInicio();
+    // Al abrir o cerrar el croquis, el motor pone un <canvas> nuevo y en blanco.
+    // Se repinta en el fotograma siguiente, cuando ya esta medido.
+    if (prevEstado && prevEstado.croAbierto !== this.state.croAbierto && this.state.croAbierto) {
+      requestAnimationFrame(() => this.pinta());
+    }
     // al salir de la ficha de obra, las fotos se vuelven a esconder
     if (this.state.oFotos && this.state.view !== 'obra') this.setState({ oFotos: false });
     // el croquis se vuelve a cerrar al salir del paso 6
@@ -4584,7 +4631,7 @@ class Component extends DCLogic {
         this.setState({ db: guardado.db, partes: guardado.partes || {} });
       } else {
         try {
-          await idbGuarda(JSON.parse(JSON.stringify({ db: this.state.db, partes: this.state.partes })));
+          await idbGuarda(clona({ db: this.state.db, partes: this.state.partes }));
           localStorage.removeItem(KEY);
         } catch (e) { this.idbOk = false; }
       }
@@ -4621,12 +4668,21 @@ class Component extends DCLogic {
   guarda(extra) {
     const st = Object.assign({}, this.state, extra || {});
     const datos = { db: st.db, partes: st.partes };
-    this.sincroWidget(st);
+    // Antes esto iba aqui a pelo, y sincroWidget recorre 90 dias de agenda
+    // para sacar la proxima cita. Se guarda en cada trazo del croquis, en cada
+    // tecla y en cada casilla: era trabajo de sobra en medio del dibujo.
+    // Ahora se agrupa; y si la app se va al fondo, se manda sin esperar.
+    this.pideSincro(st);
     if (this.idbOk) {
       this.ultimo = datos;
       clearTimeout(this.tGuarda);
       this.tGuarda = setTimeout(() => {
-        idbGuarda(JSON.parse(JSON.stringify(this.ultimo)))
+        // Sin copia previa a proposito: IndexedDB ya hace su propia copia al
+        // guardar, y aqui nadie toca ese objeto por dentro (setP y setDb
+        // siempre crean uno nuevo). Copiarlo antes era hacer el trabajo dos
+        // veces, y con las fotos dentro eso son cientos de milisegundos en
+        // cada guardado.
+        idbGuarda(this.ultimo)
           .then(() => { if (this.state.sinEspacio) this.setState({ sinEspacio: false }); this.midEspacio(); })
           .catch(() => { if (!this.state.sinEspacio) this.setState({ sinEspacio: true }); });
       }, 220);
@@ -4646,7 +4702,7 @@ class Component extends DCLogic {
     }
   }
   setDb(mut) {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     mut(db);
     this.setState({ db }, () => this.guarda());
   }
@@ -4687,7 +4743,7 @@ class Component extends DCLogic {
     const p = this.state.partes[this.state.dia];
     const antes = (this.state.db.obras || []).find(o => o.id === (p || {}).obraId);
     const pasa = mover => {
-      const db = JSON.parse(JSON.stringify(this.state.db));
+      const db = clona(this.state.db);
       db.obraId = id;
       const partes = Object.assign({}, this.state.partes);
       if (p && (mover || !this.hayDatos(p))) partes[this.state.dia] = Object.assign({}, p, { obraId: id });
@@ -4706,7 +4762,7 @@ class Component extends DCLogic {
       ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean)));
   }
   obraNueva() {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     const o = obraVacia();
     db.obras = (db.obras || []).concat([o]);
     db.obraId = o.id;
@@ -4732,7 +4788,7 @@ class Component extends DCLogic {
     if ((this.state.db.obras || []).length < 2) return this.aviso('No se puede borrar', 'Tiene que quedar al menos una obra en la app.');
     if (this.diasObra(id).length) return this.aviso('Esta obra tiene partes', 'No se borra una obra con partes guardados. Márcala terminada y se queda fuera de la lista.');
     this.pregunta('Borrar la obra', 'Se borra «' + (o.nombre || 'sin nombre') + '» con sus contactos y sus notas.', () => {
-      const db = JSON.parse(JSON.stringify(this.state.db));
+      const db = clona(this.state.db);
       db.obras = db.obras.filter(x => x.id !== id);
       if (db.obraId === id) db.obraId = db.obras[0].id;
       this.setState({ db, view: 'obras', obraVer: null }, () => this.guarda());
@@ -4740,7 +4796,7 @@ class Component extends DCLogic {
   }
   setP(mut) {
     const partes = Object.assign({}, this.state.partes);
-    const p = JSON.parse(JSON.stringify(this.parte()));
+    const p = clona(this.parte());
     mut(p);
     if (!p.obraId) p.obraId = this.state.db.obraId;
     ponExtras(p);
@@ -4802,7 +4858,7 @@ class Component extends DCLogic {
   }
   eligeObraDia(id) { this.asignaObraParte(id); }
   asignaObraParte(id) {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     db.obraId = id;
     const partes = Object.assign({}, this.state.partes);
     partes[this.state.dia] = Object.assign(parteVacio(), partes[this.state.dia] || {}, { obraId: id });
@@ -4838,7 +4894,7 @@ class Component extends DCLogic {
     let n = 2;
     while (partes[base + '#' + n]) n++;
     const k = base + '#' + n;
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     let obraId = id;
     if (!obraId) {
       const o = obraVacia();
@@ -4880,9 +4936,58 @@ class Component extends DCLogic {
     }));
   }
   // ---------- croquis ----------
-  pinta() {
+  /** El lienzo que esta puesto AHORA MISMO en la pantalla.
+   *
+   *  Desde que el croquis se pliega, su lienzo vive dentro de un sc-if: al
+   *  abrirlo y cerrarlo, el motor de plantillas tira ese <canvas> y pone otro.
+   *  La referencia guardada se quedaba apuntando al de antes, que ya no esta
+   *  en la pagina, y ahi es donde se pintaba: por eso lo que le pedias no se
+   *  veia hasta que otra cosa volvia a mover el lienzo de sitio. Un canvas,
+   *  ademas, pierde el dibujo en cuanto lo cambian de nodo.
+   *
+   *  Asi que no nos fiamos de la referencia: si no esta enganchada a la
+   *  pagina, se busca el bueno por la marca data-croquis. */
+  lienzo() {
     const c = this.canvasRef.current;
-    if (!c || this.state.view !== 'asistente' || this.state.paso !== 6) return;
+    if (c && c.isConnected) return c;
+    const v = document.querySelector('canvas[data-croquis]');
+    if (v) this.canvasRef.current = v;
+    return v || null;
+  }
+  /** TODOS los lienzos del croquis que haya puestos ahora mismo.
+   *
+   *  Normalmente hay uno. Pero el croquis vive dentro de un sc-if y, al
+   *  rehacerse, puede haber un momento con el viejo todavia puesto y el nuevo
+   *  ya dentro. Si se acierta con el equivocado, lo que pides no se ve hasta
+   *  que otra cosa los mueve de sitio. Se pintan los dos y se acabo la
+   *  loteria: cuesta lo mismo y no hay forma de fallar. */
+  lienzos() {
+    try {
+      const l = document.querySelectorAll('canvas[data-croquis]');
+      return l && l.length ? Array.prototype.slice.call(l) : [];
+    } catch (e) {
+      const c = this.lienzo();
+      return c ? [c] : [];
+    }
+  }
+  /** Repinta en el fotograma siguiente, cuando la pantalla ya ha terminado de
+   *  rehacerse. Los botones (deshacer, borrar, lapiz) cambian el estado y el
+   *  repintado de despues llegaba antes de que el lienzo bueno estuviera en
+   *  su sitio: se pintaba en el de antes. */
+  repintaLuego() {
+    if (this.pintaId) return;
+    this.pintaId = requestAnimationFrame(() => { this.pintaId = 0; this.pinta(); });
+  }
+  /** Repinta el croquis. Se le puede dar el zoom y el desplazamiento a mano:
+   *  durante el pellizco se pinta con los valores del momento, sin esperar a
+   *  que la pantalla se entere del cambio de estado. */
+  pinta(zDado, pDado, trazosDados) {
+    if (this.state.view !== 'asistente' || this.state.paso !== 6) return;
+    const cs = this.lienzos();
+    for (let i = 0; i < cs.length; i++) this.pintaEn(cs[i], zDado, pDado, trazosDados);
+  }
+  pintaEn(c, zDado, pDado, trazosDados) {
+    if (!c) return;
     const dpr = window.devicePixelRatio || 1;
     const w = c.clientWidth, h = c.clientHeight;
     if (!w || !h) return;
@@ -4894,7 +4999,8 @@ class Component extends DCLogic {
     const ink = st.getPropertyValue('--ink').trim() || '#111';
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.fillStyle = card; g.fillRect(0, 0, w, h);
-    const z = this.state.zoom, p = this.state.pan;
+    const z = zDado != null ? zDado : this.state.zoom;
+    const p = pDado || this.state.pan;
     const paso = 19 * z;
     g.lineWidth = 1;
     const x0 = ((p.x * z) % paso + paso) % paso, y0 = ((p.y * z) % paso + paso) % paso;
@@ -4911,7 +5017,8 @@ class Component extends DCLogic {
     for (let x = x5; x < w; x += paso5) { g.moveTo(Math.round(x) + 0.5, 0); g.lineTo(Math.round(x) + 0.5, h); }
     for (let y = y5; y < h; y += paso5) { g.moveTo(0, Math.round(y) + 0.5); g.lineTo(w, Math.round(y) + 0.5); }
     g.stroke();
-    const trazos = this.parte().croquis.strokes.concat(this.trazo ? [this.trazo] : []);
+    const base = trazosDados || this.parte().croquis.strokes;
+    const trazos = base.concat(this.trazo ? [this.trazo] : []);
     g.strokeStyle = ink; g.lineWidth = 2.2; g.lineJoin = 'round'; g.lineCap = 'round';
     trazos.forEach(t => {
       if (!t || t.length < 2) return;
@@ -4924,7 +5031,10 @@ class Component extends DCLogic {
     });
   }
   aMundo(e) {
-    const c = this.canvasRef.current, r = c.getBoundingClientRect(), z = this.state.zoom, p = this.state.pan;
+    // el lienzo que estas tocando: lo dice el propio evento, no hay que buscarlo
+    const c = (e && e.currentTarget) || this.lienzo();
+    if (!c || !c.getBoundingClientRect) return [0, 0];
+    const r = c.getBoundingClientRect(), z = this.state.zoom, p = this.state.pan;
     return [(e.clientX - r.left) / z - p.x, (e.clientY - r.top) / z - p.y];
   }
   pDown = e => {
@@ -4938,23 +5048,61 @@ class Component extends DCLogic {
     const [a, b] = [...this.ptrs.values()];
     return { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, zoom: this.state.zoom, pan: Object.assign({}, this.state.pan) };
   }
+  /** Un trabajo por fotograma, no uno por evento del dedo.
+   *
+   *  La pantalla manda eventos de dedo mucho mas rapido de lo que se dibuja
+   *  (en un movil de 120 Hz pueden llegar 240 al segundo), y cada uno hacia
+   *  un setState, que repinta la app ENTERA. De ahi los tirones. Ahora los
+   *  eventos se apuntan al momento (no se pierde ni un punto del trazo) pero
+   *  el repintado se hace una sola vez por fotograma. */
+  enMarco(fn) {
+    this.marcoFn = fn;
+    if (this.marcoId) return;
+    this.marcoId = requestAnimationFrame(() => {
+      this.marcoId = 0;
+      const f = this.marcoFn;
+      this.marcoFn = null;
+      if (f) { try { f(); } catch (e) { } }
+    });
+  }
   pMove = e => {
     if (!this.ptrs.has(e.pointerId)) return;
     this.ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (this.ptrs.size >= 2 && this.gesto) {
-      const g = this.gestoActual();
-      const z = Math.max(0.4, Math.min(4, this.gesto.zoom * (g.d / (this.gesto.d || 1))));
-      const pan = { x: this.gesto.pan.x + (g.mx - this.gesto.mx) / z, y: this.gesto.pan.y + (g.my - this.gesto.my) / z };
-      this.setState({ zoom: z, pan });
+      // el pellizco se calcula con los dedos donde esten al pintar el marco
+      this.enMarco(() => {
+        if (!this.gesto || this.ptrs.size < 2) return;
+        const g = this.gestoActual();
+        const z = Math.max(0.4, Math.min(4, this.gesto.zoom * (g.d / (this.gesto.d || 1))));
+        const pan = { x: this.gesto.pan.x + (g.mx - this.gesto.mx) / z, y: this.gesto.pan.y + (g.my - this.gesto.my) / z };
+        this.pinta(z, pan);                 // se ve YA, con los dedos donde estan
+        this.setState({ zoom: z, pan });    // y el rotulo del zoom se pone al dia
+      });
       return;
     }
-    if (this.trazo) { this.trazo.push(this.aMundo(e)); this.pinta(); return; }
+    // el punto se guarda YA; lo que se agrupa es el repintado
+    if (this.trazo) { this.trazo.push(this.aMundo(e)); this.enMarco(() => this.pinta()); return; }
     if (this.arrastre) {
-      const z = this.state.zoom;
-      this.setState({ pan: { x: this.arrastre.pan.x + (e.clientX - this.arrastre.x) / z, y: this.arrastre.pan.y + (e.clientY - this.arrastre.y) / z } });
+      const cx = e.clientX, cy = e.clientY;
+      this.enMarco(() => {
+        if (!this.arrastre) return;
+        const z = this.state.zoom;
+        const pan = { x: this.arrastre.pan.x + (cx - this.arrastre.x) / z, y: this.arrastre.pan.y + (cy - this.arrastre.y) / z };
+        this.pinta(z, pan);
+        this.setState({ pan });
+      });
     }
   };
   pUp = e => {
+    // Si quedaba un marco por pintar, se hace AHORA, no se tira: si no, se
+    // perderia el ultimo tramo del gesto y la vista daria un tironcito atras.
+    if (this.marcoId) {
+      cancelAnimationFrame(this.marcoId);
+      this.marcoId = 0;
+      const f = this.marcoFn;
+      this.marcoFn = null;
+      if (f) { try { f(); } catch (err) { } }
+    }
     this.ptrs.delete(e.pointerId);
     if (this.ptrs.size < 2) this.gesto = null;
     if (this.trazo && this.trazo.length > 1) { const t = this.trazo; this.trazo = null; this.setP(p => p.croquis.strokes.push(t)); }
@@ -5190,7 +5338,7 @@ class Component extends DCLogic {
     D.nueva(cab);
     D.txt(D.recorta(String(obra.nombre || 'Obra').toUpperCase(), D.ancho, 17), M, D.y, 17, true);
     D.y -= 15;
-    D.txt(D.recorta([obra.cliente || '', obra.pedido ? 'pedido ' + obra.pedido : ''].filter(Boolean).join('   .   '), D.ancho, 9), M, D.y, 9, false, '0.35');
+    D.txt(D.recorta([obra.cliente || '', obra.pedido ? 'pedido ' + obra.pedido : '', p.taller ? 'TRABAJO EN TALLER' : 'TRABAJO EN OBRA'].filter(Boolean).join('   .   '), D.ancho, 9), M, D.y, 9, false, '0.35');
     if (obra.ubicacion) { D.y -= 11; D.txt(D.recorta(obra.ubicacion, D.ancho, 9), M, D.y, 9, false, '0.35'); }
     D.y -= 20;
     const bt = D.y, bh = 52, bb = bt - bh, cw4 = D.ancho / 4;
@@ -5824,6 +5972,19 @@ class Component extends DCLogic {
     const nom = String(fu.fuente || '').split('/').pop().replace(/\.(ttf|otf)$/i, '');
     return 'Letra del móvil: ' + (nom || 'la del sistema') + ' · activa';
   }
+  /** Junta las sincronizaciones seguidas en una sola. */
+  pideSincro(st) {
+    this.stSincro = st;
+    if (this.tSincro) return;
+    this.tSincro = setTimeout(() => { this.tSincro = null; this.sincroWidget(this.stSincro); }, 400);
+  }
+  /** Manda lo que hubiera pendiente sin esperar. Al salir de la app. */
+  sincroYa() {
+    if (!this.tSincro) return;
+    clearTimeout(this.tSincro);
+    this.tSincro = null;
+    this.sincroWidget(this.stSincro);
+  }
   sincroWidget(st) {
     const N = window.MiParteNative;
     if (!N || !N.syncWidget) return;
@@ -5916,7 +6077,7 @@ class Component extends DCLogic {
   colaWidget(c) {
     if (!c) return;
     const partes = Object.assign({}, this.state.partes);
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     const dicho = [];
     const parteDe = dia => {
       const ks = Object.keys(partes).filter(x => soloDia(x) === dia);
@@ -6818,7 +6979,7 @@ class Component extends DCLogic {
     if (dx) this.setState({ agDX: 0 });
   }
   // ---------- fichas de cita ----------
-  abreCita(c) { this.setState({ cita: JSON.parse(JSON.stringify(c)), citaNueva: false }); }
+  abreCita(c) { this.setState({ cita: clona(c), citaNueva: false }); }
   nuevaCita(dia) {
     const db = this.state.db;
     const d = dia || this.state.agDia || hoyKey();
@@ -6829,7 +6990,7 @@ class Component extends DCLogic {
     this.setState({ cita: c, citaNueva: true });
   }
   setCita(mut) {
-    const c = JSON.parse(JSON.stringify(this.state.cita || {}));
+    const c = clona(this.state.cita || {});
     mut(c);
     this.setState({ cita: c });
   }
@@ -7014,7 +7175,7 @@ class Component extends DCLogic {
       const pt = s.partes[k], d = new Date(soloDia(k));
       return {
         f: String(d.getDate()).padStart(2, '0') + ' ' + ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][d.getMonth()],
-        res: (pt.trabajos.find(t => t.zona) || {}).zona || (pt.ops.length + ' operarios'),
+        res: [pt.taller ? 'Taller' : '', (pt.trabajos.find(t => t.zona) || {}).zona || (pt.ops.length + ' operarios')].filter(Boolean).join(' · '),
         est: pt.ops.length && pt.trabajos.some(t => t.texto) ? 'COMPLETO' : 'A MEDIAS',
         col: pt.ops.length && pt.trabajos.some(t => t.texto) ? 'var(--green)' : 'var(--amber)',
         ir: () => this.setState({ dia: k, view: 'asistente', paso: 1 })
@@ -7156,6 +7317,9 @@ class Component extends DCLogic {
     const cTipo = ci ? tipoCita(ci.tipo) : TIPOS_CITA[0];
     const cDur = ci ? durCita(ci) : 1;
     const cObra = ci ? (db.obras || []).find(o => o.id === ci.obraId) : null;
+    // a donde lleva el boton «Ir» de la cita: lo escrito manda; si no hay nada
+    // escrito y la cita es de una obra con ubicacion, se va a la obra
+    const destinoCita = ci ? String(ci.lugar || (cObra || {}).ubicacion || '').trim() : '';
     const diaLargo = k => DIASEM_L[dowLun(k)] + ' ' + Number(k.slice(8)) + ' de ' + MESES[Number(k.slice(5, 7)) - 1].toLowerCase();
     const item = it => ({
       k: it.k, tit: it.tit, sub: it.sub, col: it.col, deco: it.deco || 'none',
@@ -7291,6 +7455,10 @@ class Component extends DCLogic {
       setCitaLugar: e => { const v = e.target.value; this.setCita(c => { c.lugar = v; }); },
       dispLugarObra: cObra && cObra.ubicacion ? 'flex' : 'none',
       ponLugarObra: () => this.setCita(c => { c.lugar = (cObra || {}).ubicacion || ''; }),
+      citaMapsHref: mapsUrl(destinoCita),
+      citaMapaEdge: destinoCita ? 'var(--amber)' : 'var(--line)',
+      citaMapaInk: destinoCita ? 'var(--amber)' : 'var(--dim)',
+      citaMapaClic: destinoCita ? 'auto' : 'none',
       citaQuien: ci ? ci.quien : '',
       setCitaQuien: e => { const v = e.target.value; this.setCita(c => { c.quien = v; c.tel = ''; }); },
       quitaLugar: () => this.setCita(c => { c.lugar = ''; }),
@@ -7652,6 +7820,7 @@ class Component extends DCLogic {
       },
       verTutorial: () => this.abreTutorial('manual'),
       verTutWid: () => this.abreTutWid(),
+      verPrivacidad: () => this.aviso('Privacidad', PRIVACIDAD),
       // tutorial de los widgets, aparte del de la app
       vTutW: !!tutW,
       twX: 'calc(' + (-wPaso) + ' * 100%)',
@@ -7714,6 +7883,12 @@ class Component extends DCLogic {
       obraNombre: obraDia.nombre, obraCliente: obraDia.cliente, obraPedido: obraDia.pedido,
       obraUbic: obraDia.ubicacion || '',
       setObraUbic: e => { const v = e.target.value; this.setObra(obraDia.id, o => { o.ubicacion = v; }); },
+      tallerMark: p.taller ? '✓' : '',
+      tallerEdge: p.taller ? 'var(--amber)' : 'var(--line)',
+      tallerBg: p.taller ? 'var(--band)' : 'transparent',
+      tallerCaja: p.taller ? 'var(--amber)' : 'transparent',
+      tallerInk: p.taller ? 'var(--amber)' : 'var(--ink)',
+      toggleTaller: () => this.setP(x => { x.taller = !x.taller; }),
       mapsHref: mapsUrl(obraDia.ubicacion),
       contactos: (obraDia.contactos || []).map((c, i) => ({
         nom: c.nom || '', tel: c.tel || '',
@@ -7842,9 +8017,21 @@ class Component extends DCLogic {
       herramientas: [['Lápiz', 'lapiz'], ['Mover', 'mover']].map(([lab, v]) => Object.assign({ lab, set: () => this.setState({ herr: v }) }, sel(s.herr === v))),
       canvasRef: this.canvasRef, pDown: this.pDown, pMove: this.pMove, pUp: this.pUp,
       altoCanvas: dosCol ? '70vh' : '54vh',
-      zoomTexto: 'zoom ' + Math.round(s.zoom * 100) + '% · pinza para acercar',
-      deshacer: () => this.setP(x => x.croquis.strokes.pop()),
-      borrarCroquis: () => this.pregunta('Borrar el croquis', 'Se borran todos los trazos de este croquis. No se puede deshacer.', () => this.setP(x => { x.croquis.strokes = []; }), 'Sí, borrar'),
+      zoomTexto: 'zoom ' + Math.round(s.zoom * 100) + '% · ' + (p.croquis.strokes || []).length + ' trazos',
+      // Los dos pintan ELLOS MISMOS con el resultado, y solo despues guardan.
+      // Es lo mismo que hace el pellizco, que es lo unico que nunca ha
+      // fallado: no esperar a que la pantalla se rehaga para verlo.
+      deshacer: () => {
+        const t = (p.croquis.strokes || []).slice(0, -1);
+        this.trazo = null;
+        this.pinta(null, null, t);
+        this.setP(x => x.croquis.strokes.pop());
+      },
+      borrarCroquis: () => this.pregunta('Borrar el croquis', 'Se borran todos los trazos de este croquis. No se puede deshacer.', () => {
+        this.trazo = null;
+        this.pinta(null, null, []);
+        this.setP(x => { x.croquis.strokes = []; });
+      }, 'Sí, borrar'),
       croAbierto: !!s.croAbierto,
       croLab: s.croAbierto ? 'Cerrar' : 'Dibujar',
       croEstado: p.croquis.strokes.length ? (p.croquis.titulo || p.croquis.strokes.length + (p.croquis.strokes.length === 1 ? ' trazo' : ' trazos')) : 'Toca para dibujar a mano',
