@@ -3,7 +3,7 @@
 <link rel="manifest" href="manifest.json">
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(e){console.warn("SW",e)})})}</script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 
 
@@ -2230,9 +2230,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%2323231f'/%3E%3Cg fill='none' stroke='%234a4842' stroke-width='3'%3E%3Cpath d='M30 20v140M60 20v140M90 20v140M120 20v140M150 20v140M20 30h140M20 60h140M20 90h140M20 120h140M20 150h140'/%3E%3C/g%3E%3Crect x='75' y='75' width='40' height='40' fill='%23d08a2a'/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2323231f'/%3E%3Crect x='24' y='24' width='16' height='16' fill='%23d08a2a'/%3E%3C/svg%3E">
 <style>
-:root{--paper:#f4f2ec;--card:#fff;--field:#f7f5f0;--ink:#1a1a18;--dim:#6d6a63;--line:#d9d6cf;--band:#23231f;--bandink:#f2f0ea;--banddim:#a8a49a;--amber:#d08a2a;--wash:#efece5;--green:oklch(0.55 0.13 148);--red:oklch(0.53 0.17 27);--off:#454338;--sh:0 1px 2px rgba(28,26,20,.05),0 10px 22px -16px rgba(28,26,20,.30)}
-@media (prefers-color-scheme:dark){:root{--paper:#0f0f0c;--card:#1c1c16;--field:#232319;--ink:#ecebe3;--dim:#9a968c;--line:#33322a;--band:#000;--bandink:#f2f0ea;--banddim:#8d8a80;--amber:#e0a047;--wash:#26251d;--green:oklch(0.74 0.13 148);--red:oklch(0.7 0.17 27);--off:#4a473c;--sh:0 1px 2px rgba(0,0,0,.5)}}
-html,body{margin:0;background:var(--paper);-webkit-text-size-adjust:100%;overscroll-behavior:none}
+:root{--paper:#f4f2ec;--card:#fff;--field:#f7f5f0;--ink:#1a1a18;--dim:#6d6a63;--line:#d9d6cf;--band:#23231f;--bandink:#f2f0ea;--banddim:#a8a49a;--amber:#d08a2a;--wash:#efece5;--green:oklch(0.55 0.13 148);--red:oklch(0.53 0.17 27);--off:#c3bfb4;--sem:#e9e5dc;--sh:0 1px 2px rgba(28,26,20,.05),0 10px 22px -16px rgba(28,26,20,.30)}
+@media (prefers-color-scheme:dark){:root{--paper:#0f0f0c;--card:#1c1c16;--field:#232319;--ink:#ecebe3;--dim:#9a968c;--line:#33322a;--band:#000;--bandink:#f2f0ea;--banddim:#8d8a80;--amber:#e0a047;--wash:#26251d;--green:oklch(0.74 0.13 148);--red:oklch(0.7 0.17 27);--off:#4a473c;--sem:#000;--sh:0 1px 2px rgba(0,0,0,.5)}}
+html,body{margin:0;background:var(--paper);-webkit-text-size-adjust:100%;overscroll-behavior:none;touch-action:pan-x pan-y}
 body{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 input,textarea,select,button{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-user-select:text;user-select:text;border-radius:10px}
 input:focus,textarea:focus,select:focus{border-color:var(--amber);outline:none}
@@ -2255,7 +2255,7 @@ a:hover{color:var(--ink)}
 </helmet>
 <div id="app" style="min-height:100dvh;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-variant-numeric:tabular-nums;display:flex;flex-direction:column">
 
-<div style="background:var(--band);color:var(--bandink);padding:calc(15px + env(safe-area-inset-top)) 16px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:5">
+<div style="background:var(--band);color:var(--bandink);padding:calc(15px + var(--bar-arriba,0px) + env(safe-area-inset-top)) 16px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:5">
 <div style="display:flex;flex-direction:column;gap:5px;min-width:0;flex:1">
 <div style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">{{ cabTitulo }}</div>
 <div sc-camel-on-click="{{ irObras }}" style="font:600 19px/1.1 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer">{{ cabObra }}</div>
@@ -2343,7 +2343,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ o.ir }}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.nom }}</span>
 <span style="font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ o.txt }}</span>
-<span style="display:flex;align-items:center;gap:5px;background:var(--band);border-radius:999px;padding:5px 7px;flex:none">
+<span style="display:flex;align-items:center;gap:5px;background:var(--sem);border-radius:999px;padding:5px 7px;flex:none">
 <span style="width:9px;height:9px;border-radius:50%;background:{{ o.v }}"></span>
 <span style="width:9px;height:9px;border-radius:50%;background:{{ o.a }}"></span>
 <span style="width:9px;height:9px;border-radius:50%;background:{{ o.r }}"></span>
@@ -2421,7 +2421,7 @@ a:hover{color:var(--ink)}
 <sc-for list="{{ tareas }}" as="t" hint-placeholder-count="2">
 <div style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line)">
 <span sc-camel-on-click="{{ t.set }}" style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.cajaEdge }};background:{{ t.caja }};color:#fff;display:flex;align-items:center;justify-content:center;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;cursor:pointer">{{ t.mark }}</span>
-<span sc-camel-on-click="{{ t.set }}" style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;flex:1;color:{{ t.ink }};text-decoration:{{ t.deco }};cursor:pointer">{{ t.txt }}</span>
+<span sc-camel-on-click="{{ t.set }}" sc-camel-on-context-menu="{{ t.editar }}" sc-camel-on-pointer-down="{{ t.pulsa }}" sc-camel-on-pointer-up="{{ t.suelta }}" sc-camel-on-pointer-cancel="{{ t.suelta }}" sc-camel-on-pointer-move="{{ t.suelta }}" style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;flex:1;color:{{ t.ink }};text-decoration:{{ t.deco }};cursor:pointer">{{ t.txt }}</span>
 <span sc-camel-on-click="{{ t.quitar }}" style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer">✕</span>
 </div>
 </sc-for>
@@ -2543,6 +2543,13 @@ a:hover{color:var(--ink)}
 <a href="{{ mapsHref }}" target="_blank" rel="noopener" style="display:{{ dispMapa }};align-items:center;padding:0 15px;border:1px solid var(--amber);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);flex:none">Ir</a>
 </div>
 </div>
+<div sc-camel-on-click="{{ toggleTaller }}" style="display:flex;align-items:center;gap:11px;border:1.5px solid {{ tallerEdge }};background:{{ tallerBg }};border-radius:12px;padding:12px;cursor:pointer">
+<span style="width:22px;height:22px;flex:none;border:1.5px solid {{ tallerEdge }};background:{{ tallerCaja }};border-radius:6px;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#23231f">{{ tallerMark }}</span>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ tallerInk }}">Trabajo en taller</span>
+<span style="font:400 10px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">La jornada se ha hecho en el taller, aunque el parte sea de esta obra</span>
+</div>
+</div>
 <div style="display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);padding-top:12px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Personas de contacto</span>
 <sc-for list="{{ contactos }}" as="c" hint-placeholder-count="1">
@@ -2613,7 +2620,7 @@ a:hover{color:var(--ink)}
 <span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.nom }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">{{ o.cat }}</span>
 </div>
-<span style="display:flex;align-items:center;gap:5px;background:var(--band);border-radius:999px;padding:6px 8px;flex:none">
+<span style="display:flex;align-items:center;gap:5px;background:var(--sem);border-radius:999px;padding:6px 8px;flex:none">
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.v }}"></span>
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.a }}"></span>
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.r }}"></span>
@@ -2655,7 +2662,13 @@ a:hover{color:var(--ink)}
 <input value="{{ t.zona }}" sc-camel-on-change="{{ t.setZona }}" list="zonas-lista" placeholder="Zona" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <span sc-camel-on-click="{{ t.quitar }}" style="font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding:0 4px;cursor:pointer">✕</span>
 </div>
-<textarea data-trab="{{ t.idx }}" value="{{ t.texto }}" sc-camel-on-change="{{ t.setTexto }}" rows="2" placeholder="Trabajo realizado o a realizar" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px;resize:vertical"></textarea>
+<div style="position:relative">
+<textarea data-trab="{{ t.idx }}" value="{{ t.texto }}" sc-camel-on-change="{{ t.setTexto }}" rows="2" placeholder="Trabajo realizado o a realizar" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px 50px 11px 11px;resize:vertical"></textarea>
+<div sc-camel-on-click="{{ t.dictar }}" title="{{ t.micTit }}" style="position:absolute;top:7px;right:7px;display:{{ t.micDisp }};width:36px;height:36px;border-radius:10px;border:1px solid {{ t.micEdge }};background:{{ t.micBg }};align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ t.micInk }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3.5"></path></svg>
+</div>
+</div>
+<div style="display:{{ t.micAviso }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-top:-4px">Escuchando… pulsa el micro para parar</div>
 <div style="display:flex;gap:8px">
 <div sc-camel-on-click="{{ t.marcaHecho }}" style="flex:1;display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid {{ t.okEdge }};border-radius:12px;cursor:pointer">
 <span style="width:19px;height:19px;border-radius:5px;border:1.5px solid {{ t.okEdge }};background:{{ t.okBg }};color:#fff;display:flex;align-items:center;justify-content:center;font:700 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none">{{ t.okMark }}</span>
@@ -2788,7 +2801,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ borrarCroquis }}" style="padding:10px 13px;border:1px solid var(--line);border-radius:999px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);cursor:pointer">Borrar</div>
 <span style="margin-left:auto;font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding-right:4px">{{ zoomTexto }}</span>
 </div>
-<canvas ref="{{ canvasRef }}" sc-camel-on-pointer-down="{{ pDown }}" sc-camel-on-pointer-move="{{ pMove }}" sc-camel-on-pointer-up="{{ pUp }}" sc-camel-on-pointer-cancel="{{ pUp }}" style="width:100%;height:{{ altoCanvas }};display:block;touch-action:none;background:var(--card)"></canvas>
+<canvas ref="{{ canvasRef }}" data-croquis="1" sc-camel-on-pointer-down="{{ pDown }}" sc-camel-on-pointer-move="{{ pMove }}" sc-camel-on-pointer-up="{{ pUp }}" sc-camel-on-pointer-cancel="{{ pUp }}" style="width:100%;height:{{ altoCanvas }};display:block;touch-action:none;background:var(--card)"></canvas>
 <div style="display:flex;gap:10px;padding:11px;border-top:1px solid var(--line)">
 <input value="{{ croquisTitulo }}" sc-camel-on-change="{{ setCroquisTitulo }}" placeholder="Título del croquis" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <input value="{{ croquisEscala }}" sc-camel-on-change="{{ setCroquisEscala }}" placeholder="Escala" style="width:110px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
@@ -2834,7 +2847,7 @@ a:hover{color:var(--ink)}
 <span style="font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.sub }}</span>
 </div>
 <span style="font:400 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">{{ o.txt }}</span>
-<span style="display:flex;align-items:center;gap:5px;background:var(--band);border-radius:999px;padding:6px 8px;flex:none">
+<span style="display:flex;align-items:center;gap:5px;background:var(--sem);border-radius:999px;padding:6px 8px;flex:none">
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.v }}"></span>
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.a }}"></span>
 <span style="width:10px;height:10px;border-radius:50%;background:{{ o.r }}"></span>
@@ -2871,7 +2884,7 @@ a:hover{color:var(--ink)}
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Valoración acumulada</div>
 <div style="display:flex;align-items:center;gap:14px;padding:16px 14px">
-<span style="display:flex;flex-direction:column;gap:7px;background:var(--band);border-radius:999px;padding:9px 8px;flex:none">
+<span style="display:flex;flex-direction:column;gap:7px;background:var(--sem);border-radius:999px;padding:9px 8px;flex:none">
 <span style="width:18px;height:18px;border-radius:50%;background:{{ fV }}"></span>
 <span style="width:18px;height:18px;border-radius:50%;background:{{ fA }}"></span>
 <span style="width:18px;height:18px;border-radius:50%;background:{{ fR }}"></span>
@@ -2940,7 +2953,13 @@ a:hover{color:var(--ink)}
 
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:11px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Datos de la obra</span>
-<input value="{{ oNom }}" sc-camel-on-change="{{ setONom }}" placeholder="Obra" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<div style="display:flex;align-items:center;gap:11px">
+<input value="{{ oNom }}" sc-camel-on-change="{{ setONom }}" placeholder="Obra" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<div title="Color en la agenda" style="position:relative;width:46px;height:46px;flex:none;border-radius:999px;display:flex;align-items:center;justify-content:center;background:conic-gradient(from 90deg,#d34b3a,#d08a2a,#c9b23a,#4f9e46,#2f8f8a,#3f7fbf,#7a5cc4,#c1479a,#d34b3a);cursor:pointer">
+<div style="width:32px;height:32px;border-radius:999px;background:{{ oColor }};border:2.5px solid var(--card)"></div>
+<input type="color" value="{{ oColor }}" sc-camel-on-change="{{ setOColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:none;padding:0;margin:0;background:transparent;cursor:pointer">
+</div>
+</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
 <div style="display:flex;flex-direction:column;gap:5px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Cliente</span>
@@ -2952,17 +2971,11 @@ a:hover{color:var(--ink)}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:5px">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-<div style="display:flex;flex-direction:column;gap:5px">
-<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Color en la agenda</span>
-<input type="color" value="{{ oColor }}" sc-camel-on-change="{{ setOColor }}" style="width:100%;height:46px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);padding:5px;cursor:pointer">
-</div>
-<div style="display:flex;flex-direction:column;gap:5px">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Fin de plazo</span>
-<input type="date" value="{{ oPlazo }}" sc-camel-on-change="{{ setOPlazo }}" style="width:100%;height:46px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 12px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:0 10px">
+<div style="display:flex;align-items:center;gap:11px">
+<input type="date" value="{{ oPlazo }}" sc-camel-on-change="{{ setOPlazo }}" style="flex:1;min-width:0;height:46px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 12px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;padding:0 10px">
+<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:{{ oPlazoCol }};flex:none;max-width:44%;text-align:right">{{ oPlazoTxt }}</span>
 </div>
-</div>
-<span style="font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:{{ oPlazoCol }};margin-top:-4px">{{ oPlazoTxt }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Ubicación</span>
 <div style="display:flex;gap:8px">
 <input value="{{ oUbic }}" sc-camel-on-change="{{ setOUbic }}" placeholder="Dirección o enlace de Google Maps" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
@@ -3307,6 +3320,8 @@ Cargar una copia
 <span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">›</span>
 </div>
 
+<div sc-camel-on-click="{{ verPrivacidad }}" style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer"> <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0"> <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Privacidad</span> <span style="font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">Qué guarda la app y qué no sale del móvil</span> </div> <span style="font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">›</span> </div>
+
 </div>
 </sc-if>
 
@@ -3397,7 +3412,7 @@ Cargar una copia
 <div sc-camel-on-click="{{ accionPrincipal }}" style="flex:1;text-align:center;padding:16px;background:var(--amber);border-radius:12px;color:#23231f;font:700 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">{{ textoAccion }}</div>
 </div>
 </sc-if>
-<div style="display:flex;background:var(--band);border-top:1px solid #35342c;padding-bottom:env(safe-area-inset-bottom)">
+<div style="display:flex;background:var(--band);border-top:1px solid #35342c;padding-bottom:calc(var(--bar-abajo,0px) + env(safe-area-inset-bottom))">
 <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
 <div sc-camel-on-click="{{ t.ir }}" style="flex:1;padding:11px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:5px;border-top:2px solid {{ t.linea }};cursor:pointer;transition:border-color .2s ease,background .2s ease">
 <span style="display:block;color:{{ t.col }};transition:color .2s ease">{{ t.ico }}</span>
@@ -3408,8 +3423,8 @@ Cargar una copia
 </div>
 
 <sc-if value="{{ vCita }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;z-index:44;background:var(--paper);display:flex;flex-direction:column;animation:sube .26s cubic-bezier(.2,.85,.25,1) both">
-<div style="background:var(--band);color:var(--bandink);padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:12px;flex:none">
+<div style="position:fixed;inset:0;z-index:44;background:var(--paper);padding-left:var(--bar-izq,0px);padding-right:var(--bar-der,0px);display:flex;flex-direction:column;animation:sube .26s cubic-bezier(.2,.85,.25,1) both">
+<div style="background:var(--band);color:var(--bandink);padding:calc(14px + var(--bar-arriba,0px) + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:12px;flex:none">
 <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">{{ citaCab }}</span>
 <span style="font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--banddim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ citaResumen }}</span>
@@ -3495,6 +3510,7 @@ Cargar una copia
 <input value="{{ citaLugar }}" sc-camel-on-change="{{ setCitaLugar }}" placeholder="Sitio, si no es la obra" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <span sc-camel-on-click="{{ quitaLugar }}" style="display:{{ dispQuitaLugar }};align-items:center;justify-content:center;width:44px;border:1px solid var(--line);border-radius:12px;font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none;cursor:pointer">✕</span>
 <span sc-camel-on-click="{{ ponLugarObra }}" style="display:{{ dispLugarObra }};align-items:center;padding:0 14px;border:1px solid var(--amber);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);flex:none;cursor:pointer">La obra</span>
+<a href="{{ citaMapsHref }}" target="_blank" rel="noopener" style="display:flex;align-items:center;padding:0 14px;border:1px solid {{ citaMapaEdge }};border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ citaMapaInk }};flex:none;pointer-events:{{ citaMapaClic }}">Ir</a>
 </div>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">Con quién</span>
 <div style="display:flex;gap:8px">
@@ -3528,7 +3544,7 @@ Cargar una copia
 <div sc-camel-on-click="{{ borrarCita }}" style="display:{{ dispBorrarCita }};padding:14px;text-align:center;border:1px solid var(--line);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Borrar la cita</div>
 </div>
 
-<div style="flex:none;display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)">
+<div style="flex:none;display:flex;gap:8px;padding:10px 14px calc(10px + var(--bar-abajo,0px) + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)">
 <div sc-camel-on-click="{{ cerrarCita }}" style="width:96px;text-align:center;padding:16px 0;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer">Dejarlo</div>
 <div sc-camel-on-click="{{ guardarCita }}" style="flex:1;text-align:center;padding:16px;background:var(--amber);border-radius:12px;color:#23231f;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Guardar</div>
 </div>
@@ -3536,8 +3552,8 @@ Cargar una copia
 </sc-if>
 
 <sc-if value="{{ vHoja }}" hint-placeholder-val="{{ false }}">
-<div sc-camel-on-click="{{ cerrarHoja }}" style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
-<div sc-camel-on-click="{{ noProp }}" style="width:100%;max-width:520px;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:18px 16px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sube .28s cubic-bezier(.2,.85,.25,1) both">
+<div sc-camel-on-click="{{ cerrarHoja }}" style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:40;padding-left:var(--bar-izq,0px);padding-right:var(--bar-der,0px);display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
+<div sc-camel-on-click="{{ noProp }}" style="width:100%;max-width:520px;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:18px 16px calc(16px + var(--bar-abajo,0px) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sube .28s cubic-bezier(.2,.85,.25,1) both">
 <div style="width:42px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 6px"></div>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">{{ hojaTit }}</span>
 <div sc-camel-on-click="{{ accVer }}" style="display:{{ dispVer }};flex-direction:column;gap:3px;padding:14px;border:1px solid var(--amber);border-radius:14px;background:var(--amber);cursor:pointer">
@@ -3563,7 +3579,7 @@ Cargar una copia
 </sc-if>
 
 <sc-if value="{{ vFoto }}" hint-placeholder-val="{{ false }}">
-<div sc-camel-on-click="{{ cerrarFoto }}" style="position:fixed;inset:0;background:rgba(12,12,9,.92);z-index:45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px;cursor:pointer;animation:velo .18s ease-out both">
+<div sc-camel-on-click="{{ cerrarFoto }}" style="position:fixed;inset:0;background:rgba(12,12,9,.92);z-index:45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(18px + var(--bar-arriba,0px)) calc(18px + var(--bar-der,0px)) calc(18px + var(--bar-abajo,0px)) calc(18px + var(--bar-izq,0px));cursor:pointer;animation:velo .18s ease-out both">
 {{ fotoImg }}
 <span style="font:400 11px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#c9c6bd;text-align:center">{{ fotoPie }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8d8a80">Toca para cerrar</span>
@@ -3571,10 +3587,10 @@ Cargar una copia
 </sc-if>
 
 <sc-if value="{{ vDlg }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:41;display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
-<div style="width:100%;max-width:520px;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:20px 18px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sube .28s cubic-bezier(.2,.85,.25,1) both">
+<div style="position:fixed;inset:0;background:rgba(12,12,9,.6);z-index:41;padding-left:var(--bar-izq,0px);padding-right:var(--bar-der,0px);display:flex;align-items:flex-end;justify-content:center;animation:velo .18s ease-out both">
+<div style="width:100%;max-width:520px;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--line);padding:20px 18px calc(16px + var(--bar-abajo,0px) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sube .28s cubic-bezier(.2,.85,.25,1) both">
 <span style="font:600 16px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)">{{ dlgTit }}</span>
-<span style="font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ dlgTxt }}</span>
+<span style="font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);white-space:pre-line;max-height:52vh;overflow-y:auto;overscroll-behavior:contain">{{ dlgTxt }}</span>
 <sc-if value="{{ dlgHayLista }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:7px;max-height:46vh;overflow:auto;padding-top:4px">
 <sc-for list="{{ dlgLista }}" as="o" hint-placeholder-count="2">
@@ -3587,7 +3603,7 @@ Cargar una copia
 </div>
 </sc-for>
 </div>
-</sc-if>
+</sc-if> <sc-if value="{{ dlgHayCampo }}" hint-placeholder-val="{{ false }}"> <input value="{{ dlgCampo }}" sc-camel-on-change="{{ dlgSetCampo }}" sc-camel-on-key-down="{{ dlgCampoKey }}" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:400 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:13px 12px;margin-top:2px"> </sc-if>
 <div style="display:flex;gap:8px;padding-top:6px">
 <div sc-camel-on-click="{{ dlgCerrar }}" style="flex:1;text-align:center;padding:14px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer;display:{{ dlgDispCancel }}">{{ dlgCancelLab }}</div>
 <div sc-camel-on-click="{{ dlgAlt }}" style="flex:1;text-align:center;padding:14px;border:1px solid var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);cursor:pointer;display:{{ dlgDispAlt }}">{{ dlgAltLab }}</div>
@@ -3604,7 +3620,7 @@ Cargar una copia
 </sc-if>
 
 <sc-if value="{{ vTut }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;z-index:45;background:rgba(12,12,9,.74);display:flex;align-items:flex-end;justify-content:center;animation:velo .2s ease-out both">
+<div style="position:fixed;inset:0;z-index:45;background:rgba(12,12,9,.74);padding-left:var(--bar-izq,0px);padding-right:var(--bar-der,0px);display:flex;align-items:flex-end;justify-content:center;animation:velo .2s ease-out both">
 <div style="width:100%;max-width:560px;height:min(92dvh,800px);background:var(--paper);border-radius:22px 22px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;animation:sube .36s cubic-bezier(.2,.85,.25,1) both">
 
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px 14px;background:var(--band)">
@@ -3737,7 +3753,7 @@ Cargar una copia
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Valorar · ejemplo</div>
 <div style="display:flex;align-items:center;gap:10px;padding:13px 14px">
 <span style="font:500 12.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);flex:1;min-width:0">J. Sánchez</span>
-<span style="display:flex;align-items:center;gap:8px;background:var(--band);border-radius:999px;padding:7px 9px;flex:none">
+<span style="display:flex;align-items:center;gap:8px;background:var(--sem);border-radius:999px;padding:7px 9px;flex:none">
 <span sc-camel-on-click="{{ tutSemV }}" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--green);background:{{ tutSemVBg }};cursor:pointer"></span>
 <span sc-camel-on-click="{{ tutSemA }}" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--amber);background:{{ tutSemABg }};cursor:pointer"></span>
 <span sc-camel-on-click="{{ tutSemR }}" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--red);background:{{ tutSemRBg }};cursor:pointer"></span>
@@ -3769,7 +3785,7 @@ Cargar una copia
 <span style="display:{{ f.cajaDisp }};width:20px;height:20px;border-radius:6px;border:1.5px solid {{ f.cajaEdge }};background:{{ f.cajaBg }};color:{{ f.cajaInk }};align-items:center;justify-content:center;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none">{{ f.mark }}</span>
 <span style="font:500 12.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;flex:1;min-width:0;color:{{ f.izqCol }};text-decoration:{{ f.deco }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.izq }}</span>
 <span style="font:400 9.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">{{ f.der }}</span>
-<span style="display:{{ f.dotsDisp }};align-items:center;gap:5px;background:var(--band);border-radius:999px;padding:5px 7px;flex:none">
+<span style="display:{{ f.dotsDisp }};align-items:center;gap:5px;background:var(--sem);border-radius:999px;padding:5px 7px;flex:none">
 <span style="width:9px;height:9px;border-radius:50%;background:{{ f.d1 }}"></span>
 <span style="width:9px;height:9px;border-radius:50%;background:{{ f.d2 }}"></span>
 <span style="width:9px;height:9px;border-radius:50%;background:{{ f.d3 }}"></span>
@@ -3946,7 +3962,7 @@ Cargar una copia
 </div>
 </div>
 
-<div style="display:flex;flex-direction:column;gap:12px;padding:13px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)">
+<div style="display:flex;flex-direction:column;gap:12px;padding:13px 18px calc(14px + var(--bar-abajo,0px) + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)">
 <div style="display:{{ tutDispPuntos }};gap:6px;justify-content:center;align-items:center;height:7px">
 <sc-for list="{{ tutPuntos }}" as="d" hint-placeholder-count="6">
 <span sc-camel-on-click="{{ d.ir }}" style="width:{{ d.w }};height:7px;border-radius:99px;background:{{ d.bg }};transition:width .34s cubic-bezier(.3,.9,.25,1),background .3s ease;cursor:pointer"></span>
@@ -3963,7 +3979,7 @@ Cargar una copia
 </sc-if>
 
 <sc-if value="{{ vTutW }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;z-index:46;background:rgba(12,12,9,.74);display:flex;align-items:flex-end;justify-content:center;animation:velo .2s ease-out both">
+<div style="position:fixed;inset:0;z-index:46;background:rgba(12,12,9,.74);padding-left:var(--bar-izq,0px);padding-right:var(--bar-der,0px);display:flex;align-items:flex-end;justify-content:center;animation:velo .2s ease-out both">
 <div style="width:100%;max-width:560px;height:min(92dvh,800px);background:var(--paper);border-radius:22px 22px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;animation:sube .36s cubic-bezier(.2,.85,.25,1) both">
 
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px 14px;background:var(--band)">
@@ -4118,7 +4134,7 @@ Cargar una copia
 </div>
 </div>
 
-<div style="display:flex;flex-direction:column;gap:12px;padding:13px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)">
+<div style="display:flex;flex-direction:column;gap:12px;padding:13px 18px calc(14px + var(--bar-abajo,0px) + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)">
 <div style="display:flex;gap:6px;justify-content:center;align-items:center;height:7px">
 <sc-for list="{{ twPuntos }}" as="d" hint-placeholder-count="6">
 <span sc-camel-on-click="{{ d.ir }}" style="width:{{ d.w }};height:7px;border-radius:99px;background:{{ d.bg }};transition:width .34s cubic-bezier(.3,.9,.25,1),background .3s ease;cursor:pointer"></span>
@@ -4437,7 +4453,7 @@ function semilla() {
   };
 }
 function parteVacio() {
-  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [] };
+  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [], taller: false };
 }
 function horasEntre(a, b) {
   if (!a || !b) return 0;
@@ -4447,6 +4463,18 @@ function horasEntre(a, b) {
   return m / 60;
 }
 const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+/** Copia de seguridad de un objeto de datos, para poder tocarlo sin romper el
+ *  estado de antes.
+ *
+ *  Antes era un JSON.stringify + JSON.parse. Eso convierte TODO a texto y lo
+ *  vuelve a leer, y en esta app «todo» incluye las fotos, que van dentro del
+ *  parte como texto en base64. Con unos cuantos partes con foto, cada copia
+ *  eran decenas de megas de texto ida y vuelta, y se hace una copia en CADA
+ *  cosa que tocas: cada trazo del croquis, cada deshacer, cada casilla.
+ *  structuredClone hace lo mismo sin pasar por texto. */
+const clona = typeof structuredClone === 'function'
+  ? v => { try { return structuredClone(v); } catch (e) { return JSON.parse(JSON.stringify(v)); } }
+  : v => JSON.parse(JSON.stringify(v));
 // La jornada normal. Lo que pase de aqui son horas extra: si la cuadrilla
 // trabaja de 8 a 17, son 8 normales y 1 extra, no 9 normales.
 // De que pantalla cuelga cada pantalla. El boton ATRAS de Android sube un
@@ -4463,6 +4491,23 @@ const PADRE = {
   materiales: 'inicio',
   ajustes: 'inicio'
 };
+// Lo que la app hace de verdad con tus datos. Escrito mirando el codigo, no
+// de memoria: no hay ninguna llamada a internet fuera de sus propios ficheros.
+const PRIVACIDAD = [
+  'Todo lo que apuntas se queda dentro de este telefono. No hay cuenta, no hay servidor, no hay publicidad y no se mide el uso.',
+  '',
+  'La app no manda nada a ninguna parte. Cualquier peticion a internet que no sean sus propios ficheros esta bloqueada por dentro.',
+  '',
+  'Del telefono solo sale lo que mandas tu: el PDF y la copia de seguridad, por el menu de compartir de Android y a donde tu elijas; y la direccion de una obra o cita cuando pulsas IR, que se la pasa a tu app de mapas.',
+  '',
+  'Las fotos: la copia reducida entra en el parte y el original entero se guarda en tu galeria, en el album «Mi Parte».',
+  '',
+  'Ojo con los operarios: sus nombres, telefonos, horas y valoraciones son datos de otras personas. La app no los mueve de aqui, pero tu decides que escribes y con quien compartes el PDF.',
+  '',
+  'Si desinstalas sin sacar copia, se pierde. No hay copia en ningun otro sitio.',
+  '',
+  'La version completa esta en cgarcia9533.github.io/mi-parte/privacidad.html'
+].join('\n');
 const JORNADA = 8;
 const ordinarias = hd => Math.min(hd || 0, JORNADA);
 const extraDelDia = p => {
@@ -4529,7 +4574,10 @@ class Component extends DCLogic {
     setTimeout(() => this.pinta(), 60);
     setTimeout(() => this.mideInicio(), 120);
     this.tick = setInterval(() => this.compruebaAviso(), 60000);
-    this.onVis = () => { if (!document.hidden) { this.compruebaAviso(); this.sincroNativo(); } };
+    this.onVis = () => {
+      if (document.hidden) { this.sincroYa(); return; }
+      this.compruebaAviso(); this.sincroNativo();
+    };
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('focus', this.onVis);
     this.arranca();
@@ -4548,7 +4596,12 @@ class Component extends DCLogic {
         && (prevEstado.paso !== this.state.paso || prevEstado.view !== 'asistente')) {
       this.centraPaso(this.state.paso);
     }
-    this.pinta(); this.mideInicio();
+    this.pinta(); this.repintaLuego(); this.mideInicio();
+    // Al abrir o cerrar el croquis, el motor pone un <canvas> nuevo y en blanco.
+    // Se repinta en el fotograma siguiente, cuando ya esta medido.
+    if (prevEstado && prevEstado.croAbierto !== this.state.croAbierto && this.state.croAbierto) {
+      requestAnimationFrame(() => this.pinta());
+    }
     // al salir de la ficha de obra, las fotos se vuelven a esconder
     if (this.state.oFotos && this.state.view !== 'obra') this.setState({ oFotos: false });
     // el croquis se vuelve a cerrar al salir del paso 6
@@ -4584,7 +4637,7 @@ class Component extends DCLogic {
         this.setState({ db: guardado.db, partes: guardado.partes || {} });
       } else {
         try {
-          await idbGuarda(JSON.parse(JSON.stringify({ db: this.state.db, partes: this.state.partes })));
+          await idbGuarda(clona({ db: this.state.db, partes: this.state.partes }));
           localStorage.removeItem(KEY);
         } catch (e) { this.idbOk = false; }
       }
@@ -4621,12 +4674,21 @@ class Component extends DCLogic {
   guarda(extra) {
     const st = Object.assign({}, this.state, extra || {});
     const datos = { db: st.db, partes: st.partes };
-    this.sincroWidget(st);
+    // Antes esto iba aqui a pelo, y sincroWidget recorre 90 dias de agenda
+    // para sacar la proxima cita. Se guarda en cada trazo del croquis, en cada
+    // tecla y en cada casilla: era trabajo de sobra en medio del dibujo.
+    // Ahora se agrupa; y si la app se va al fondo, se manda sin esperar.
+    this.pideSincro(st);
     if (this.idbOk) {
       this.ultimo = datos;
       clearTimeout(this.tGuarda);
       this.tGuarda = setTimeout(() => {
-        idbGuarda(JSON.parse(JSON.stringify(this.ultimo)))
+        // Sin copia previa a proposito: IndexedDB ya hace su propia copia al
+        // guardar, y aqui nadie toca ese objeto por dentro (setP y setDb
+        // siempre crean uno nuevo). Copiarlo antes era hacer el trabajo dos
+        // veces, y con las fotos dentro eso son cientos de milisegundos en
+        // cada guardado.
+        idbGuarda(this.ultimo)
           .then(() => { if (this.state.sinEspacio) this.setState({ sinEspacio: false }); this.midEspacio(); })
           .catch(() => { if (!this.state.sinEspacio) this.setState({ sinEspacio: true }); });
       }, 220);
@@ -4646,7 +4708,7 @@ class Component extends DCLogic {
     }
   }
   setDb(mut) {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     mut(db);
     this.setState({ db }, () => this.guarda());
   }
@@ -4687,7 +4749,7 @@ class Component extends DCLogic {
     const p = this.state.partes[this.state.dia];
     const antes = (this.state.db.obras || []).find(o => o.id === (p || {}).obraId);
     const pasa = mover => {
-      const db = JSON.parse(JSON.stringify(this.state.db));
+      const db = clona(this.state.db);
       db.obraId = id;
       const partes = Object.assign({}, this.state.partes);
       if (p && (mover || !this.hayDatos(p))) partes[this.state.dia] = Object.assign({}, p, { obraId: id });
@@ -4706,7 +4768,7 @@ class Component extends DCLogic {
       ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean)));
   }
   obraNueva() {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     const o = obraVacia();
     db.obras = (db.obras || []).concat([o]);
     db.obraId = o.id;
@@ -4732,7 +4794,7 @@ class Component extends DCLogic {
     if ((this.state.db.obras || []).length < 2) return this.aviso('No se puede borrar', 'Tiene que quedar al menos una obra en la app.');
     if (this.diasObra(id).length) return this.aviso('Esta obra tiene partes', 'No se borra una obra con partes guardados. Márcala terminada y se queda fuera de la lista.');
     this.pregunta('Borrar la obra', 'Se borra «' + (o.nombre || 'sin nombre') + '» con sus contactos y sus notas.', () => {
-      const db = JSON.parse(JSON.stringify(this.state.db));
+      const db = clona(this.state.db);
       db.obras = db.obras.filter(x => x.id !== id);
       if (db.obraId === id) db.obraId = db.obras[0].id;
       this.setState({ db, view: 'obras', obraVer: null }, () => this.guarda());
@@ -4740,7 +4802,7 @@ class Component extends DCLogic {
   }
   setP(mut) {
     const partes = Object.assign({}, this.state.partes);
-    const p = JSON.parse(JSON.stringify(this.parte()));
+    const p = clona(this.parte());
     mut(p);
     if (!p.obraId) p.obraId = this.state.db.obraId;
     ponExtras(p);
@@ -4802,7 +4864,7 @@ class Component extends DCLogic {
   }
   eligeObraDia(id) { this.asignaObraParte(id); }
   asignaObraParte(id) {
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     db.obraId = id;
     const partes = Object.assign({}, this.state.partes);
     partes[this.state.dia] = Object.assign(parteVacio(), partes[this.state.dia] || {}, { obraId: id });
@@ -4838,7 +4900,7 @@ class Component extends DCLogic {
     let n = 2;
     while (partes[base + '#' + n]) n++;
     const k = base + '#' + n;
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     let obraId = id;
     if (!obraId) {
       const o = obraVacia();
@@ -4880,9 +4942,58 @@ class Component extends DCLogic {
     }));
   }
   // ---------- croquis ----------
-  pinta() {
+  /** El lienzo que esta puesto AHORA MISMO en la pantalla.
+   *
+   *  Desde que el croquis se pliega, su lienzo vive dentro de un sc-if: al
+   *  abrirlo y cerrarlo, el motor de plantillas tira ese <canvas> y pone otro.
+   *  La referencia guardada se quedaba apuntando al de antes, que ya no esta
+   *  en la pagina, y ahi es donde se pintaba: por eso lo que le pedias no se
+   *  veia hasta que otra cosa volvia a mover el lienzo de sitio. Un canvas,
+   *  ademas, pierde el dibujo en cuanto lo cambian de nodo.
+   *
+   *  Asi que no nos fiamos de la referencia: si no esta enganchada a la
+   *  pagina, se busca el bueno por la marca data-croquis. */
+  lienzo() {
     const c = this.canvasRef.current;
-    if (!c || this.state.view !== 'asistente' || this.state.paso !== 6) return;
+    if (c && c.isConnected) return c;
+    const v = document.querySelector('canvas[data-croquis]');
+    if (v) this.canvasRef.current = v;
+    return v || null;
+  }
+  /** TODOS los lienzos del croquis que haya puestos ahora mismo.
+   *
+   *  Normalmente hay uno. Pero el croquis vive dentro de un sc-if y, al
+   *  rehacerse, puede haber un momento con el viejo todavia puesto y el nuevo
+   *  ya dentro. Si se acierta con el equivocado, lo que pides no se ve hasta
+   *  que otra cosa los mueve de sitio. Se pintan los dos y se acabo la
+   *  loteria: cuesta lo mismo y no hay forma de fallar. */
+  lienzos() {
+    try {
+      const l = document.querySelectorAll('canvas[data-croquis]');
+      return l && l.length ? Array.prototype.slice.call(l) : [];
+    } catch (e) {
+      const c = this.lienzo();
+      return c ? [c] : [];
+    }
+  }
+  /** Repinta en el fotograma siguiente, cuando la pantalla ya ha terminado de
+   *  rehacerse. Los botones (deshacer, borrar, lapiz) cambian el estado y el
+   *  repintado de despues llegaba antes de que el lienzo bueno estuviera en
+   *  su sitio: se pintaba en el de antes. */
+  repintaLuego() {
+    if (this.pintaId) return;
+    this.pintaId = requestAnimationFrame(() => { this.pintaId = 0; this.pinta(); });
+  }
+  /** Repinta el croquis. Se le puede dar el zoom y el desplazamiento a mano:
+   *  durante el pellizco se pinta con los valores del momento, sin esperar a
+   *  que la pantalla se entere del cambio de estado. */
+  pinta(zDado, pDado, trazosDados) {
+    if (this.state.view !== 'asistente' || this.state.paso !== 6) return;
+    const cs = this.lienzos();
+    for (let i = 0; i < cs.length; i++) this.pintaEn(cs[i], zDado, pDado, trazosDados);
+  }
+  pintaEn(c, zDado, pDado, trazosDados) {
+    if (!c) return;
     const dpr = window.devicePixelRatio || 1;
     const w = c.clientWidth, h = c.clientHeight;
     if (!w || !h) return;
@@ -4894,7 +5005,8 @@ class Component extends DCLogic {
     const ink = st.getPropertyValue('--ink').trim() || '#111';
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.fillStyle = card; g.fillRect(0, 0, w, h);
-    const z = this.state.zoom, p = this.state.pan;
+    const z = zDado != null ? zDado : this.state.zoom;
+    const p = pDado || this.state.pan;
     const paso = 19 * z;
     g.lineWidth = 1;
     const x0 = ((p.x * z) % paso + paso) % paso, y0 = ((p.y * z) % paso + paso) % paso;
@@ -4911,7 +5023,8 @@ class Component extends DCLogic {
     for (let x = x5; x < w; x += paso5) { g.moveTo(Math.round(x) + 0.5, 0); g.lineTo(Math.round(x) + 0.5, h); }
     for (let y = y5; y < h; y += paso5) { g.moveTo(0, Math.round(y) + 0.5); g.lineTo(w, Math.round(y) + 0.5); }
     g.stroke();
-    const trazos = this.parte().croquis.strokes.concat(this.trazo ? [this.trazo] : []);
+    const base = trazosDados || this.parte().croquis.strokes;
+    const trazos = base.concat(this.trazo ? [this.trazo] : []);
     g.strokeStyle = ink; g.lineWidth = 2.2; g.lineJoin = 'round'; g.lineCap = 'round';
     trazos.forEach(t => {
       if (!t || t.length < 2) return;
@@ -4924,7 +5037,10 @@ class Component extends DCLogic {
     });
   }
   aMundo(e) {
-    const c = this.canvasRef.current, r = c.getBoundingClientRect(), z = this.state.zoom, p = this.state.pan;
+    // el lienzo que estas tocando: lo dice el propio evento, no hay que buscarlo
+    const c = (e && e.currentTarget) || this.lienzo();
+    if (!c || !c.getBoundingClientRect) return [0, 0];
+    const r = c.getBoundingClientRect(), z = this.state.zoom, p = this.state.pan;
     return [(e.clientX - r.left) / z - p.x, (e.clientY - r.top) / z - p.y];
   }
   pDown = e => {
@@ -4938,23 +5054,61 @@ class Component extends DCLogic {
     const [a, b] = [...this.ptrs.values()];
     return { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, zoom: this.state.zoom, pan: Object.assign({}, this.state.pan) };
   }
+  /** Un trabajo por fotograma, no uno por evento del dedo.
+   *
+   *  La pantalla manda eventos de dedo mucho mas rapido de lo que se dibuja
+   *  (en un movil de 120 Hz pueden llegar 240 al segundo), y cada uno hacia
+   *  un setState, que repinta la app ENTERA. De ahi los tirones. Ahora los
+   *  eventos se apuntan al momento (no se pierde ni un punto del trazo) pero
+   *  el repintado se hace una sola vez por fotograma. */
+  enMarco(fn) {
+    this.marcoFn = fn;
+    if (this.marcoId) return;
+    this.marcoId = requestAnimationFrame(() => {
+      this.marcoId = 0;
+      const f = this.marcoFn;
+      this.marcoFn = null;
+      if (f) { try { f(); } catch (e) { } }
+    });
+  }
   pMove = e => {
     if (!this.ptrs.has(e.pointerId)) return;
     this.ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (this.ptrs.size >= 2 && this.gesto) {
-      const g = this.gestoActual();
-      const z = Math.max(0.4, Math.min(4, this.gesto.zoom * (g.d / (this.gesto.d || 1))));
-      const pan = { x: this.gesto.pan.x + (g.mx - this.gesto.mx) / z, y: this.gesto.pan.y + (g.my - this.gesto.my) / z };
-      this.setState({ zoom: z, pan });
+      // el pellizco se calcula con los dedos donde esten al pintar el marco
+      this.enMarco(() => {
+        if (!this.gesto || this.ptrs.size < 2) return;
+        const g = this.gestoActual();
+        const z = Math.max(0.4, Math.min(4, this.gesto.zoom * (g.d / (this.gesto.d || 1))));
+        const pan = { x: this.gesto.pan.x + (g.mx - this.gesto.mx) / z, y: this.gesto.pan.y + (g.my - this.gesto.my) / z };
+        this.pinta(z, pan);                 // se ve YA, con los dedos donde estan
+        this.setState({ zoom: z, pan });    // y el rotulo del zoom se pone al dia
+      });
       return;
     }
-    if (this.trazo) { this.trazo.push(this.aMundo(e)); this.pinta(); return; }
+    // el punto se guarda YA; lo que se agrupa es el repintado
+    if (this.trazo) { this.trazo.push(this.aMundo(e)); this.enMarco(() => this.pinta()); return; }
     if (this.arrastre) {
-      const z = this.state.zoom;
-      this.setState({ pan: { x: this.arrastre.pan.x + (e.clientX - this.arrastre.x) / z, y: this.arrastre.pan.y + (e.clientY - this.arrastre.y) / z } });
+      const cx = e.clientX, cy = e.clientY;
+      this.enMarco(() => {
+        if (!this.arrastre) return;
+        const z = this.state.zoom;
+        const pan = { x: this.arrastre.pan.x + (cx - this.arrastre.x) / z, y: this.arrastre.pan.y + (cy - this.arrastre.y) / z };
+        this.pinta(z, pan);
+        this.setState({ pan });
+      });
     }
   };
   pUp = e => {
+    // Si quedaba un marco por pintar, se hace AHORA, no se tira: si no, se
+    // perderia el ultimo tramo del gesto y la vista daria un tironcito atras.
+    if (this.marcoId) {
+      cancelAnimationFrame(this.marcoId);
+      this.marcoId = 0;
+      const f = this.marcoFn;
+      this.marcoFn = null;
+      if (f) { try { f(); } catch (err) { } }
+    }
     this.ptrs.delete(e.pointerId);
     if (this.ptrs.size < 2) this.gesto = null;
     if (this.trazo && this.trazo.length > 1) { const t = this.trazo; this.trazo = null; this.setP(p => p.croquis.strokes.push(t)); }
@@ -5190,7 +5344,7 @@ class Component extends DCLogic {
     D.nueva(cab);
     D.txt(D.recorta(String(obra.nombre || 'Obra').toUpperCase(), D.ancho, 17), M, D.y, 17, true);
     D.y -= 15;
-    D.txt(D.recorta([obra.cliente || '', obra.pedido ? 'pedido ' + obra.pedido : ''].filter(Boolean).join('   .   '), D.ancho, 9), M, D.y, 9, false, '0.35');
+    D.txt(D.recorta([obra.cliente || '', obra.pedido ? 'pedido ' + obra.pedido : '', p.taller ? 'TRABAJO EN TALLER' : 'TRABAJO EN OBRA'].filter(Boolean).join('   .   '), D.ancho, 9), M, D.y, 9, false, '0.35');
     if (obra.ubicacion) { D.y -= 11; D.txt(D.recorta(obra.ubicacion, D.ancho, 9), M, D.y, 9, false, '0.35'); }
     D.y -= 20;
     const bt = D.y, bh = 52, bb = bt - bh, cw4 = D.ancho / 4;
@@ -5733,6 +5887,27 @@ class Component extends DCLogic {
     const t = nuevo[i]; nuevo[i] = nuevo[j]; nuevo[j] = t;
     this.setDb(d => { d.inicio = Object.assign({}, d.inicio || {}, { orden: nuevo }); });
   }
+  /** Editar el texto de una tarea. Se abre manteniendo el dedo encima.
+   *
+   *  Va por la ventana de siempre, con un campo de texto: el motor de
+   *  plantillas nunca ha metido un sc-if dentro de un sc-for en toda la app,
+   *  y no voy a estrenarlo aqui para editar en la propia linea. */
+  abreEditar(i) {
+    if (this.state.dlg) return;                 // ya hay una ventana delante
+    const t = (this.state.db.tareas || [])[i];
+    if (!t) return;
+    this.setState({
+      dlgCampo: t.txt || '',
+      dlg: {
+        tit: 'Editar tarea', campo: t.txt || '', ok: 'Guardar', cancel: true,
+        onOk: v => {
+          const s = String(v == null ? '' : v).trim();
+          if (!s) return;                        // vacio: se deja como estaba
+          this.setDb(d => { if (d.tareas && d.tareas[i]) d.tareas[i].txt = s; });
+        }
+      }
+    });
+  }
   addTarea() {
     const t = String(this.state.tareaNueva || '').trim();
     if (!t) return;
@@ -5823,6 +5998,19 @@ class Component extends DCLogic {
     if (!fu.ok) return 'Letra del móvil: no se ha encontrado ninguna instalada, así que se usa la del sistema.';
     const nom = String(fu.fuente || '').split('/').pop().replace(/\.(ttf|otf)$/i, '');
     return 'Letra del móvil: ' + (nom || 'la del sistema') + ' · activa';
+  }
+  /** Junta las sincronizaciones seguidas en una sola. */
+  pideSincro(st) {
+    this.stSincro = st;
+    if (this.tSincro) return;
+    this.tSincro = setTimeout(() => { this.tSincro = null; this.sincroWidget(this.stSincro); }, 400);
+  }
+  /** Manda lo que hubiera pendiente sin esperar. Al salir de la app. */
+  sincroYa() {
+    if (!this.tSincro) return;
+    clearTimeout(this.tSincro);
+    this.tSincro = null;
+    this.sincroWidget(this.stSincro);
   }
   sincroWidget(st) {
     const N = window.MiParteNative;
@@ -5916,7 +6104,7 @@ class Component extends DCLogic {
   colaWidget(c) {
     if (!c) return;
     const partes = Object.assign({}, this.state.partes);
-    const db = JSON.parse(JSON.stringify(this.state.db));
+    const db = clona(this.state.db);
     const dicho = [];
     const parteDe = dia => {
       const ks = Object.keys(partes).filter(x => soloDia(x) === dia);
@@ -6818,7 +7006,7 @@ class Component extends DCLogic {
     if (dx) this.setState({ agDX: 0 });
   }
   // ---------- fichas de cita ----------
-  abreCita(c) { this.setState({ cita: JSON.parse(JSON.stringify(c)), citaNueva: false }); }
+  abreCita(c) { this.setState({ cita: clona(c), citaNueva: false }); }
   nuevaCita(dia) {
     const db = this.state.db;
     const d = dia || this.state.agDia || hoyKey();
@@ -6829,7 +7017,7 @@ class Component extends DCLogic {
     this.setState({ cita: c, citaNueva: true });
   }
   setCita(mut) {
-    const c = JSON.parse(JSON.stringify(this.state.cita || {}));
+    const c = clona(this.state.cita || {});
     mut(c);
     this.setState({ cita: c });
   }
@@ -6972,6 +7160,62 @@ class Component extends DCLogic {
       try { localStorage.setItem('miparte:citasavisadas', JSON.stringify(hechos.concat(nuevos).slice(-60))); } catch (e) { }
     }
   }
+  /** ¿se puede dictar? o el puente nativo, o el reconocimiento del navegador. */
+  hayDictado() {
+    const n = window.MiParteNative;
+    if (n && typeof n.dictar === 'function') return true;
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  }
+  /** Mete lo dictado al final de la linea i, sin pisar lo ya escrito. */
+  ponDictado(i, texto) {
+    const t = String(texto || '').trim();
+    if (!t) return;
+    this.setP(x => {
+      const l = x.trabajos[i];
+      if (!l) return;
+      const base = (l.texto || '').trim();
+      l.texto = base ? base.replace(/[.,;]$/, '') + '. ' + t : t.charAt(0).toUpperCase() + t.slice(1);
+    });
+  }
+  /** Arranca o para el dictado de la linea i. */
+  dictado(i) {
+    const nat = window.MiParteNative;
+    if (nat && typeof nat.dictar === 'function') {
+      window.miParteDictadoOk = txt => { this.ponDictado(i, txt); this.setState({ dictando: null }); };
+      window.miParteDictadoFin = () => this.setState({ dictando: null });
+      this.setState({ dictando: i });
+      try { nat.dictar(i); } catch (e) { this.setState({ dictando: null }); }
+      return;
+    }
+    if (this.rec) { try { this.rec.stop(); } catch (e) {} return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    const rec = new SR();
+    rec.lang = 'es-ES';
+    rec.continuous = true;
+    rec.interimResults = true;
+    const base = ((this.parte().trabajos[i] || {}).texto || '').trim();
+    let firme = '';
+    const pinta = prov => {
+      const dicho = (firme + ' ' + prov).trim();
+      const junto = base ? (dicho ? base.replace(/[.,;]$/, '') + '. ' + dicho : base) : dicho.charAt(0).toUpperCase() + dicho.slice(1);
+      this.setP(x => { if (x.trabajos[i]) x.trabajos[i].texto = junto; });
+    };
+    rec.onresult = ev => {
+      let prov = '';
+      for (let k = ev.resultIndex; k < ev.results.length; k++) {
+        const tr = ev.results[k][0].transcript;
+        if (ev.results[k].isFinal) firme += (firme ? ' ' : '') + tr.trim();
+        else prov += tr;
+      }
+      pinta(prov);
+    };
+    rec.onerror = () => { this.rec = null; this.setState({ dictando: null }); };
+    rec.onend = () => { this.rec = null; pinta(''); this.setState({ dictando: null }); };
+    try { rec.start(); } catch (e) { return; }
+    this.rec = rec;
+    this.setState({ dictando: i });
+  }
   renderVals() {
     const s = this.state, db = s.db, p = this.parte();
     const ancho = s.ancho || 400;
@@ -7014,7 +7258,7 @@ class Component extends DCLogic {
       const pt = s.partes[k], d = new Date(soloDia(k));
       return {
         f: String(d.getDate()).padStart(2, '0') + ' ' + ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'][d.getMonth()],
-        res: (pt.trabajos.find(t => t.zona) || {}).zona || (pt.ops.length + ' operarios'),
+        res: [pt.taller ? 'Taller' : '', (pt.trabajos.find(t => t.zona) || {}).zona || (pt.ops.length + ' operarios')].filter(Boolean).join(' · '),
         est: pt.ops.length && pt.trabajos.some(t => t.texto) ? 'COMPLETO' : 'A MEDIAS',
         col: pt.ops.length && pt.trabajos.some(t => t.texto) ? 'var(--green)' : 'var(--amber)',
         ir: () => this.setState({ dia: k, view: 'asistente', paso: 1 })
@@ -7156,6 +7400,9 @@ class Component extends DCLogic {
     const cTipo = ci ? tipoCita(ci.tipo) : TIPOS_CITA[0];
     const cDur = ci ? durCita(ci) : 1;
     const cObra = ci ? (db.obras || []).find(o => o.id === ci.obraId) : null;
+    // a donde lleva el boton «Ir» de la cita: lo escrito manda; si no hay nada
+    // escrito y la cita es de una obra con ubicacion, se va a la obra
+    const destinoCita = ci ? String(ci.lugar || (cObra || {}).ubicacion || '').trim() : '';
     const diaLargo = k => DIASEM_L[dowLun(k)] + ' ' + Number(k.slice(8)) + ' de ' + MESES[Number(k.slice(5, 7)) - 1].toLowerCase();
     const item = it => ({
       k: it.k, tit: it.tit, sub: it.sub, col: it.col, deco: it.deco || 'none',
@@ -7291,6 +7538,10 @@ class Component extends DCLogic {
       setCitaLugar: e => { const v = e.target.value; this.setCita(c => { c.lugar = v; }); },
       dispLugarObra: cObra && cObra.ubicacion ? 'flex' : 'none',
       ponLugarObra: () => this.setCita(c => { c.lugar = (cObra || {}).ubicacion || ''; }),
+      citaMapsHref: mapsUrl(destinoCita),
+      citaMapaEdge: destinoCita ? 'var(--amber)' : 'var(--line)',
+      citaMapaInk: destinoCita ? 'var(--amber)' : 'var(--dim)',
+      citaMapaClic: destinoCita ? 'auto' : 'none',
       citaQuien: ci ? ci.quien : '',
       setCitaQuien: e => { const v = e.target.value; this.setCita(c => { c.quien = v; c.tel = ''; }); },
       quitaLugar: () => this.setCita(c => { c.lugar = ''; }),
@@ -7520,7 +7771,25 @@ class Component extends DCLogic {
         ink: t.hecha ? 'var(--dim)' : 'var(--ink)',
         caja: t.hecha ? 'var(--green)' : 'transparent',
         cajaEdge: t.hecha ? 'var(--green)' : 'var(--line)',
-        set: () => this.setDb(d => { d.tareas[i].hecha = !d.tareas[i].hecha; }),
+        // Un toque cambia el tick; el dedo mantenido abre el editor.
+        // Si acaba de abrirse por dedo mantenido, ese toque no cuenta.
+        set: () => {
+          if (this.pulsoLargo) { this.pulsoLargo = false; return; }
+          this.setDb(d => { d.tareas[i].hecha = !d.tareas[i].hecha; });
+        },
+        // Via 1: el propio evento del sistema al mantener pulsado.
+        editar: e => {
+          if (e && e.preventDefault) e.preventDefault();
+          this.pulsoLargo = true;
+          this.abreEditar(i);
+        },
+        // Via 2: por reloj, medio segundo, por si la de arriba no llegara.
+        pulsa: () => {
+          this.pulsoLargo = false;
+          clearTimeout(this.tLarga);
+          this.tLarga = setTimeout(() => { this.pulsoLargo = true; this.abreEditar(i); }, 500);
+        },
+        suelta: () => { clearTimeout(this.tLarga); },
         quitar: () => this.setDb(d => { d.tareas.splice(i, 1); })
       })),
       sinTareas: tareasOrd.length === 0,
@@ -7652,6 +7921,7 @@ class Component extends DCLogic {
       },
       verTutorial: () => this.abreTutorial('manual'),
       verTutWid: () => this.abreTutWid(),
+      verPrivacidad: () => this.aviso('Privacidad', PRIVACIDAD),
       // tutorial de los widgets, aparte del de la app
       vTutW: !!tutW,
       twX: 'calc(' + (-wPaso) + ' * 100%)',
@@ -7685,11 +7955,23 @@ class Component extends DCLogic {
       dlgDispCancel: dlg.cancel ? 'block' : 'none',
       dlgOkBg: dlg.rojo ? 'var(--red)' : 'var(--amber)',
       dlgOkInk: dlg.rojo ? '#fff' : '#23231f',
-      dlgCerrar: () => { const f = dlg.onCancel; this.setState({ dlg: null }, () => { if (f) f(); }); },
+      dlgCerrar: () => { const f = dlg.onCancel; this.setState({ dlg: null, dlgCampo: null }, () => { if (f) f(); }); },
       dlgAltLab: dlg.altLab || '',
       dlgDispAlt: dlg.alt ? 'block' : 'none',
-      dlgAlt: () => { const f = dlg.onAlt; this.setState({ dlg: null }, () => { if (f) f(); }); },
-      dlgOk: () => { const f = dlg.onOk; this.setState({ dlg: null }, () => { if (f) f(); }); },
+      dlgAlt: () => { const f = dlg.onAlt; this.setState({ dlg: null, dlgCampo: null }, () => { if (f) f(); }); },
+      dlgHayCampo: dlg.campo != null,
+      dlgCampo: s.dlgCampo == null ? '' : s.dlgCampo,
+      dlgSetCampo: e => this.setState({ dlgCampo: e.target.value }),
+      dlgCampoKey: e => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const f = dlg.onOk, v = this.state.dlgCampo;
+        this.setState({ dlg: null, dlgCampo: null }, () => { if (f) f(v); });
+      },
+      dlgOk: () => {
+        const f = dlg.onOk, v = this.state.dlgCampo;
+        this.setState({ dlg: null, dlgCampo: null }, () => { if (f) f(v); });
+      },
       tutVer: VER,
       dlgHayLista: !!(dlg.lista && dlg.lista.length),
       dlgLista: dlg.lista || [],
@@ -7714,6 +7996,12 @@ class Component extends DCLogic {
       obraNombre: obraDia.nombre, obraCliente: obraDia.cliente, obraPedido: obraDia.pedido,
       obraUbic: obraDia.ubicacion || '',
       setObraUbic: e => { const v = e.target.value; this.setObra(obraDia.id, o => { o.ubicacion = v; }); },
+      tallerMark: p.taller ? '✓' : '',
+      tallerEdge: p.taller ? 'var(--amber)' : 'var(--line)',
+      tallerBg: p.taller ? 'var(--band)' : 'transparent',
+      tallerCaja: p.taller ? 'var(--amber)' : 'transparent',
+      tallerInk: p.taller ? 'var(--amber)' : 'var(--ink)',
+      toggleTaller: () => this.setP(x => { x.taller = !x.taller; }),
       mapsHref: mapsUrl(obraDia.ubicacion),
       contactos: (obraDia.contactos || []).map((c, i) => ({
         nom: c.nom || '', tel: c.tel || '',
@@ -7775,6 +8063,13 @@ class Component extends DCLogic {
         setHora: e => this.setP(x => { x.trabajos[i].hora = e.target.value; }),
         setZona: e => { const v = e.target.value; this.setP(x => { x.trabajos[i].zona = v; }); if (v.length > 3 && !(db.zonas || []).includes(v)) this.setDb(d => { d.zonas = [...new Set([...(d.zonas || []), v])].slice(-14); }); },
         setTexto: e => this.setP(x => { x.trabajos[i].texto = e.target.value; }),
+        dictar: () => this.dictado(i),
+        micDisp: this.hayDictado() ? 'flex' : 'none',
+        micTit: s.dictando === i ? 'Parar de dictar' : 'Dictar el trabajo',
+        micEdge: s.dictando === i ? 'var(--amber)' : 'var(--line)',
+        micBg: s.dictando === i ? 'var(--amber)' : 'var(--field)',
+        micInk: s.dictando === i ? '#fff' : 'var(--dim)',
+        micAviso: s.dictando === i ? 'block' : 'none',
         quitar: () => this.setP(x => x.trabajos.splice(i, 1))
       }; }),
       addTrabajo: () => this.setP(x => x.trabajos.push({ hora: '', zona: '', texto: '', hecho: true })),
@@ -7842,9 +8137,21 @@ class Component extends DCLogic {
       herramientas: [['Lápiz', 'lapiz'], ['Mover', 'mover']].map(([lab, v]) => Object.assign({ lab, set: () => this.setState({ herr: v }) }, sel(s.herr === v))),
       canvasRef: this.canvasRef, pDown: this.pDown, pMove: this.pMove, pUp: this.pUp,
       altoCanvas: dosCol ? '70vh' : '54vh',
-      zoomTexto: 'zoom ' + Math.round(s.zoom * 100) + '% · pinza para acercar',
-      deshacer: () => this.setP(x => x.croquis.strokes.pop()),
-      borrarCroquis: () => this.pregunta('Borrar el croquis', 'Se borran todos los trazos de este croquis. No se puede deshacer.', () => this.setP(x => { x.croquis.strokes = []; }), 'Sí, borrar'),
+      zoomTexto: 'zoom ' + Math.round(s.zoom * 100) + '% · ' + (p.croquis.strokes || []).length + ' trazos',
+      // Los dos pintan ELLOS MISMOS con el resultado, y solo despues guardan.
+      // Es lo mismo que hace el pellizco, que es lo unico que nunca ha
+      // fallado: no esperar a que la pantalla se rehaga para verlo.
+      deshacer: () => {
+        const t = (p.croquis.strokes || []).slice(0, -1);
+        this.trazo = null;
+        this.pinta(null, null, t);
+        this.setP(x => x.croquis.strokes.pop());
+      },
+      borrarCroquis: () => this.pregunta('Borrar el croquis', 'Se borran todos los trazos de este croquis. No se puede deshacer.', () => {
+        this.trazo = null;
+        this.pinta(null, null, []);
+        this.setP(x => { x.croquis.strokes = []; });
+      }, 'Sí, borrar'),
       croAbierto: !!s.croAbierto,
       croLab: s.croAbierto ? 'Cerrar' : 'Dibujar',
       croEstado: p.croquis.strokes.length ? (p.croquis.titulo || p.croquis.strokes.length + (p.croquis.strokes.length === 1 ? ' trazo' : ' trazos')) : 'Toca para dibujar a mano',
