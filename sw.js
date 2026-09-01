@@ -1,4 +1,4 @@
-const CACHE = 'mi-parte-1.7.0-v32';
+const CACHE = 'mi-parte-1.8.0-v54';
 const ARCHIVOS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-512-maskable.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));
