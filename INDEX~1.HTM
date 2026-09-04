@@ -2233,6 +2233,37 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 :root{--paper:#f4f2ec;--card:#fff;--field:#f7f5f0;--ink:#1a1a18;--dim:#6d6a63;--line:#d9d6cf;--band:#23231f;--bandink:#f2f0ea;--banddim:#a8a49a;--amber:#d08a2a;--wash:#efece5;--green:oklch(0.55 0.13 148);--red:oklch(0.53 0.17 27);--off:#c3bfb4;--sem:#e9e5dc;--sh:0 1px 2px rgba(28,26,20,.05),0 10px 22px -16px rgba(28,26,20,.30)}
 @media (prefers-color-scheme:dark){:root{--paper:#0f0f0c;--card:#1c1c16;--field:#232319;--ink:#ecebe3;--dim:#9a968c;--line:#33322a;--band:#000;--bandink:#f2f0ea;--banddim:#8d8a80;--amber:#e0a047;--wash:#26251d;--green:oklch(0.74 0.13 148);--red:oklch(0.7 0.17 27);--off:#4a473c;--sem:#000;--sh:0 1px 2px rgba(0,0,0,.5)}}
 html,body{margin:0;background:var(--paper);-webkit-text-size-adjust:100%;overscroll-behavior:none;touch-action:pan-x pan-y}
+/* ===== LIBRETA (tarjeta Notas) =====================================
+   Papel rayado de verdad: la raya y el margen rojo son fondo, no bordes,
+   asi el texto puede crecer todo lo que quiera y las rayas le siguen.
+   background-attachment:local  las rayas hacen scroll con el texto. */
+:root{--notap:var(--card);--notaray:var(--line);--notamarg:rgba(208,138,42,.55);--notaink:var(--ink)}
+@media (prefers-color-scheme:dark){:root{--notamarg:rgba(224,160,71,.4)}}
+.libreta{display:block;width:100%;box-sizing:border-box;margin:0;border:0;border-radius:0;outline:none;background-color:var(--notap);background-image:linear-gradient(90deg,transparent 37px,var(--notamarg) 37px,var(--notamarg) 38px,transparent 38px),repeating-linear-gradient(var(--notap) 0 25px,var(--notaray) 25px 26px);background-attachment:local;background-position:0 7px;padding:7px 16px 20px 48px;font:400 14px/26px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--notaink);overflow-wrap:break-word;word-break:break-word}
+textarea.libreta{resize:vertical}
+/* ===== CUADRE EN CUALQUIER PANTALLA · NO QUITAR =====================
+   Las tarjetas del inicio son celdas de una rejilla de 1fr, y una celda de
+   rejilla se niega por defecto (min-width:auto) a encogerse por debajo de su
+   contenido: si una tarjeta no cabe, ENSANCHA la columna, y entonces la pagina
+   entera se puede arrastrar de lado con el dedo.
+   Paso en un Galaxy Fold plegado (pantalla estrecha) con la letra del sistema
+   grande: la tarjeta de listas pedia 384px en una columna de 316.
+     min-width:0      la tarjeta encoge, en vez de ensanchar la columna.
+     overflow-x:clip  red de seguridad: aunque algo se pase, la pagina no se
+                      arrastra. Es «clip» y NO «hidden» a proposito: hidden
+                      convierte el body en contenedor de scroll y rompe la
+                      cabecera y la barra de pestañas, que son «sticky».
+   ==================================================================== */
+html,body{overflow-x:clip}
+[data-tarjeta]{min-width:0;overflow-wrap:break-word}
+/* ===== SITIO PARA EL TECLADO · NO QUITAR ============================
+   Desde Android 15, una app que apunta a SDK 35 o mas ya NO se redimensiona
+   sola al salir el teclado: «adjustResize» dejo de tener efecto y el teclado
+   se pinta ENCIMA del campo que estas escribiendo. El envoltorio mide cuanto
+   ocupa y lo mete en --teclado; aqui se le da ese sitio a la pagina para que
+   haya por donde subir. Fuera de la app Android la variable no existe y esto
+   vale 0. */
+body{padding-bottom:var(--teclado,0px)}
 body{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 input,textarea,select,button{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-user-select:text;user-select:text;border-radius:10px}
 input:focus,textarea:focus,select:focus{border-color:var(--amber);outline:none}
@@ -2305,10 +2336,14 @@ a:hover{color:var(--ink)}
 <div ref="{{ refInicio }}" style="padding:14px;display:grid;grid-template-columns:{{ colsInicio }};grid-auto-rows:{{ filasInicio }};grid-auto-flow:row dense;align-items:start;column-gap:14px;row-gap:{{ huecoInicio }};box-sizing:border-box;animation:vistaIn .24s ease-out both">
 
 <div data-tarjeta="parte" style="order:{{ cParte.o }};display:{{ cParte.disp }};grid-row:{{ cParte.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
+<div sc-camel-on-click="{{ cParte.tog }}" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Parte diario</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ progreso }}</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ cParte.flecha }}</span>
+</span>
 </div>
+<div style="display:{{ cParte.cuerpo }}">
 <div style="display:flex;gap:2px;background:var(--card)">
 <sc-for list="{{ segsParte }}" as="g" hint-placeholder-count="6">
 <div style="flex:1;height:3px;background:{{ g.col }}"></div>
@@ -2330,6 +2365,33 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ exportar }}" style="text-align:center;padding:13px 8px;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#23231f;cursor:pointer">PDF del día</div>
 </div>
 </div>
+</div>
+
+<div data-tarjeta="foto" style="order:{{ cFoto.o }};display:{{ cFoto.disp }};grid-row:{{ cFoto.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
+<div sc-camel-on-click="{{ cFoto.tog }}" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Foto rápida</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ fotoDato }}</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ cFoto.flecha }}</span>
+</span>
+</div>
+<div style="display:{{ cFoto.cuerpo }}">
+<div style="padding:12px 14px 0">
+<label sc-camel-on-click="{{ fotoClick }}" sc-camel-on-pointer-down="{{ fotoDown }}" sc-camel-on-pointer-up="{{ fotoUp }}" sc-camel-on-pointer-cancel="{{ fotoUp }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:17px 12px;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#23231f;cursor:pointer;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#23231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4h3.1l1.5-2.3h7.8l1.5 2.3h3.1v10.2H3.5z"></path><circle cx="12" cy="13.3" r="3.2"></circle></svg>
+Hacer foto
+<input type="file" accept="image/*" capture="environment" sc-camel-on-change="{{ addFoto }}" style="display:none">
+</label>
+<input type="file" accept="image/*" multiple="{{ true }}" ref="{{ refFotoGal }}" sc-camel-on-change="{{ addFoto }}" style="display:none">
+</div>
+<div style="display:{{ fotoTirasDisp }};gap:8px;padding:12px 14px 14px">
+<sc-for list="{{ fotoUltimas }}" as="f" hint-placeholder-count="0">
+<span sc-camel-on-click="{{ f.ir }}" style="cursor:pointer;flex:none">{{ f.thumb }}</span>
+</sc-for>
+</div>
+<span style="display:{{ fotoVacioDisp }};padding:11px 14px 14px;font:400 10px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Aún no hay fotos de hoy. La foto entra en el parte del día con su hora y su zona. Mantén pulsado el botón para elegir de la galería.</span>
+</div>
+</div>
 
 <div data-tarjeta="semaforo" style="order:{{ cSemaforo.o }};display:{{ cSemaforo.disp }};grid-row:{{ cSemaforo.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
 <div sc-camel-on-click="{{ irValorar }}" style="pointer-events:{{ cSemaforo.pe }};display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
@@ -2337,8 +2399,10 @@ a:hover{color:var(--ink)}
 <span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ valDato }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)">Valorar ›</span>
+<span sc-camel-on-click="{{ cSemaforo.tog }}" style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding-left:2px;cursor:pointer">{{ cSemaforo.flecha }}</span>
 </span>
 </div>
+<div style="display:{{ cSemaforo.cuerpo }}">
 <sc-for list="{{ semHoy }}" as="o" hint-placeholder-count="3">
 <div sc-camel-on-click="{{ o.ir }}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.nom }}</span>
@@ -2354,11 +2418,15 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ irValorar }}" style="padding:16px 14px;font:400 10px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer">Todavía no hay nadie en la cuadrilla de hoy. Toca aquí para añadir operarios y ponerles la valoración.</div>
 </sc-if>
 </div>
+</div>
 
 <sc-if value="{{ hayAvisos }}" hint-placeholder-val="{{ true }}">
 <div data-tarjeta="avisos" style="order:{{ cAvisos.o }};display:{{ cAvisos.disp }};grid-row:{{ cAvisos.span }};border:1px solid var(--red);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
-<div style="background:var(--red);color:#fff;padding:9px 14px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase">Avisos de valoración · 4 semanas</div>
-<div style="background:var(--card)">
+<div sc-camel-on-click="{{ cAvisos.tog }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--red);color:#fff;padding:9px 14px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer">
+<span>Avisos de valoración · 4 semanas</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none">{{ cAvisos.flecha }}</span>
+</div>
+<div style="display:{{ cAvisos.cuerpo }};background:var(--card)">
 <sc-for list="{{ avisos }}" as="a" hint-placeholder-count="1">
 <div sc-camel-on-click="{{ a.ir }}" style="padding:12px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;cursor:pointer">
 <div style="display:flex;justify-content:space-between;gap:10px">
@@ -2375,8 +2443,12 @@ a:hover{color:var(--ink)}
 <div data-tarjeta="semana" style="order:{{ cSemana.o }};display:{{ cSemana.disp }};grid-row:{{ cSemana.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
 <div sc-camel-on-click="{{ verSemana }}" style="pointer-events:{{ cSemana.pe }};display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Semana en curso</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ semanaDato }}</span>
+<span sc-camel-on-click="{{ cSemana.tog }}" style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding-left:2px;cursor:pointer">{{ cSemana.flecha }}</span>
+</span>
 </div>
+<div style="display:{{ cSemana.cuerpo }}">
 <sc-for list="{{ semana }}" as="s" hint-placeholder-count="3">
 <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)">
 <span style="font:500 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.nom }}</span>
@@ -2388,6 +2460,7 @@ a:hover{color:var(--ink)}
 <div style="padding:16px 14px;font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Sin horas apuntadas esta semana.</div>
 </sc-if>
 </div>
+</div>
 
 <div data-tarjeta="agenda" style="order:{{ cAgenda.o }};display:{{ cAgenda.disp }};grid-row:{{ cAgenda.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
 <div sc-camel-on-click="{{ irAgenda }}" style="pointer-events:{{ cAgenda.pe }};display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
@@ -2395,8 +2468,10 @@ a:hover{color:var(--ink)}
 <span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ agCardSub }}</span>
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)">Abrir ›</span>
+<span sc-camel-on-click="{{ cAgenda.tog }}" style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding-left:2px;cursor:pointer">{{ cAgenda.flecha }}</span>
 </span>
 </div>
+<div style="display:{{ cAgenda.cuerpo }}">
 <div style="padding:11px 12px 12px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
 <sc-for list="{{ agDows }}" as="d" hint-placeholder-count="7">
 <span style="text-align:center;font:600 8px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{{ d.col }};padding-bottom:2px">{{ d.l }}</span>
@@ -2412,35 +2487,49 @@ a:hover{color:var(--ink)}
 <span style="font:400 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ agProx }}</span>
 </div>
 </div>
-
-<div data-tarjeta="tareas" style="order:{{ cTareas.o }};display:{{ cTareas.disp }};grid-row:{{ cTareas.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
-<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Pendientes</span>
-<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ tareasDato }}</span>
 </div>
-<sc-for list="{{ tareas }}" as="t" hint-placeholder-count="2">
-<div style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line)">
-<span sc-camel-on-click="{{ t.set }}" style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ t.cajaEdge }};background:{{ t.caja }};color:#fff;display:flex;align-items:center;justify-content:center;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;cursor:pointer">{{ t.mark }}</span>
-<span sc-camel-on-click="{{ t.set }}" sc-camel-on-context-menu="{{ t.editar }}" sc-camel-on-pointer-down="{{ t.pulsa }}" sc-camel-on-pointer-up="{{ t.suelta }}" sc-camel-on-pointer-cancel="{{ t.suelta }}" sc-camel-on-pointer-move="{{ t.suelta }}" style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;flex:1;color:{{ t.ink }};text-decoration:{{ t.deco }};cursor:pointer">{{ t.txt }}</span>
-<span sc-camel-on-click="{{ t.quitar }}" style="font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);cursor:pointer">✕</span>
+
+
+<div data-tarjeta="listas" style="order:{{ cTareas.o }};grid-row:{{ spanListas }};align-self:start;display:{{ dispListas }};flex-direction:column;gap:0">
+<sc-for list="{{ listaFilas }}" as="f" hint-placeholder-count="0">
+<div sc-camel-on-click="{{ f.tap }}" sc-camel-on-context-menu="{{ f.menu }}" sc-camel-on-pointer-down="{{ f.down }}" sc-camel-on-pointer-up="{{ f.up }}" sc-camel-on-pointer-cancel="{{ f.up }}" sc-camel-on-pointer-move="{{ f.up }}" style="display:flex;align-items:center;gap:11px;padding:{{ f.pad }};margin-top:{{ f.mt }};background:{{ f.bg }};border:1px solid var(--line);border-top-width:{{ f.bt }};border-radius:{{ f.rad }};cursor:{{ f.cur }}">
+<span style="display:{{ f.flechaDisp }};font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);width:11px;flex:none">{{ f.flecha }}</span>
+<span sc-camel-on-click="{{ f.set }}" style="display:{{ f.cajaDisp }};width:20px;height:20px;border-radius:6px;border:1.5px solid {{ f.cajaEdge }};background:{{ f.caja }};color:#fff;align-items:center;justify-content:center;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;cursor:pointer">{{ f.mark }}</span>
+<span style="display:{{ f.txtDisp }};font:{{ f.font }};letter-spacing:{{ f.ls }};text-transform:{{ f.tt }};text-align:{{ f.ta }};color:{{ f.col }};text-decoration:{{ f.deco }};flex:1;min-width:0">{{ f.txt }}</span>
+<input value="{{ f.val }}" sc-camel-on-change="{{ f.setVal }}" sc-camel-on-key-down="{{ f.key }}" placeholder="Nueva línea" style="display:{{ f.inpDisp }};flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
+<span sc-camel-on-click="{{ f.add }}" style="display:{{ f.addDisp }};padding:11px 16px;border:1px solid var(--amber);border-radius:10px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);flex:none;cursor:pointer">Añadir</span>
+<span style="display:{{ f.datoDisp }};font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums;flex:none">{{ f.dato }}</span>
+<span sc-camel-on-click="{{ f.x }}" title="{{ f.xTit }}" style="display:{{ f.xDisp }};font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding:0 2px;flex:none;cursor:pointer">✕</span>
 </div>
 </sc-for>
-<sc-if value="{{ sinTareas }}" hint-placeholder-val="{{ true }}">
-<div style="padding:15px 14px;font:400 10px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Sin pendientes.</div>
-</sc-if>
-<div style="display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line)">
-<input value="{{ tareaNueva }}" sc-camel-on-change="{{ setTareaNueva }}" sc-camel-on-key-down="{{ tareaKey }}" placeholder="Nueva tarea" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
-<div sc-camel-on-click="{{ addTarea }}" style="padding:11px 16px;border:1px solid var(--amber);border-radius:10px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);cursor:pointer">Añadir</div>
+<div sc-camel-on-click="{{ nuevaLista }}" style="margin-top:14px;padding:13px 14px;text-align:center;border:1px dashed var(--line);border-radius:16px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer">＋ Nueva lista</div>
 </div>
-<div sc-camel-on-click="{{ borrarHechas }}" style="display:{{ hayHechas }};padding:12px 14px;text-align:center;border-top:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer">Borrar las hechas</div>
+
+<div data-tarjeta="notas" style="order:{{ cNotas.o }};display:{{ cNotas.disp }};grid-row:{{ cNotas.span }};border:1px solid var(--line);background:var(--notap);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
+<div sc-camel-on-click="{{ notaPliega }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Notas</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);flex:none">{{ notaFlecha }}</span>
+</div>
+<div class="libreta" sc-camel-on-click="{{ notaEscribe }}" style="display:{{ notaVerDisp }};white-space:pre-wrap;min-height:182px;cursor:text">
+<sc-for list="{{ notaTrozos }}" as="n" hint-placeholder-count="0">
+<span style="display:{{ n.tDisp }}">{{ n.txt }}</span>
+<a href="{{ n.href }}" target="_blank" rel="noopener" sc-camel-on-click="{{ n.tap }}" style="display:{{ n.aDisp }};color:var(--amber);text-decoration:underline">{{ n.txt }}</a>
+</sc-for>
+<span style="display:{{ notaVacioDisp }};color:var(--dim)">Toca la hoja y escribe lo que quieras: ideas, medidas, recados, enlaces…</span>
+</div>
+<textarea id="libretaEd" class="libreta" value="{{ notaTxt }}" sc-camel-on-change="{{ setNotaTxt }}" sc-camel-on-blur="{{ notaCierra }}" rows="8" placeholder="Apunta aquí. Al terminar, las direcciones de internet quedan subrayadas y se abren al pulsarlas." style="display:{{ notaEdDisp }}"></textarea>
 </div>
 
 <sc-if value="{{ hayMatPend }}" hint-placeholder-val="{{ false }}">
 <div data-tarjeta="matpend" style="order:{{ cMatpend.o }};display:{{ cMatpend.disp }};grid-row:{{ cMatpend.span }};border:1px solid var(--amber);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
+<div sc-camel-on-click="{{ cMatpend.tog }}" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Material pendiente</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ matPendN }}</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ cMatpend.flecha }}</span>
+</span>
 </div>
+<div style="display:{{ cMatpend.cuerpo }}">
 <sc-for list="{{ matPend }}" as="m" hint-placeholder-count="2">
 <div sc-camel-on-click="{{ m.ir }}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.05em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.desc }}</span>
@@ -2450,13 +2539,18 @@ a:hover{color:var(--ink)}
 </div>
 </sc-for>
 </div>
+</div>
 </sc-if>
 
 <div data-tarjeta="historial" style="order:{{ cHistorial.o }};display:{{ cHistorial.disp }};grid-row:{{ cHistorial.span }};border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;align-self:start">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line)">
+<div sc-camel-on-click="{{ cHistorial.tog }}" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);cursor:pointer">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Partes anteriores</span>
+<span style="display:flex;align-items:center;gap:10px;flex:none">
 <span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);font-variant-numeric:tabular-nums">{{ histDato }}</span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ cHistorial.flecha }}</span>
+</span>
 </div>
+<div style="display:{{ cHistorial.cuerpo }}">
 <div style="padding:9px 10px;border-bottom:1px solid var(--line)">
 <input value="{{ qBusca }}" sc-camel-on-change="{{ setQBusca }}" placeholder="Buscar en todos los partes" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 </div>
@@ -2488,6 +2582,7 @@ a:hover{color:var(--ink)}
 <div style="padding:16px 14px;font:400 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Todavía no hay partes guardados.</div>
 </sc-if>
 </sc-if>
+</div>
 </div>
 </div>
 </sc-if>
@@ -2655,11 +2750,22 @@ a:hover{color:var(--ink)}
 
 <sc-if value="{{ p3 }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:12px;animation:pasoIn .22s ease-out both">
+<div style="border:1px solid {{ viajeBorde }};background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;transition:border-color .3s ease">
+<div sc-camel-on-click="{{ viajeTog }}" style="display:flex;align-items:center;gap:11px;padding:14px;cursor:pointer">
+<span style="width:22px;height:22px;border-radius:6px;color:#fff;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;border:1.5px solid {{ viajeEdge }};background:{{ viajeBg }}">{{ viajeMark }}</span>
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ viajeInk }};flex:1">Solo desplazamiento</span>
+</div>
+<div style="display:{{ viajeCampo }};border-top:1px solid var(--line);padding:12px 14px 14px">
+<input value="{{ viajeTxt }}" sc-camel-on-change="{{ setViajeTxt }}" placeholder="De dónde a dónde" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
+<span style="display:block;margin-top:9px;font:400 10px/1.55 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Sale en el PDF del día como una línea de «Trabajos del día». En el resumen de la obra no aparece.</span>
+</div>
+</div>
+<div style="display:{{ trabDisp }};flex-direction:column;gap:12px">
 <sc-for list="{{ trabajos }}" as="t" hint-placeholder-count="2">
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:10px">
 <div style="display:flex;gap:10px;align-items:center">
 <input type="time" value="{{ t.hora }}" sc-camel-on-change="{{ t.setHora }}" style="width:112px;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
-<input value="{{ t.zona }}" sc-camel-on-change="{{ t.setZona }}" list="zonas-lista" placeholder="Zona" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
+<input value="{{ t.zona }}" sc-camel-on-change="{{ t.setZona }}" placeholder="Zona" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px">
 <span sc-camel-on-click="{{ t.quitar }}" style="font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);padding:0 4px;cursor:pointer">✕</span>
 </div>
 <div style="position:relative">
@@ -2682,6 +2788,8 @@ a:hover{color:var(--ink)}
 </div>
 </sc-for>
 <div sc-camel-on-click="{{ addTrabajo }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">+ Añadir línea de trabajo</div>
+</div>
+<div sc-camel-on-click="{{ addTrabajo }}" style="display:{{ trabMiniDisp }};padding:12px;text-align:center;border:1px dashed var(--line);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer">＋ Aun así hubo trabajo: añadir línea</div>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Herramientas del día</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line)">
@@ -2694,16 +2802,19 @@ a:hover{color:var(--ink)}
 </div>
 <div style="display:{{ dispSinHerr }};padding:14px;font:400 11.5px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">No hay herramientas en la lista. Se añaden en Material › Herramientas.</div>
 </div>
-<datalist id="zonas-lista">
-<sc-for list="{{ zonas }}" as="z" hint-placeholder-count="0">
-<option value="{{ z }}"></option>
-</sc-for>
-</datalist>
 </div>
 </sc-if>
 
 <sc-if value="{{ p4 }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:12px;animation:pasoIn .22s ease-out both">
+<div sc-camel-on-click="{{ sinMatTog }}" style="display:flex;align-items:center;gap:11px;padding:14px;border:1px solid {{ sinMatBorde }};background:var(--card);border-radius:16px;box-shadow:var(--sh);cursor:pointer;transition:border-color .3s ease">
+<span style="width:22px;height:22px;border-radius:6px;color:#fff;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;border:1.5px solid {{ sinMatEdge }};background:{{ sinMatBg }}">{{ sinMatMark }}</span>
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ sinMatInk }}">Hoy no se ha usado material</span>
+<span style="font:400 10px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ sinMatNota }}</span>
+</div>
+</div>
+<div style="display:{{ matDisp }};flex-direction:column;gap:12px">
 <div style="display:flex;gap:6px;flex-wrap:wrap">
 <sc-for list="{{ tiposMat }}" as="t" hint-placeholder-count="6">
 <div sc-camel-on-click="{{ t.set }}" style="padding:10px 13px;border:1px solid {{ t.edge }};border-radius:999px;background:{{ t.bg }};color:{{ t.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">{{ t.lab }}</div>
@@ -2742,6 +2853,7 @@ a:hover{color:var(--ink)}
 </div>
 </sc-for>
 </div>
+</div>
 </sc-if>
 
 <sc-if value="{{ p5 }}" hint-placeholder-val="{{ false }}">
@@ -2753,7 +2865,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ t.set }}" style="padding:8px 11px;border:1px solid {{ t.edge }};border-radius:999px;background:{{ t.bg }};color:{{ t.ink }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">{{ t.lab }}</div>
 </sc-for>
 </div>
-<textarea value="{{ i.inc }}" sc-camel-on-change="{{ i.setInc }}" rows="2" placeholder="Qué ha pasado" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px;resize:vertical"></textarea>
+<div style="position:relative"><textarea value="{{ i.inc }}" sc-camel-on-change="{{ i.setInc }}" rows="2" placeholder="Qué ha pasado" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px 50px 11px 11px;resize:vertical"></textarea><div sc-camel-on-click="{{ i.dictar }}" title="{{ i.micTit }}" style="position:absolute;top:7px;right:7px;display:{{ i.micDisp }};width:36px;height:36px;border-radius:10px;border:1px solid {{ i.micEdge }};background:{{ i.micBg }};align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ i.micInk }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3.5"></path></svg></div></div><div style="display:{{ i.micAviso }};font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-top:-4px">Escuchando… pulsa el micro para parar</div>
 <input value="{{ i.causa }}" sc-camel-on-change="{{ i.setCausa }}" placeholder="Causa" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
 <input value="{{ i.accion }}" sc-camel-on-change="{{ i.setAccion }}" placeholder="Acción tomada" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:11px">
 <div style="display:flex;gap:8px;align-items:center">
@@ -2768,6 +2880,11 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-click="{{ addIncidencia }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">+ Añadir incidencia</div>
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
 <div style="padding:11px 14px;background:var(--wash);border-bottom:1px solid var(--line);font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Repaso de EPIs</div>
+<div sc-camel-on-click="{{ sinEpisTog }}" style="display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer">
+<span style="width:22px;height:22px;border-radius:6px;color:#fff;display:flex;align-items:center;justify-content:center;font:700 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;flex:none;border:1.5px solid {{ sinEpisEdge }};background:{{ sinEpisBg }}">{{ sinEpisMark }}</span>
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ sinEpisInk }};flex:1">Hoy no he repartido EPIs</span>
+</div>
+<div style="display:{{ episDisp }}">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line)">
 <sc-for list="{{ epis }}" as="e" hint-placeholder-count="8">
 <div style="display:flex;align-items:center;gap:10px;padding:14px 12px;background:var(--card)">
@@ -2777,6 +2894,7 @@ a:hover{color:var(--ink)}
 </sc-for>
 </div>
 <div style="display:{{ dispSinEpis }};padding:14px;font:400 11.5px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">No hay EPIs en la lista. Se añaden en Material › EPIs.</div>
+</div>
 </div>
 </div>
 </sc-if>
@@ -2864,12 +2982,7 @@ a:hover{color:var(--ink)}
 <div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:10px">
 <input value="{{ fNom }}" sc-camel-on-change="{{ setFNom }}" placeholder="Nombre" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:500 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
-<input value="{{ fCat }}" sc-camel-on-change="{{ setFCat }}" list="cats-lista" placeholder="Cargo" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
-<datalist id="cats-lista">
-<sc-for list="{{ categorias }}" as="c" hint-placeholder-count="6">
-<option value="{{ c }}"></option>
-</sc-for>
-</datalist>
+<input value="{{ fCat }}" sc-camel-on-change="{{ setFCat }}" placeholder="Cargo" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <input value="{{ fEmp }}" sc-camel-on-change="{{ setFEmp }}" placeholder="Empresa o subcontrata" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
 <div style="display:flex;gap:8px;min-width:0">
 <input value="{{ fTel }}" sc-camel-on-change="{{ setFTel }}" placeholder="Teléfono" inputmode="tel" style="flex:1;min-width:0;box-sizing:border-box;background:var(--field);border:1px solid var(--line);color:var(--ink);font:400 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
@@ -3107,7 +3220,7 @@ a:hover{color:var(--ink)}
 <div style="border-bottom:1px solid var(--line)">
 <div sc-camel-on-click="{{ m.abrir }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
-<span style="font:500 13.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:{{ m.tinta }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.desc }}</span>
+<span style="font:500 13.5px/1.3 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:{{ m.tinta }};display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere">{{ m.desc }}</span>
 <span style="display:{{ m.dispMeta }};font:400 10.5px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.04em;color:var(--dim)">{{ m.meta }}</span>
 </div>
 <span style="font:400 15px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);transform:rotate({{ m.giro }});transition:transform .18s ease">›</span>
@@ -3151,6 +3264,28 @@ a:hover{color:var(--ink)}
 </sc-for>
 <div style="display:{{ dispNadaMat }};border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px;font:400 12px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Nada en la lista con eso. Prueba con menos letras o añádelo nuevo.</div>
 <div sc-camel-on-click="{{ nuevoMaterial }}" style="border:1px dashed var(--line);border-radius:14px;padding:15px;text-align:center;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">{{ nuevoMatLab }}</div>
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden;margin-top:2px">
+<div sc-camel-on-click="{{ ajXlsTog }}" style="padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:{{ ajXlsCol }}">Excel</span>
+<span style="display:block;font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">{{ resXls }}</span>
+</div>
+<span style="font:400 19px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1;color:{{ ajXlsCol }};flex:none">{{ ajXlsSig }}</span>
+</div>
+<div style="overflow:hidden;max-height:{{ ajXlsMax }};opacity:{{ ajXlsOp }};transition:max-height .3s cubic-bezier(.3,.8,.3,1),opacity .22s ease">
+<div style="display:flex;flex-direction:column;gap:11px;border-top:1px solid var(--line);padding:13px 14px 15px">
+<span style="font:400 11.5px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Exporta la lista completa a un archivo .xlsx con cuatro hojas: Material, EPIs, Herramientas y Otros. Edítala en el ordenador y vuelve a importar el mismo archivo.</span>
+<div style="display:flex;flex-wrap:wrap;gap:9px">
+<div sc-camel-on-click="{{ xlsSaca }}" style="flex:1 1 210px;min-width:0;box-sizing:border-box;padding:14px 12px;text-align:center;background:var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#23231f;cursor:pointer">Exportar a Excel</div>
+<label style="flex:1 1 210px;min-width:0;box-sizing:border-box;display:block;padding:14px 12px;text-align:center;border:1px solid var(--amber);border-radius:12px;font:700 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">
+Importar de Excel
+<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" sc-camel-on-change="{{ xlsMete }}" style="display:none">
+</label>
+</div>
+<span style="font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">El archivo importado sustituye a la lista: las líneas que no figuren en él se dan de baja. La correspondencia se establece por la descripción, de modo que al modificar una descripción la línea entra como material nuevo. Los materiales dados de baja que consten en algún parte conservan su denominación en ese parte, y los PDF ya emitidos no cambian. Antes de aplicar nada se muestra un resumen de altas, modificaciones y bajas.</span>
+</div>
+</div>
+</div>
 </div>
 </sc-if>
 
@@ -3212,11 +3347,35 @@ a:hover{color:var(--ink)}
 <span style="font:400 10px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ notifTexto }}</span>
 <div style="display:flex;flex-direction:column;gap:9px;border-top:1px dashed var(--line);padding-top:12px">
 <span style="display:block;font:400 10px/1.55 ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim);white-space:pre-line">{{ diagAviso }}</span>
-<div sc-camel-on-click="{{ arreglaCanal }}" style="display:{{ dispCanal }};padding:13px 12px;text-align:center;border:1px solid var(--red);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Dar permiso de notificaciones</div>
-<div sc-camel-on-click="{{ arreglaExacto }}" style="display:{{ dispExacto }};padding:13px 12px;text-align:center;border:1px solid var(--red);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Permitir alarmas exactas</div>
-<div sc-camel-on-click="{{ arreglaBateria }}" style="display:{{ dispBateria }};padding:13px 12px;text-align:center;border:1px solid var(--red);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">Quitar el ahorro de batería</div>
+<div sc-camel-on-click="{{ irPermisos }}" style="display:{{ dispFaltaPerm }};padding:13px 12px;text-align:center;border:1px solid var(--red);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);cursor:pointer">{{ faltaPermLab }}</div>
 <div sc-camel-on-click="{{ probarNotif }}" style="padding:13px 12px;text-align:center;border:1px dashed var(--line);border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);cursor:pointer">{{ probarLab }}</div>
 </div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
+<div sc-camel-on-click="{{ ajPermTog }}" style="padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:{{ ajPermCol }}">Permisos del móvil</span>
+<span style="display:block;font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">{{ resPermisos }}</span>
+</div>
+<span style="font:400 19px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1;color:{{ ajPermCol }};flex:none">{{ ajPermSig }}</span>
+</div>
+<div style="overflow:hidden;max-height:{{ ajPermMax }};opacity:{{ ajPermOp }};transition:max-height .3s cubic-bezier(.3,.8,.3,1),opacity .22s ease">
+<div style="border-top:1px solid var(--line)">
+<sc-for list="{{ permisos }}" as="q" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:9px;padding:13px 14px;border-bottom:1px solid var(--line)">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ q.col }};flex:none"></span>
+<span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);flex:1;min-width:0">{{ q.lab }}</span>
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:{{ q.col }};flex:none">{{ q.est }}</span>
+</div>
+<span style="font:400 11px/1.55 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ q.det }}</span>
+<div sc-camel-on-click="{{ q.abrir }}" style="display:{{ q.dispBtn }};padding:12px;text-align:center;border:1px solid {{ q.btnCol }};border-radius:12px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:{{ q.btnCol }};cursor:pointer">{{ q.btn }}</div>
+</div>
+</sc-for>
+<span style="display:block;padding:13px 14px;font:400 11px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">{{ permNota }}</span>
 </div>
 </div>
 </div>
@@ -3236,7 +3395,7 @@ a:hover{color:var(--ink)}
 <div sc-camel-on-pointer-down="{{ c.iniDrag }}" sc-camel-on-pointer-move="{{ c.movDrag }}" sc-camel-on-pointer-up="{{ c.finDrag }}" sc-camel-on-pointer-cancel="{{ c.finDrag }}" style="display:flex;align-items:center;gap:11px;padding:12px 13px;background:var(--field);border:1px solid {{ c.borde }};border-radius:13px;touch-action:pan-y;cursor:grab;position:relative;transform:translateY({{ c.dy }});z-index:{{ c.z }};opacity:{{ c.op }}">
 <span style="font:400 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);letter-spacing:-2px;flex:none">⣿</span>
 <span style="font:700 12px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim);flex:none;width:14px">{{ c.i }}</span>
-<span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.lab }}</span>
+<span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.lab }}</span>
 <span sc-camel-on-click="{{ c.quitar }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);flex:none;padding:4px;cursor:pointer">Quitar</span>
 </div>
 </sc-for>
@@ -3245,12 +3404,56 @@ a:hover{color:var(--ink)}
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding-left:2px">Guardadas · no se ven</span>
 <sc-for list="{{ tarjOcu }}" as="c" hint-placeholder-count="0">
 <div style="display:flex;align-items:center;gap:11px;padding:12px 13px;border:1px dashed var(--line);border-radius:13px">
-<span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.lab }}</span>
+<span style="font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.lab }}</span>
 <span sc-camel-on-click="{{ c.poner }}" style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);flex:none;padding:4px;cursor:pointer">Poner</span>
 </div>
 </sc-for>
 </div>
 <div sc-camel-on-click="{{ resetInicio }}" style="padding:13px;text-align:center;border:1px solid var(--line);border-radius:12px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);cursor:pointer">Dejarlo como estaba</div>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid var(--line);background:var(--card);border-radius:16px;box-shadow:var(--sh);overflow:hidden">
+<div sc-camel-on-click="{{ ajEmpTog }}" style="padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:{{ ajEmpCol }}">Aspecto y empresa</span>
+<span style="display:block;font:400 10px ui-monospace,'SF Mono','Roboto Mono',Menlo,monospace;color:var(--dim)">{{ temaAhora }}</span>
+</div>
+<span style="font:400 19px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1;color:{{ ajEmpCol }};flex:none">{{ ajEmpSig }}</span>
+</div>
+<div style="overflow:hidden;max-height:{{ ajEmpMax }};opacity:{{ ajEmpOp }};transition:max-height .3s cubic-bezier(.3,.8,.3,1),opacity .22s ease">
+<div style="display:flex;flex-direction:column;gap:13px;border-top:1px solid var(--line);padding:14px">
+
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Color de la app</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ temas }}" as="c" hint-placeholder-count="7">
+<div sc-camel-on-click="{{ c.set }}" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:{{ c.grosor }} solid {{ c.borde }};border-radius:999px;background:var(--field);cursor:pointer">
+<span style="width:15px;height:15px;border-radius:5px;background:{{ c.tono }};flex:none;display:flex;align-items:center;justify-content:center;font:700 9px system-ui,sans-serif;color:#23231f">{{ c.mark }}</span>
+<span style="font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.06em;color:var(--ink)">{{ c.lab }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="height:1px;background:var(--line)"></div>
+
+<span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">Tu empresa, para los PDF</span>
+<span style="font:400 11px/1.55 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim);margin-top:-6px">Sale en la cabecera de la primera hoja y en el pie de todas. Si lo dejas vacio, el PDF va como siempre.</span>
+<input value="{{ empNom }}" sc-camel-on-change="{{ setEmpNom }}" placeholder="Nombre de la empresa" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px">
+<textarea value="{{ empDir }}" sc-camel-on-change="{{ setEmpDir }}" rows="2" placeholder="Direccion, CIF, telefono…" style="width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:400 13px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:12px;resize:vertical"></textarea>
+
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center">
+<img src="{{ empLogo }}" alt="" style="display:{{ empLogoDisp }};max-width:100%;max-height:100%">
+<span style="display:{{ empSinLogo }};font:600 8px system-ui,sans-serif;letter-spacing:.12em;color:#8a8880">LOGO</span>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+<label style="display:block;text-align:center;padding:11px;border:1px solid var(--amber);border-radius:10px;font:600 10px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);cursor:pointer">Elegir logo<input type="file" accept="image/*" sc-camel-on-change="{{ ponLogo }}" style="display:none"></label>
+<div sc-camel-on-click="{{ quitaLogo }}" style="display:{{ empLogoDisp }};text-align:center;padding:9px;border:1px solid var(--line);border-radius:10px;font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);cursor:pointer">Quitar</div>
+</div>
+</div>
+<span style="font:400 10px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">El logo se guarda reducido y sobre fondo blanco: el PDF no admite transparencias.</span>
+
 </div>
 </div>
 </div>
@@ -3737,7 +3940,7 @@ Cargar una copia
 </div>
 <div style="display:flex;flex-direction:column;gap:4px;padding:13px 14px;border-bottom:1px solid var(--line)">
 <span style="font:600 11px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">Material</span>
-<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Descripción, unidad y referencia. En el parte pones la cantidad del día y si ha llegado o si ya está colocado. Los EPIs y las herramientas son dos apartados más de esta misma lista: lo que apuntes ahí es lo que puedes marcar en el parte.</span>
+<span style="font:400 11.5px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--dim)">Descripción, unidad y referencia. Abajo del todo, en «Excel», exportas la lista completa a un archivo .xlsx y la vuelves a importar ya editada. En el parte pones la cantidad del día y si ha llegado o si ya está colocado. Los EPIs y las herramientas son dos apartados más de esta misma lista: lo que apuntes ahí es lo que puedes marcar en el parte.</span>
 </div>
 <div style="display:flex;flex-direction:column;gap:5px;padding:14px;background:var(--band)">
 <span style="font:600 9px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)">Una sola vez</span>
@@ -4155,7 +4358,7 @@ Cargar una copia
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:412,&quot;height&quot;:915}}">
 const KEY = 'miparte:v1';
 const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-const VER = '1.5';
+const VER = '1.8';
 const svgIco = d => React.createElement('svg', {
   viewBox: '0 0 24 24', width: 23, height: 23, fill: 'none', stroke: 'currentColor',
   strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round',
@@ -4180,38 +4383,34 @@ const TUTW_MIRAR = [
 ];
 const TUTW_TOCAR = [
   ['Fichar', 'ENTRADA y SALIDA sellan la hora exacta en el parte de hoy.', '4x1'],
-  ['Tareas', 'La lista con scroll. Tocas una línea y la tachas.', '4x3'],
+  ['Notas', 'La libreta en la pantalla de inicio del móvil: se lee tal como la dejaste, con scroll si es larga. El + apunta una línea nueva al final sin abrir la app, y tocando la cabecera se abre la app en la libreta.', '4x3'],
+  ['Listas', 'Al ponerlo en la pantalla te pregunta cuál de tus listas quieres ver. Luego funciona igual: la lista con scroll, tocas una línea y la tachas, y el + apunta una nueva. Puedes poner varios, uno por lista.', '4x3'],
   ['Material', 'Lo que falta por recibir o colocar. Tocas y lo das por hecho.', '4x3'],
   ['Foto rápida', 'Dispara, y sigue disparando hasta que le das a atrás.', '1x1'],
   ['Incidencia', 'Abre el paso 5 con una línea nueva.', '1x1']
 ];
 const NOVEDADES = [
-  'AGENDA. Tarjeta nueva en el inicio, entre «Semana en curso» y «Pendientes»: la rejilla del mes con los días ocupados. Se abre el calendario entero tocándola.',
-  'Cada casilla se pinta del color de lo que hay ese día. El color lo manda la obra y se elige en su ficha; una cita sin obra lleva el que le pongas tú, con la rueda de color de al lado del título.',
-  'Doble toque en un día: abre lo que haya, te deja elegir si hay varias cosas, y si está vacío apunta una cita nueva.',
-  'Las citas van del día que digas al día que digas: unas vacaciones de dos semanas son UNA cita. Se repiten cada semana las veces que quieras y avisan con la notificación de la app.',
-  'Cada cita se exporta al calendario del móvil (Samsung, Google, Outlook, PlanPop) con la obra, la dirección, el teléfono del contacto y el recordatorio dentro.',
-  'La ficha de la obra tiene color y fin de plazo. El plazo sale en el calendario con los días que quedan.',
-  'Un día puede llevar dos obras. Cada una tiene su propio parte, con su horario, su cuadrilla y su PDF. Se añade al final del paso 1, debajo del horario.',
-  'La tarjeta «Partes anteriores» del inicio lleva buscador: escribes dos letras y busca en todos los partes guardados — trabajos, zonas, material, incidencias, pies de foto, croquis, notas y obras.',
-  'El botón «Copiar ayer» ahora se llama «Copiar último», que es lo que siempre hizo: trae el último parte de esa obra, sea de cuándo sea. El lunes te trae el viernes.',
-  'Botón de «Nueva obra» en el inicio, al lado de «Copiar último». Antes había que ir a la pestaña de obras y bajar del todo.',
-  'El croquis del paso 6 viene plegado y ocupa una línea hasta que lo abres. Se vuelve a cerrar solo al salir del paso.',
-  '«Vaciar y empezar de cero» solo borra los partes, con sus fotos y sus croquis. Operarios, materiales, EPIs, herramientas, obras y tus ajustes se quedan como los tengas.',
-  'Cada línea del paso 3 se marca «Realizado» o «A realizar». El PDF del día solo saca las realizadas; las que quedan salen en el resumen de la obra, en «Trabajo pendiente por zona», y «Copiar último» las trae al parte siguiente.',
-  'Arreglado: en el paso 5 no se podían marcar las casillas de los EPIs.',
-  'El resumen de obra en PDF ya lleva los teléfonos de contacto, debajo del membrete.',
-  'El icono de Operarios de la barra de abajo es ahora un peón de ajedrez: el casco no se leía a tamaño de icono.'
+  'TARJETAS QUE SE PLIEGAN. Todas las tarjetas del inicio se pliegan y se despliegan, y se quedan como las dejes hasta que las vuelvas a tocar. En «Parte diario», «Avisos», «Notas», «Material pendiente», «Foto rápida» y «Partes anteriores» se pliega tocando la cabecera entera.',
+  'En «Valoración del equipo», «Semana en curso» y «Agenda» la cabecera sigue llevando a su sitio, como siempre; ahí pliega la flechita de la derecha.',
+  'Plegada y escondida son dos cosas distintas: plegada se ve la cabecera y nada más; escondida no se ve. Esconder y ordenar sigue en Ajustes › Tarjetas del inicio.',
+  'FOTO RÁPIDA EN EL INICIO. Tarjeta nueva debajo de «Parte diario»: el botón de la cámara y las últimas fotos del día en miniatura. La foto entra en el parte de hoy con su hora y su zona, como la del widget. Manteniendo pulsado el botón se elige de la galería. Solo sale en la app instalada.',
+  'PERMISOS DEL MÓVIL, TODOS JUNTOS. Apartado nuevo en Ajustes con las notificaciones, las alarmas exactas y el ahorro de batería: cada uno con su estado y su botón, y solo sale el botón del que falta. Antes estaban escondidos dentro del aviso de cierre del parte.',
+  'DÍA SIN MATERIAL O SIN EPIS. En el paso 4 y en el paso 5 hay una casilla para decir que hoy no hubo nada. El paso queda resuelto y cuenta en el «x de 6», y en el PDF sale «Sin material» y «Sin EPIs entregados»: no es lo mismo que dejarlo en blanco.',
+  'DÍA DE SOLO DESPLAZAMIENTO. Casilla nueva arriba del paso 3, con un campo para poner de dónde a dónde. Sale en el PDF del día dentro de «Trabajos del día», como «Desplazamiento». En el resumen de la obra no aparece.',
+  'Al marcarlo, la lista de trabajos se pliega. Queda un botón pequeño por si al final sí hubo algo que apuntar.',
+  'MATERIALES EN EXCEL. Al final de la pestaña Materiales hay un apartado «Excel». «Exportar a Excel» genera un archivo .xlsx con cuatro hojas: Material, EPIs, Herramientas y Otros. Se edita en el ordenador y «Importar de Excel» lo devuelve a la aplicación.',
+  'El archivo importado sustituye a la lista: las líneas que no figuren en él se dan de baja. La correspondencia se establece por la descripción, de modo que al modificar una descripción la línea entra como material nuevo. Antes de aplicar nada se muestra el resumen de altas, modificaciones y bajas.',
+  'Los materiales dados de baja que consten en algún parte conservan su denominación en ese parte: los PDF ya emitidos no cambian.'
 ];
 const TUT_PASOS = [
   ['Obra y horario', 'La obra, la hora de entrada y la de salida. Es la cabecera del PDF y sale ya rellena con el horario del último parte de esa obra. Al final del paso puedes añadir otra obra al mismo día.'],
   ['Operarios', 'Marcas quién ha venido hoy y las horas de cada uno. Las extras van aparte para que se vean en el PDF.'],
-  ['Trabajos', 'Lo que se ha hecho y lo que queda por hacer, en corto. Cada línea se marca «Realizado» o «A realizar»: en el PDF del día solo salen las realizadas; las que quedan salen en el resumen de la obra.'],
-  ['Material', 'Lo que ha entrado y lo que falta. Lo que dejas marcado como pendiente aparece luego en el inicio.'],
-  ['Incidencias y EPIs', '«La grúa llegó 2 h tarde» o «Sin luz toda la mañana». Aquí apuntas también los EPIs que has repartido.'],
+  ['Trabajos', 'Lo que se ha hecho y lo que queda por hacer, en corto. Cada línea se marca «Realizado» o «A realizar»: en el PDF del día solo salen las realizadas; las que quedan salen en el resumen de la obra. Arriba del paso hay una casilla, «Solo desplazamiento», para el día que solo viajas: pones de dónde a dónde y sale en el PDF del día como una línea más de trabajos.'],
+  ['Material', 'Lo que ha entrado y lo que falta. Lo que dejas marcado como pendiente aparece luego en el inicio. Si el día no lleva material, la casilla de arriba lo deja resuelto y en el PDF sale «Sin material».'],
+  ['Incidencias y EPIs', '«La grúa llegó 2 h tarde» o «Sin luz toda la mañana». Aquí apuntas también los EPIs que has repartido, y si no has repartido ninguno lo dices con la casilla del repaso: en el PDF sale «Sin EPIs entregados».'],
   ['Croquis y fotos', 'El croquis viene plegado: lo abres con «Dibujar» y dibujas a mano con el dedo. Debajo, las fotos del día con su pie. Todo se pega al final del PDF.']
 ];
-const TUT_TARJ = [['parte', 'Parte diario'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['agenda', 'Agenda'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
+const TUT_TARJ = [['parte', 'Parte diario'], ['foto', 'Foto rápida'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['agenda', 'Agenda'], ['tareas', 'Listas'], ['notas', 'Notas'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
 const TUT_TAREAS = ['Pedir la grúa para el jueves', 'Llamar al jefe de obra', 'Reponer guantes anticorte'];
 function tFila(o) {
   return Object.assign({
@@ -4305,8 +4504,63 @@ async function idbGuarda(v) {
     tx.onabort = () => ko(tx.error);
   });
 }
-const TARJETAS = [['parte', 'Parte diario'], ['semaforo', 'Valoración del equipo'], ['avisos', 'Avisos de valoración'], ['semana', 'Semana en curso'], ['agenda', 'Agenda'], ['tareas', 'Pendientes'], ['matpend', 'Material pendiente'], ['historial', 'Partes anteriores']];
+/** Las lineas de una lista. La lista «Pendientes» sigue guardandose en
+ *  db.tareas (la usan la agenda, el resumen y los widgets); las demas
+ *  llevan las suyas dentro. */
+function itemsL(d, L) {
+  if (!L) return [];
+  if (L.id === 'tareas') { if (!Array.isArray(d.tareas)) d.tareas = []; return d.tareas; }
+  if (!Array.isArray(L.items)) L.items = [];
+  return L.items;
+}
+/* Nombres CORTOS a proposito: esta etiqueta solo se usa en la lista de
+   Ajustes › Tarjetas del inicio, donde la fila es estrecha y el nombre largo
+   se cortaba con puntos suspensivos en pantallas estrechas o con la letra del
+   sistema grande. Las cabeceras de las tarjetas del inicio NO salen de aqui,
+   van escritas en el HTML, y siguen con su nombre entero. */
+const TARJETAS = [['parte', 'Parte diario'], ['foto', 'Foto rápida'], ['semaforo', 'Valoración'], ['avisos', 'Avisos'], ['semana', 'Semana'], ['agenda', 'Agenda'], ['tareas', 'Listas'], ['notas', 'Notas'], ['matpend', 'Material'], ['historial', 'Historial']];
+/* Los colores del tema. Cada uno lleva su version para modo claro y para modo
+   oscuro, igual que hace la paleta de la app. NO estan elegidos a ojo: los
+   siete dan entre 5,2 y 5,3 de contraste para el texto oscuro que va ENCIMA
+   del color (los botones), y el ambar de toda la vida daba 5,5. O sea que
+   ninguno se lee peor que lo que habia. El rojo se queda fuera a proposito: se
+   confunde con el de las incidencias. */
+const TEMAS = [
+  ['ambar', 'Ámbar', '#c48a27', '#e0ad55'],
+  ['azul', 'Azul', '#4f9bd1', '#7db7e0'],
+  ['turquesa', 'Turquesa', '#31a59c', '#6be0d6'],
+  ['verde', 'Verde', '#67a531', '#a2e06b'],
+  ['lima', 'Lima', '#899e22', '#c9e059'],
+  ['violeta', 'Violeta', '#b27cef', '#bc9de0'],
+  ['rosa', 'Rosa', '#dd739f', '#e09db9']
+];
 const RAPIDOS = ['Buen trabajo', 'Baja / ausente', 'Mal con la máquina'];
+/* Parte el texto de la libreta en trozos: los que son enlace salen como <a>,
+   el resto como texto normal. Los saltos de linea los pinta el pre-wrap. */
+function trozosNota(txt) {
+  const s = String(txt == null ? '' : txt);
+  const re = /(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
+  const out = [];
+  let last = 0, m;
+  while ((m = re.exec(s))) {
+    if (m.index > last) out.push({ txt: s.slice(last, m.index), href: '' });
+    let raw = m[0], cola = '';
+    while (raw && '.,;:)]}!?\u00bb'.indexOf(raw.slice(-1)) >= 0) { cola = raw.slice(-1) + cola; raw = raw.slice(0, -1); }
+    const href = raw.indexOf('@') >= 0 && raw.indexOf('/') < 0 ? 'mailto:' + raw
+      : (/^www\./i.test(raw) ? 'http://' + raw : raw);
+    if (raw) out.push({ txt: raw, href: href });
+    if (cola) out.push({ txt: cola, href: '' });
+    last = m.index + m[0].length;
+  }
+  if (last < s.length) out.push({ txt: s.slice(last), href: '' });
+  return out.map(t => ({
+    txt: t.txt,
+    href: t.href || '#',
+    tap: e => { if (e && e.stopPropagation) e.stopPropagation(); },
+    tDisp: t.href ? 'none' : 'inline',
+    aDisp: t.href ? 'inline' : 'none'
+  }));
+}
 function mapsUrl(v) {
   const t = String(v || '').trim();
   if (!t) return '#';
@@ -4318,6 +4572,23 @@ const EPIS = ['Casco', 'Guantes anticorte', 'Gafas', 'Botas de seguridad', 'Arn�
 const HERR = ['Taladro atornillador', 'Amoladora 125', 'Remachadora', 'Sierra de calar', 'Tijera de chapa', 'Nivel láser', 'Pistola de sellar', 'Eslingas y cáncamos'];
 const APARTE = ['epi', 'herramienta']; // van en la lista de materiales, no en el paso de material
 const ROTULO_TIPO = { epi: 'EPIs', herramienta: 'Herramientas' };
+/* Las cuatro hojas del Excel de materiales. «Material» lleva todo lo que no es
+   EPI, herramienta ni «otro», con su columna de tipo; «Otros» lleva el tipo
+   «otro» y cualquier tipo que escribas tu a mano. */
+const XL_HOJAS = [
+  { nom: 'Material', conTipo: true, tipo: null, cols: ['Descripción', 'Tipo', 'Referencia', 'Unidad'], filtro: m => !APARTE.includes(m.tipo) && m.tipo !== 'otro' },
+  { nom: 'EPIs', conTipo: false, tipo: 'epi', cols: ['Descripción', 'Referencia', 'Unidad'], filtro: m => m.tipo === 'epi' },
+  { nom: 'Herramientas', conTipo: false, tipo: 'herramienta', cols: ['Descripción', 'Referencia', 'Unidad'], filtro: m => m.tipo === 'herramienta' },
+  { nom: 'Otros', conTipo: true, tipo: null, cols: ['Descripción', 'Tipo', 'Referencia', 'Unidad'], filtro: m => m.tipo === 'otro' }
+];
+const claveMat = s => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+/* La ficha del material de una linea de parte. Si el material ya no esta en la
+   lista —lo quito un Excel—, se usa el nombre que quedo guardado en la propia
+   linea, y el parte viejo sigue leyendose bien. */
+function matDe(lista, l) {
+  return (lista || []).find(x => x.id === l.id) ||
+    { id: l.id, desc: l.desc || '?', ref: l.ref || '', ud: l.ud || '', tipo: l.tipo || 'otro' };
+}
 const TIPOS_INC = ['Grúa / descarga', 'Material', 'Plano / cambio', 'Personal', 'Meteo', 'Otro oficio', 'Avería', 'Seguridad'];
 const CATS = ['Encargado', 'Oficial 1ª montador', 'Oficial 2ª montador', 'Ayudante', 'Peón', 'Gruista / carretillero'];
 const PASOS = ['Obra y horario', 'Operarios', 'Trabajos', 'Material', 'Incidencias y EPIs', 'Croquis y fotos'];
@@ -4380,6 +4651,18 @@ function migraAgenda(datos) {
     if (typeof o.plazo !== 'string') o.plazo = '';
   });
   (db.tareas || []).forEach(t => { if (typeof t.dia !== 'string') t.dia = ''; });
+  if (!Array.isArray(db.listas)) db.listas = [];
+  // Pendientes entra como una lista mas, la primera, salvo que se haya borrado.
+  if (!db.pendFuera && !db.listas.some(L => L && L.id === 'tareas')) {
+    db.listas.unshift({ id: 'tareas', nom: 'Pendientes', abierta: true, items: [] });
+  }
+  db.listas.forEach((L, i) => {
+    if (typeof L.id !== 'string' || !L.id) L.id = 'L' + i + '-' + Math.random().toString(36).slice(2, 7);
+    if (typeof L.nom !== 'string') L.nom = 'Lista';
+    if (typeof L.abierta !== 'boolean') L.abierta = true;
+    if (!Array.isArray(L.items)) L.items = [];
+    L.items.forEach(t => { if (typeof t.txt !== 'string') t.txt = ''; t.hecha = !!t.hecha; });
+  });
   (db.citas || []).forEach(c => {
     if (typeof c.color !== 'string') c.color = '';
     if (typeof c.diaFin !== 'string') c.diaFin = (Number(c.dur) || 1) > 1 ? sumaDias(c.dia, (Number(c.dur) || 1) - 1) : '';
@@ -4390,6 +4673,34 @@ function migraAgenda(datos) {
   if (Array.isArray(or) && or.indexOf('agenda') < 0) {
     const i = or.indexOf('semana');
     or.splice(i >= 0 ? i + 1 : or.length, 0, 'agenda');
+  }
+  // la libreta se cuela detrás de las listas
+  if (Array.isArray(or) && or.indexOf('notas') < 0) {
+    const i = or.indexOf('tareas');
+    or.splice(i >= 0 ? i + 1 : or.length, 0, 'notas');
+  }
+  if (typeof db.libreta !== 'string') db.libreta = '';
+  if (typeof db.libAb !== 'boolean') db.libAb = true;
+  // Aspecto y datos de la empresa
+  if (!db.ajustes || typeof db.ajustes !== 'object') db.ajustes = {};
+  if (typeof db.ajustes.tema !== 'string') db.ajustes.tema = 'ambar';
+  if (!db.empresa || typeof db.empresa !== 'object') db.empresa = {};
+  ['nom', 'dir', 'logo'].forEach(k => { if (typeof db.empresa[k] !== 'string') db.empresa[k] = ''; });
+  // Plegado de las tarjetas del inicio: plg[id] = la tarjeta se ve solo por la
+  // cabecera. Es OTRA cosa que pleg[id], que la esconde entera (Ajustes).
+  const ini = db.inicio = db.inicio || {};
+  if (!ini.plg) ini.plg = {};
+  if (!ini.vPlg) { if (db.libAb === false) ini.plg.notas = true; ini.vPlg = 1; }
+  // La tarjeta de foto rápida es nueva: entra debajo del parte diario, no al
+  // final, que es donde caeria por el relleno automatico del orden.
+  if (!ini.vFoto) {
+    const o = (ini.orden || []).slice();
+    if (o.length && o.indexOf('foto') < 0) {
+      const i = o.indexOf('parte');
+      o.splice(i < 0 ? o.length : i + 1, 0, 'foto');
+      ini.orden = o;
+    }
+    ini.vFoto = 1;
   }
   return datos;
 }
@@ -4446,6 +4757,7 @@ function semilla() {
       zonas: [],
       episExtra: [],
       tareas: [],
+      listas: [],
       inicio: { orden: TARJETAS.map(t => t[0]), pleg: {} },
       ajustes: { aviso: '19:00', avisos: ['19:00'], notif: false, dias: '1111111' }
     },
@@ -4453,7 +4765,7 @@ function semilla() {
   };
 }
 function parteVacio() {
-  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [], taller: false };
+  return { obraId: '', entrada: '', salida: '', jornada: '', ops: [], trabajos: [], material: [], incidencias: [], epis: {}, herr: {}, sinMat: false, sinEpis: false, viaje: { on: false, txt: '' }, croquis: { strokes: [], titulo: '', escala: '' }, fotos: [], taller: false };
 }
 function horasEntre(a, b) {
   if (!a || !b) return 0;
@@ -4497,6 +4809,8 @@ const PRIVACIDAD = [
   'Todo lo que apuntas se queda dentro de este telefono. No hay cuenta, no hay servidor, no hay publicidad y no se mide el uso.',
   '',
   'La app no manda nada a ninguna parte. Cualquier peticion a internet que no sean sus propios ficheros esta bloqueada por dentro.',
+  '',
+  'La camara solo se abre cuando tocas «Hacer foto», en la tarjeta del inicio, en el widget o en el paso 6. La foto se guarda con el parte, dentro del telefono, y no lleva ubicacion. La app no pide el permiso de ubicacion.',
   '',
   'Del telefono solo sale lo que mandas tu: el PDF y la copia de seguridad, por el menu de compartir de Android y a donde tu elijas; y la direccion de una obra o cita cuando pulsas IR, que se la pasa a tu app de mapas.',
   '',
@@ -4559,8 +4873,13 @@ class Component extends DCLogic {
     window.MiParteFotos = j => {
       try { this.fotosWidget(typeof j === 'string' ? JSON.parse(j) : j); } catch (e) { }
     };
+    // Devuelve true si la cola se ha APLICADO. Ojo: aplicar no es guardar.
+    // El envoltorio NO vacia la cola con esta respuesta, espera a que la
+    // pagina llame a MiParteNative.colaHecha(), y eso pasa cuando el dato ya
+    // esta escrito en el disco. Ver colaWidget.
     window.MiParteCola = j => {
-      try { this.colaWidget(typeof j === 'string' ? JSON.parse(j) : j); } catch (e) { }
+      try { this.colaWidget(typeof j === 'string' ? JSON.parse(j) : j); return true; }
+      catch (e) { return false; }
     };
     // El boton ATRAS del movil. Devuelve true si la app se ha encargado; si
     // devuelve false, Android cierra la app (solo pasa estando en inicio).
@@ -4571,6 +4890,14 @@ class Component extends DCLogic {
     this.onResize = () => this.setState({ ancho: window.innerWidth });
     window.addEventListener('resize', this.onResize);
     this.setState({ ancho: window.innerWidth });
+    this.ponTema();
+    try {
+      // Si el movil cambia de claro a oscuro, hay que repintar el tono.
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      this.onModo = () => this.ponTema();
+      if (mq.addEventListener) mq.addEventListener('change', this.onModo);
+      else if (mq.addListener) mq.addListener(this.onModo);
+    } catch (e) { }
     setTimeout(() => this.pinta(), 60);
     setTimeout(() => this.mideInicio(), 120);
     this.tick = setInterval(() => this.compruebaAviso(), 60000);
@@ -4580,11 +4907,42 @@ class Component extends DCLogic {
     };
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('focus', this.onVis);
+    // La libreta se cierra en cuanto el dedo va a cualquier otro sitio. El
+    // onBlur de React no llega en esta pagina, asi que se escucha el evento
+    // nativo, que si sube hasta el documento.
+    this.onFueraNota = e => {
+      if (!this.state.notaEdita) return;
+      const t = e.target;
+      if (t && t.closest && t.closest('#libretaEd')) return;
+      this.setState({ notaEdita: false });
+    };
+    document.addEventListener('focusout', e => {
+      if (this.state.notaEdita && e.target && e.target.id === 'libretaEd') {
+        this.setState({ notaEdita: false });
+      }
+    }, true);
+    document.addEventListener('pointerdown', this.onFueraNota, true);
     this.arranca();
     setTimeout(() => this.compruebaTutorial(), 520);
     setTimeout(() => this.compruebaAviso(), 4000);
   }
+  /** Pinta el color elegido. Toda la app usa var(--amber) —214 veces—, asi que
+   *  basta con redefinirla en la raiz: una linea y cambia entera.
+   *  Cada tema trae dos tonos porque el modo oscuro necesita uno mas claro,
+   *  igual que hace la paleta original. */
+  ponTema() {
+    try {
+      const k = ((this.state.db || {}).ajustes || {}).tema || 'ambar';
+      const T = TEMAS.find(x => x[0] === k) || TEMAS[0];
+      let osc = false;
+      try { osc = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { }
+      const c = osc ? T[3] : T[2];
+      const r = document.documentElement;
+      if (r.style.getPropertyValue('--amber') !== c) r.style.setProperty('--amber', c);
+    } catch (e) { }
+  }
   componentDidUpdate(prevProps, prevEstado) {
+    this.ponTema();
     // De donde se ha llegado a la pantalla de ahora, para que ATRAS devuelva
     // al sitio bueno. No se apunta cuando el cambio ES un atras: si no, se
     // montaria un bucle de dos pantallas dandose la vuelta la una a la otra.
@@ -4707,6 +5065,64 @@ class Component extends DCLogic {
       if (!this.state.sinEspacio) this.setState({ sinEspacio: true });
     }
   }
+  /** Mete el logo de la empresa. Se encoge a 300 px y se aplana sobre BLANCO
+   *  a proposito: el PDF solo admite JPEG y el JPEG no tiene transparencia, asi
+   *  que un PNG recortado saldria con un cuadro negro si no se hace esto.
+   *  La hoja del PDF es blanca, o sea que aplanar sobre blanco no se nota. */
+  cargaLogo(ev) {
+    const f = ev && ev.target && ev.target.files && ev.target.files[0];
+    if (ev && ev.target) ev.target.value = '';
+    if (!f) return;
+    const lector = new FileReader();
+    lector.onload = () => {
+      const im = new Image();
+      im.onload = () => {
+        try {
+          const k = Math.min(1, 300 / Math.max(im.width || 1, im.height || 1));
+          const c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round((im.width || 1) * k));
+          c.height = Math.max(1, Math.round((im.height || 1) * k));
+          const g = c.getContext('2d');
+          g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+          g.drawImage(im, 0, 0, c.width, c.height);
+          const src = c.toDataURL('image/jpeg', 0.85);
+          this.setDb(d => { d.empresa.logo = src; });
+        } catch (e) {
+          this.aviso('No se ha podido leer el logo', 'Prueba con otra imagen, en JPG o PNG.');
+        }
+      };
+      im.onerror = () => this.aviso('No se ha podido leer el logo', 'Prueba con otra imagen, en JPG o PNG.');
+      im.src = String(lector.result || '');
+    };
+    lector.onerror = () => this.aviso('No se ha podido leer el logo', 'Prueba con otra imagen.');
+    lector.readAsDataURL(f);
+  }
+  /** Le dice al envoltorio que ya puede vaciar su cola. Solo se llama cuando
+   *  el dato esta escrito, o cuando no habia nada que escribir. */
+  confirmaCola() {
+    const N = window.MiParteNative;
+    if (N && N.colaHecha) { try { N.colaHecha(); } catch (e) { } }
+  }
+  /** Escribe AHORA, saltandose la espera de los 220 ms.
+   *
+   *  guarda() agrupa los guardados para no escribir en cada trazo del croquis.
+   *  Eso esta bien mientras la app sigue viva, pero NO vale para lo que entra
+   *  de los widgets: el envoltorio vacia su cola en cuanto la pagina dice que
+   *  se ha quedado con ella, y si el usuario sale de la app en esos 220 ms el
+   *  guardado no llega a ocurrir y el apunte desaparece de los dos sitios.
+   *  Devuelve una promesa: hasta que no cumple, la cola no se toca. */
+  guardaYa() {
+    clearTimeout(this.tGuarda);
+    const datos = { db: this.state.db, partes: this.state.partes };
+    this.ultimo = datos;
+    if (this.idbOk) return idbGuarda(datos);
+    try {
+      localStorage.setItem(KEY, JSON.stringify(datos));
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
   setDb(mut) {
     const db = clona(this.state.db);
     mut(db);
@@ -4765,7 +5181,8 @@ class Component extends DCLogic {
   hayDatos(p) {
     return !!(p && (p.entrada || p.salida || (p.ops || []).length || (p.trabajos || []).length ||
       (p.material || []).length || (p.incidencias || []).length || (p.fotos || []).length ||
-      ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean)));
+      ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean) ||
+      p.sinMat || p.sinEpis || (p.viaje || {}).on));
   }
   obraNueva() {
     const db = clona(this.state.db);
@@ -4840,7 +5257,8 @@ class Component extends DCLogic {
     const p = this.state.partes[dia];
     const lleno = p && ((p.entrada || p.salida || (p.ops || []).length || (p.trabajos || []).length ||
       (p.material || []).length || (p.incidencias || []).length || (p.fotos || []).length ||
-      ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean)));
+      ((p.croquis || {}).strokes || []).length || Object.values(p.epis || {}).some(Boolean) ||
+      p.sinMat || p.sinEpis || (p.viaje || {}).on));
     if (lleno) return;
     if (!Object.keys(this.state.partes).filter(k => k < dia).length) return;
     try { localStorage.setItem('miparte:copia', dia); } catch (e) { }
@@ -5197,7 +5615,7 @@ class Component extends DCLogic {
     return Object.values(map).sort((a, b) => b.h - a.h);
   }
   // ---------- PDF de verdad, sin depender de la impresión del sistema ----------
-  async imagenesPdf() {
+  async imagenesPdf(soloLogo) {
     const p = this.parte(), out = [];
     const carga = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
     const jpg = img => {
@@ -5210,14 +5628,22 @@ class Component extends DCLogic {
       g.drawImage(img, 0, 0, c.width, c.height);
       return { b64: c.toDataURL('image/jpeg', 0.72).split(',')[1], w: c.width, h: c.height };
     };
-    const cro = this.croquisPng();
+    // El logo de la empresa va AL FINAL de la lista a proposito: el croquis y
+    // las fotos se dibujan por su posicion (D.img(0…), D.img(1+i+j…)), asi que
+    // meterlo delante les correria los indices a todos.
+    const logoSrc = ((this.state.db || {}).empresa || {}).logo || '';
+    const cro = soloLogo ? '' : this.croquisPng();
     if (cro) {
       const im = await carga(cro);
       if (im) out.push(Object.assign(jpg(im), { pie: ('Croquis' + (p.croquis.titulo ? ' · ' + p.croquis.titulo : '') + (p.croquis.escala ? ' · ' + p.croquis.escala : '')) }));
     }
-    for (const f of p.fotos) {
+    if (!soloLogo) for (const f of p.fotos) {
       const im = await carga(f.src);
       if (im) out.push(Object.assign(jpg(im), { pie: [f.hora || '', f.zona || '', f.pie || ''].filter(Boolean).join('   ·   ') }));
+    }
+    if (logoSrc) {
+      const im = await carga(logoSrc);
+      if (im) out.push(Object.assign(jpg(im), { esLogo: true }));
     }
     return out;
   }
@@ -5261,13 +5687,36 @@ class Component extends DCLogic {
     D.vert = (x, y1, y2, lw, g) => { const c = g == null ? '0.78' : g; ops.push((lw || 0.5) + ' w ' + c + ' ' + c + ' ' + c + ' RG ' + x.toFixed(2) + ' ' + y1.toFixed(2) + ' m ' + x.toFixed(2) + ' ' + y2.toFixed(2) + ' l S'); };
     D.caja = (x, yy, w, hh, lw, g) => { const c = g == null ? '0.1' : g; ops.push((lw || 0.7) + ' w ' + c + ' ' + c + ' ' + c + ' RG ' + x.toFixed(2) + ' ' + yy.toFixed(2) + ' ' + w.toFixed(2) + ' ' + hh.toFixed(2) + ' re S'); };
     D.relleno = (x, yy, w, hh, g) => ops.push('q ' + g + ' ' + g + ' ' + g + ' rg ' + x.toFixed(2) + ' ' + yy.toFixed(2) + ' ' + w.toFixed(2) + ' ' + hh.toFixed(2) + ' re f Q');
+    // El logo de la empresa, si lo hay. Se resuelve DESPUES de cargar las
+    // imagenes, pero D.marca solo se llama al dibujar, que es mas tarde aun.
+    let logoI = -1, logoIm = null;
     D.marca = (x, yy, t, claro) => {
+      if (logoI >= 0 && logoIm) {
+        // Encajado dentro del cuadrado y sin deformarlo: un logo apaisado
+        // estirado a cuadrado queda espantoso.
+        const k = Math.min(t / (logoIm.w || 1), t / (logoIm.h || 1));
+        const w = (logoIm.w || 1) * k, hh = (logoIm.h || 1) * k;
+        // Sobre banda oscura hace falta cuadro blanco detras: un logo azul
+        // marino sobre negro no se ve.
+        if (claro) ops.push('q 1 1 1 rg ' + (x - 1).toFixed(2) + ' ' + (yy - 1).toFixed(2) + ' ' + (t + 2).toFixed(2) + ' ' + (t + 2).toFixed(2) + ' re f Q');
+        D.img(logoI, x + (t - w) / 2, yy + (t - hh) / 2, w, hh);
+        return;
+      }
       ops.push('q ' + (claro ? '1 1 1' : '0.137 0.137 0.121') + ' rg ' + x.toFixed(2) + ' ' + yy.toFixed(2) + ' ' + t.toFixed(2) + ' ' + t.toFixed(2) + ' re f Q');
       ops.push('q 0.816 0.541 0.165 rg ' + (x + t * 0.33).toFixed(2) + ' ' + (yy + t * 0.33).toFixed(2) + ' ' + (t * 0.34).toFixed(2) + ' ' + (t * 0.34).toFixed(2) + ' re f Q');
     };
     D.img = (i, x, yy, w, hh) => ops.push('q ' + w.toFixed(2) + ' 0 0 ' + hh.toFixed(2) + ' ' + x.toFixed(2) + ' ' + yy.toFixed(2) + ' cm /Im' + i + ' Do Q');
     D.nueva = cab => { ops = []; paginas.push(ops); if (cab) cab(paginas.length); };
-    const imgs = op.sinImagenes ? [] : await this.imagenesPdf();
+    const imgs = await this.imagenesPdf(!!op.sinImagenes);
+    logoI = imgs.findIndex(x => x && x.esLogo);
+    logoIm = logoI >= 0 ? imgs[logoI] : null;
+    // El nombre de la empresa sustituye a «MI PARTE» en el pie.
+    const EMP = ((db || {}).empresa || {});
+    // Viaja en D porque quien lo usa son pdfDibujaParte y pdfDibujaResumen,
+    // que son metodos aparte.
+    D.empNom = String(EMP.nom || '').trim();
+    D.empDir = String(EMP.dir || '').trim();
+    D.marcaTxt = D.empNom || 'MI PARTE';
     if (op.resumen) this.pdfDibujaResumen(D, op.resumen);
     else this.pdfDibujaParte(D, imgs, obra);
     const guarda = ops;
@@ -5330,8 +5779,12 @@ class Component extends DCLogic {
     D.pie = (i, n) => {
       D.linea(M, 31, R, 0.7, '0.65');
       D.marca(M, 17, 10);
-      D.txt('MI PARTE', M + 15, 20, 7.5, true, '0.3');
-      D.txt(D.recorta(obra.nombre || '', 190, 7.5) + '   .   Parte n.' + String.fromCharCode(186) + ' ' + nP + '   .   ' + fecha, M + 62, 20, 7.5, false, '0.5');
+      const nomPie = D.recorta(D.marcaTxt, 150, 7.5);
+      D.txt(nomPie, M + 15, 20, 7.5, true, '0.3');
+      // El resto arranca DESPUES del nombre, no en un punto fijo: con «MI PARTE»
+      // cabia en 47, pero el nombre de una empresa puede ser el triple de largo
+      // y se pisarian.
+      D.txt(D.recorta(obra.nombre || '', 190, 7.5) + '   .   Parte n.' + String.fromCharCode(186) + ' ' + nP + '   .   ' + fecha, M + 15 + Math.max(47, D.an(nomPie, 7.5) + 12), 20, 7.5, false, '0.5');
       D.txtD('Página ' + i + ' de ' + n, R, 20, 7.5, false, '0.5');
     };
     const salto = min => { if (D.y < (min || 92)) D.nueva(cab); };
@@ -5342,6 +5795,13 @@ class Component extends DCLogic {
       D.y -= 7; D.linea(M, D.y, R, 0.7, '0.65'); D.y -= 16;
     };
     D.nueva(cab);
+    // Membrete de la empresa, arriba a la derecha de la primera hoja.
+    if (D.empNom || D.empDir) {
+      let yy = D.y + 4;
+      if (D.empNom) { D.txtD(D.recorta(D.empNom, 260, 9), R, yy, 9, true, '0.25'); yy -= 10; }
+      D.corta(D.empDir, 260, 7.5).slice(0, 3).forEach(l => { D.txtD(l, R, yy, 7.5, false, '0.45'); yy -= 9; });
+      D.y = Math.min(D.y, yy - 4);
+    }
     D.txt(D.recorta(String(obra.nombre || 'Obra').toUpperCase(), D.ancho, 17), M, D.y, 17, true);
     D.y -= 15;
     D.txt(D.recorta([obra.cliente || '', obra.pedido ? 'pedido ' + obra.pedido : '', p.taller ? 'TRABAJO EN TALLER' : 'TRABAJO EN OBRA'].filter(Boolean).join('   .   '), D.ancho, 9), M, D.y, 9, false, '0.35');
@@ -5370,6 +5830,11 @@ class Component extends DCLogic {
       if (!g) { g = { z: z, ls: [] }; zonas.push(g); }
       g.ls.push(((t.hora || '--:--') + '   ' + (t.texto || '')).trim());
     });
+    // El dia de solo desplazamiento va aqui, en cabeza, y no en el resumen de
+    // la obra: alli no es trabajo hecho ni pendiente.
+    if ((p.viaje || {}).on) {
+      zonas.unshift({ z: 'Desplazamiento', ls: [String((p.viaje || {}).txt || '').trim() || 'Jornada de solo desplazamiento'] });
+    }
     if (zonas.length) {
       h2('Trabajos del día');
       zonas.forEach((g, i) => {
@@ -5424,7 +5889,7 @@ class Component extends DCLogic {
       };
       cabMat();
       p.material.forEach(m => {
-        const f = db.materiales.find(x => x.id === m.id) || { desc: '?', ud: '', ref: '' };
+        const f = matDe(db.materiales, m);
         if (D.y < 100) { D.nueva(cab); cabMat(); }
         D.txt(D.recorta(f.desc, cQ - cD - 40, 9.2), cD, D.y, 9.2);
         D.txtD((m.cant || '0') + ' ' + (f.ud || ''), cQ, D.y, 9.2);
@@ -5437,7 +5902,7 @@ class Component extends DCLogic {
       if (pend.length) {
         h2('Material pendiente');
         pend.forEach(m => {
-          const f = db.materiales.find(x => x.id === m.id) || { desc: '?', ud: '' };
+          const f = matDe(db.materiales, m);
           if (D.y < 100) D.nueva(cab);
           D.txt(D.recorta(f.desc, 250, 9.2), M + 4, D.y, 9.2);
           D.txtD((m.cant || '0') + ' ' + (f.ud || ''), M + 330, D.y, 9.2);
@@ -5445,6 +5910,9 @@ class Component extends DCLogic {
           D.y -= 6; D.linea(M, D.y, R, 0.5, '0.83'); D.y -= 13;
         });
       }
+    } else if (p.sinMat) {
+      h2('Material');
+      salto(); D.txt('Sin material', M, D.y, 9.2); D.y -= 12.6;
     }
     if (incs.length) {
       h2('Incidencias');
@@ -5472,6 +5940,9 @@ class Component extends DCLogic {
     if (epis.length) {
       h2('EPIs revisados');
       D.corta(epis.join('   .   '), D.ancho, 9.2).forEach(l => { salto(); D.txt(l, M, D.y, 9.2); D.y -= 12.6; });
+    } else if (p.sinEpis) {
+      h2('EPIs revisados');
+      salto(); D.txt('Sin EPIs entregados', M, D.y, 9.2); D.y -= 12.6;
     }
     const herr = this.listaHerr().filter(t => (p.herr || {})[t.id]).map(t => t.lab);
     if (herr.length) {
@@ -5561,8 +6032,9 @@ class Component extends DCLogic {
     D.pie = (i, n) => {
       D.linea(M, 31, R, 0.7, '0.65');
       D.marca(M, 17, 10);
-      D.txt('MI PARTE', M + 15, 20, 7.5, true, '0.3');
-      D.txt('Resumen de obra   .   ' + D.recorta(obra.nombre || '', 190, 7.5) + '   .   ' + nPartes, M + 62, 20, 7.5, false, '0.5');
+      const nomPie = D.recorta(D.marcaTxt, 150, 7.5);
+      D.txt(nomPie, M + 15, 20, 7.5, true, '0.3');
+      D.txt('Resumen de obra   .   ' + D.recorta(obra.nombre || '', 190, 7.5) + '   .   ' + nPartes, M + 15 + Math.max(47, D.an(nomPie, 7.5) + 12), 20, 7.5, false, '0.5');
       D.txtD('Página ' + i + ' de ' + n, R, 20, 7.5, false, '0.5');
     };
     const salto = min => { if (D.y < (min || 92)) D.nueva(cab); };
@@ -5740,8 +6212,10 @@ class Component extends DCLogic {
         if (!saco[z].some(x => x.toLowerCase() === s.toLowerCase())) saco[z].push(s);
       });
       (p.material || []).forEach(m => {
-        const f = (db.materiales || []).find(x => x.id === m.id);
-        if (!f) return;
+        const f = matDe(db.materiales, m);
+        // Material borrado hace tiempo y sin nombre guardado: no se saca, que
+        // saldria una fila «?» en el resumen que se manda al cliente.
+        if (!f.desc || f.desc === '?') return;
         gasto[m.id] = gasto[m.id] || { desc: f.desc, ud: f.ud, ref: f.ref, cant: 0 };
         gasto[m.id].cant += num(m.cant);
         if (!matRec(m) || !matCol(m)) pend[m.id] = { desc: f.desc, ud: f.ud, cant: num(m.cant), est: matFalta(m) };
@@ -5782,6 +6256,235 @@ class Component extends DCLogic {
     e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
     e.setUint32(12, dl, true); e.setUint32(16, off, true);
     return new Blob(cuerpo.concat(dir, [new Uint8Array(e.buffer)]), { type: 'application/zip' });
+  }
+  /** Abre un zip: devuelve {nombre: texto} de cada fichero de dentro.
+   *  Excel guarda comprimido (deflate), asi que se descomprime con el motor
+   *  del propio navegador. Si el WebView fuera tan viejo que no lo tiene, se
+   *  avisa en vez de fallar en silencio. */
+  /** El .xlsx de la lista de materiales. Se escribe a mano: un zip con los
+   *  XML que pide Excel, con el texto puesto dentro de cada celda (inlineStr)
+   *  para no tener que llevar tabla de cadenas. */
+  excelMateriales() {
+    const mats = this.state.db.materiales || [];
+    const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const letra = i => { let s = '', x = i + 1; while (x > 0) { const r = (x - 1) % 26; s = String.fromCharCode(65 + r) + s; x = (x - r - 1) / 26; } return s; };
+    const enc = new TextEncoder();
+    const NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+    const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    const hojaXml = filas => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="' + NS + '"><sheetData>' +
+      filas.map((f, y) => '<row r="' + (y + 1) + '">' + f.map((v, x) =>
+        '<c r="' + letra(x) + (y + 1) + '" t="inlineStr"><is><t xml:space="preserve">' + esc(v) + '</t></is></c>'
+      ).join('') + '</row>').join('') + '</sheetData></worksheet>';
+    const ficheros = [];
+    const pon = (nom, s) => ficheros.push({ name: nom, bytes: enc.encode(s) });
+    XL_HOJAS.forEach((hoja, i) => {
+      const cuerpo = mats.filter(hoja.filtro).map(m => hoja.conTipo
+        ? [m.desc || '', m.tipo || '', m.ref || '', m.ud || '']
+        : [m.desc || '', m.ref || '', m.ud || '']);
+      pon('xl/worksheets/sheet' + (i + 1) + '.xml', hojaXml([hoja.cols.slice()].concat(cuerpo)));
+    });
+    pon('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      XL_HOJAS.map((x, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') +
+      '</Types>');
+    pon('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="' + REL + '/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+    pon('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<workbook xmlns="' + NS + '" xmlns:r="' + REL + '"><sheets>' +
+      XL_HOJAS.map((x, i) => '<sheet name="' + esc(x.nom) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') +
+      '</sheets></workbook>');
+    pon('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      XL_HOJAS.map((x, i) => '<Relationship Id="rId' + (i + 1) + '" Type="' + REL + '/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') +
+      '</Relationships>');
+    const zip = this.zipBlob(ficheros);
+    return new Blob([zip], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  async sacaExcelMateriales() {
+    const nom = 'Materiales Mi Parte ' + hoyKey() + '.xlsx';
+    let blob = null;
+    try { blob = this.excelMateriales(); } catch (e) { return this.aviso('No se ha podido', 'No se ha podido preparar el archivo de Excel.'); }
+    let file = null;
+    try { file = new File([blob], nom, { type: blob.type }); } catch (e) { }
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: nom }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    this.baja(blob, nom);
+    this.aviso('Lista exportada', 'Se ha guardado ' + nom + ', con cuatro hojas: Material, EPIs, Herramientas y Otros. Edítalo y vuelve a importar el mismo archivo.');
+  }
+  /** Mete la lista del Excel. Manda el archivo: lo que no venga se quita. Las
+   *  filas se casan por la descripcion. Antes de tocar nada se cuenta lo que va
+   *  a pasar y se pregunta. */
+  async meteExcelMateriales(file) {
+    if (!file) return;
+    this.setState({ cargando: true });
+    let hojas = null;
+    try {
+      hojas = this.xlsxHojas(await this.zipLee(file));
+    } catch (e) {
+      this.setState({ cargando: false });
+      return this.aviso('No se ha podido leer', (e && e.message) || 'El archivo no se ha podido abrir. Debe ser el .xlsx que exporta la propia aplicación.');
+    }
+    this.setState({ cargando: false });
+    const faltan = XL_HOJAS.filter(x => !hojas[x.nom]).map(x => x.nom);
+    if (faltan.length) {
+      return this.aviso('Falta una hoja', 'El archivo debe contener las cuatro hojas: Material, EPIs, Herramientas y Otros. ' +
+        (faltan.length === 1 ? 'Falta «' + faltan[0] + '»' : 'Faltan «' + faltan.join('», «') + '»') +
+        '. No se ha modificado nada. Exporta la lista de nuevo, edítala sin eliminar pestañas y vuelve a importarla.');
+    }
+    const viejos = (this.state.db.materiales || []).slice();
+    const porDesc = {};
+    viejos.forEach(m => { const k = claveMat(m.desc); if (!(k in porDesc)) porDesc[k] = m; });
+    const nuevos = [], vistos = {};
+    let nAlta = 0, nCambio = 0, nRepe = 0;
+    XL_HOJAS.forEach(hoja => {
+      (hojas[hoja.nom] || []).slice(1).forEach(f => {
+        const desc = String(f[0] || '').trim();
+        if (!desc) return;
+        const k = claveMat(desc);
+        if (vistos[k]) { nRepe++; return; }
+        vistos[k] = true;
+        const tipo = hoja.tipo || (String(f[1] || '').trim().toLowerCase() || 'otro');
+        const ref = String((hoja.conTipo ? f[2] : f[1]) || '').trim();
+        const ud = String((hoja.conTipo ? f[3] : f[2]) || '').trim();
+        const ant = porDesc[k];
+        if (ant) {
+          if ((ant.tipo || '') !== tipo || (ant.ref || '') !== ref || (ant.ud || '') !== ud || (ant.desc || '') !== desc) nCambio++;
+          nuevos.push({ id: ant.id, desc: desc, tipo: tipo, ref: ref, ud: ud });
+        } else {
+          nAlta++;
+          nuevos.push({ id: 'x' + Date.now().toString(36) + Math.floor(Math.random() * 900 + 100) + nuevos.length, desc: desc, tipo: tipo, ref: ref, ud: ud });
+        }
+      });
+    });
+    if (!nuevos.length) {
+      return this.aviso('El archivo está vacío', 'No hay ninguna descripción en las cuatro hojas. No se ha modificado nada: vaciar la lista entera desde el archivo no se aplica, por si se trata de un error.');
+    }
+    const quedan = {};
+    nuevos.forEach(m => { quedan[m.id] = true; });
+    const fuera = viejos.filter(m => !quedan[m.id]);
+    const partes = [];
+    if (nAlta) partes.push('Altas: ' + nAlta);
+    if (nCambio) partes.push((nAlta ? 'modificaciones' : 'Modificaciones') + ': ' + nCambio);
+    if (fuera.length) partes.push((nAlta || nCambio ? 'bajas' : 'Bajas') + ': ' + fuera.length);
+    if (!partes.length) return this.aviso('Sin cambios', 'El archivo coincide con la lista actual.');
+    const usados = {};
+    Object.values(this.state.partes).forEach(pt => (pt.material || []).forEach(l => { usados[l.id] = true; }));
+    const conservan = fuera.filter(m => usados[m.id]).length;
+    const texto = partes.join(', ') + '.' +
+      (nRepe ? ' Se ignoran ' + nRepe + (nRepe === 1 ? ' fila repetida' : ' filas repetidas') + '; prevalece la primera.' : '') +
+      (conservan ? ' De las bajas, ' + conservan + (conservan === 1 ? ' consta' : ' constan') + ' en algún parte: esos partes conservan la denominación y sus PDF no cambian.' : '') +
+      ' La correspondencia se establece por la descripción: si has modificado alguna, esa línea entra como material nuevo.';
+    this.pregunta('Importar la lista', texto, () => {
+      this.setState(st => {
+        const partesN = clona(st.partes);
+        // Antes de quitarlos, cada linea de parte se queda con el nombre: asi el
+        // parte viejo se sigue leyendo aunque el material ya no este en la lista.
+        Object.keys(partesN).forEach(k => {
+          (partesN[k].material || []).forEach(l => {
+            if (quedan[l.id]) return;
+            const f = viejos.find(x => x.id === l.id);
+            if (!f) return;
+            l.desc = f.desc || ''; l.ref = f.ref || ''; l.ud = f.ud || ''; l.tipo = f.tipo || 'otro';
+          });
+        });
+        return { partes: partesN };
+      }, () => {
+        this.setDb(d => { d.materiales = nuevos; });
+        this.aviso('Lista importada', 'La lista de materiales es ahora la del archivo: ' + nuevos.length + (nuevos.length === 1 ? ' referencia' : ' referencias') + '.');
+      });
+    }, 'Sí, meterla');
+  }
+  async zipLee(blob) {
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    let eo = -1;
+    for (let i = buf.length - 22; i >= 0 && i > buf.length - 66000; i--) {
+      if (dv.getUint32(i, true) === 0x06054b50) { eo = i; break; }
+    }
+    if (eo < 0) throw new Error('Esto no es un archivo de Excel.');
+    const nEnt = dv.getUint16(eo + 10, true);
+    let off = dv.getUint32(eo + 16, true);
+    const dec = new TextDecoder();
+    const crudos = [];
+    for (let k = 0; k < nEnt; k++) {
+      if (off + 46 > buf.length || dv.getUint32(off, true) !== 0x02014b50) break;
+      const metodo = dv.getUint16(off + 10, true);
+      const comp = dv.getUint32(off + 20, true);
+      const nl = dv.getUint16(off + 28, true), el = dv.getUint16(off + 30, true), cl = dv.getUint16(off + 32, true);
+      const lo = dv.getUint32(off + 42, true);
+      const nom = dec.decode(buf.subarray(off + 46, off + 46 + nl));
+      const lnl = dv.getUint16(lo + 26, true), lel = dv.getUint16(lo + 28, true);
+      const ini = lo + 30 + lnl + lel;
+      crudos.push({ nom: nom, metodo: metodo, datos: buf.subarray(ini, ini + comp) });
+      off += 46 + nl + el + cl;
+    }
+    const txt = {};
+    for (const e of crudos) {
+      if (!/\.(xml|rels)$/i.test(e.nom)) continue;
+      if (e.metodo === 0) { txt[e.nom] = dec.decode(e.datos); continue; }
+      if (e.metodo !== 8) continue;
+      if (typeof DecompressionStream === 'undefined') throw new Error('Este móvil no sabe abrir archivos de Excel. Actualiza el sistema o usa otro.');
+      const flujo = new Blob([e.datos]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      txt[e.nom] = await new Response(flujo).text();
+    }
+    return txt;
+  }
+  /** Las hojas del .xlsx, cada una como lista de filas de textos. */
+  xlsxHojas(txt) {
+    const DP = new DOMParser();
+    const wb = DP.parseFromString(txt['xl/workbook.xml'] || '', 'application/xml');
+    const rl = DP.parseFromString(txt['xl/_rels/workbook.xml.rels'] || '', 'application/xml');
+    const destino = {};
+    Array.prototype.forEach.call(rl.getElementsByTagName('Relationship'), r => {
+      destino[r.getAttribute('Id')] = String(r.getAttribute('Target') || '').replace(/^\/?xl\//, '').replace(/^\//, '');
+    });
+    const NSR = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    const comun = [];
+    if (txt['xl/sharedStrings.xml']) {
+      const ss = DP.parseFromString(txt['xl/sharedStrings.xml'], 'application/xml');
+      Array.prototype.forEach.call(ss.getElementsByTagName('si'), si => {
+        comun.push(Array.prototype.map.call(si.getElementsByTagName('t'), t => t.textContent).join(''));
+      });
+    }
+    const res = {};
+    Array.prototype.forEach.call(wb.getElementsByTagName('sheet'), sh => {
+      const nom = sh.getAttribute('name') || '';
+      const rid = sh.getAttributeNS(NSR, 'id') || sh.getAttribute('r:id') || '';
+      const ruta = 'xl/' + (destino[rid] || '');
+      if (!txt[ruta]) return;
+      const ws = DP.parseFromString(txt[ruta], 'application/xml');
+      const filas = [];
+      Array.prototype.forEach.call(ws.getElementsByTagName('row'), row => {
+        const celdas = [];
+        Array.prototype.forEach.call(row.getElementsByTagName('c'), c => {
+          const letras = String(c.getAttribute('r') || '').replace(/[^A-Za-z]/g, '').toUpperCase();
+          let x = 0;
+          for (let i = 0; i < letras.length; i++) x = x * 26 + (letras.charCodeAt(i) - 64);
+          x = Math.max(0, x - 1);
+          const t = c.getAttribute('t');
+          let v = '';
+          if (t === 'inlineStr' || t === 'str') {
+            v = Array.prototype.map.call(c.getElementsByTagName('t'), e => e.textContent).join('');
+            if (!v) { const vn = c.getElementsByTagName('v')[0]; v = vn ? vn.textContent : ''; }
+          } else {
+            const vn = c.getElementsByTagName('v')[0];
+            v = vn ? vn.textContent : '';
+            if (t === 's') v = comun[Number(v)] || '';
+          }
+          celdas[x] = String(v == null ? '' : v).trim();
+        });
+        for (let i = 0; i < celdas.length; i++) if (celdas[i] == null) celdas[i] = '';
+        filas.push(celdas);
+      });
+      res[nom] = filas;
+    });
+    return res;
   }
   baja(blob, nombre) {
     const url = URL.createObjectURL(blob);
@@ -5846,6 +6549,7 @@ class Component extends DCLogic {
     this.aviso('Fotos guardadas', 'Se ha bajado ' + nZip + '. Dentro van las fotos de cada día y los croquis en imagen.');
   }
   iniRef = React.createRef();
+  fotoGal = React.createRef();
   colsInicio() {
     if ((this.state.escala || 1) >= 1.3) return 1;
     const a = this.state.ancho || window.innerWidth || 0;
@@ -5880,6 +6584,40 @@ class Component extends DCLogic {
       d.inicio = Object.assign({}, ini, { pleg: Object.assign({}, ini.pleg || {}, { [id]: off }) });
     });
   }
+  /** Plegar = la tarjeta se queda en una linea, solo la cabecera. Se guarda
+   *  en los datos, asi que sigue como la dejaste al volver a abrir. */
+  pliega(id) {
+    this.setDb(d => {
+      const ini = d.inicio || {};
+      const plg = Object.assign({}, ini.plg || {});
+      if (plg[id]) delete plg[id]; else plg[id] = true;
+      d.inicio = Object.assign({}, ini, { plg: plg });
+    });
+  }
+  /** Antes de quitar un material de la lista, cada linea de parte que lo usaba
+   *  se queda con su nombre. Asi el parte viejo y su PDF siguen leyendose. */
+  sellaMaterial(id) {
+    const f = (this.state.db.materiales || []).find(x => x.id === id);
+    if (!f) return;
+    let toca = false;
+    const partes = clona(this.state.partes);
+    Object.keys(partes).forEach(k => {
+      (partes[k].material || []).forEach(l => {
+        if (l.id !== id) return;
+        l.desc = f.desc || ''; l.ref = f.ref || ''; l.ud = f.ud || ''; l.tipo = f.tipo || 'otro';
+        toca = true;
+      });
+    });
+    if (toca) this.setState({ partes });
+  }
+  despliega(id) {
+    this.setDb(d => {
+      const ini = d.inicio || {};
+      const plg = Object.assign({}, ini.plg || {});
+      delete plg[id];
+      d.inicio = Object.assign({}, ini, { plg: plg });
+    });
+  }
   mueveTarjeta(orden, i, dir) {
     const j = i + dir;
     if (j < 0 || j >= orden.length) return;
@@ -5904,6 +6642,60 @@ class Component extends DCLogic {
           const s = String(v == null ? '' : v).trim();
           if (!s) return;                        // vacio: se deja como estaba
           this.setDb(d => { if (d.tareas && d.tareas[i]) d.tareas[i].txt = s; });
+        }
+      }
+    });
+  }
+  /** Crea una lista propia del inicio, pidiendole el nombre. */
+  nuevaLista() {
+    if (this.state.dlg) return;
+    this.setState({
+      dlgCampo: '',
+      dlg: {
+        tit: 'Nueva lista', campo: '', ok: 'Crear', cancel: true,
+        txt: 'Ponle nombre y aparece en el inicio, aparte de Pendientes: recados, herramienta, compras…',
+        onOk: v => {
+          const n = String(v == null ? '' : v).trim();
+          if (!n) return;
+          this.setDb(d => {
+            d.listas = (d.listas || []).concat([{ id: 'L' + Date.now().toString(36), nom: n, abierta: true, items: [] }]);
+          });
+        }
+      }
+    });
+  }
+  /** Dedo mantenido en una linea de cualquier lista: cambiarle el texto. */
+  editaLinea(li, i) {
+    if (this.state.dlg) return;
+    const L = (this.state.db.listas || [])[li];
+    if (!L) return;
+    const t = itemsL(this.state.db, L)[i];
+    if (!t) return;
+    this.setState({
+      dlgCampo: t.txt || '',
+      dlg: {
+        tit: 'Editar línea', campo: t.txt || '', ok: 'Guardar', cancel: true,
+        onOk: v => {
+          const n = String(v == null ? '' : v).trim();
+          if (!n) return;
+          this.setDb(d => { const A = itemsL(d, d.listas[li]); if (A[i]) A[i].txt = n; });
+        }
+      }
+    });
+  }
+  /** Dedo mantenido en la cabecera: cambiarle el nombre a la lista. */
+  renombraLista(li) {
+    if (this.state.dlg) return;
+    const L = (this.state.db.listas || [])[li];
+    if (!L) return;
+    this.setState({
+      dlgCampo: L.nom || '',
+      dlg: {
+        tit: 'Nombre de la lista', campo: L.nom || '', ok: 'Guardar', cancel: true,
+        onOk: v => {
+          const n = String(v == null ? '' : v).trim();
+          if (!n) return;
+          this.setDb(d => { if (d.listas[li]) d.listas[li].nom = n; });
         }
       }
     });
@@ -6021,9 +6813,9 @@ class Component extends DCLogic {
     const p = (kAct && s.partes[kAct]) || parteVacio();
     const obra = (db.obras || []).find(o => o.id === (p.obraId || db.obraId)) || {};
     const seis = [
-      !!(p.entrada && p.salida), (p.ops || []).length > 0, (p.trabajos || []).some(t => t.texto),
-      (p.material || []).length > 0,
-      (p.incidencias || []).some(i => i.inc) || Object.values(p.epis || {}).some(Boolean),
+      !!(p.entrada && p.salida), (p.ops || []).length > 0, (p.trabajos || []).some(t => t.texto) || !!(p.viaje || {}).on,
+      (p.material || []).length > 0 || !!p.sinMat,
+      (p.incidencias || []).some(i => i.inc) || Object.values(p.epis || {}).some(Boolean) || !!p.sinEpis,
       ((p.croquis || {}).strokes || []).length > 0 || (p.fotos || []).length > 0
     ];
     const aj = db.ajustes || {};
@@ -6050,8 +6842,8 @@ class Component extends DCLogic {
       const ob = (db.obras || []).find(o => o.id === q.obraId) || {};
       (q.material || []).forEach(m => {
         if (matRec(m) && matCol(m)) return;
-        const f = (db.materiales || []).find(x => x.id === m.id);
-        if (!f) return;
+        const f = matDe(db.materiales, m);
+        if (!f.desc || f.desc === '?') return;
         if (pend.some(z => z.id === m.id && z.obraId === q.obraId)) return;
         pend.push({
           id: m.id, obraId: q.obraId || '', dia: k,
@@ -6089,6 +6881,11 @@ class Component extends DCLogic {
         ops: (p.ops || []).length,
         incAbiertas: (p.incidencias || []).filter(i => (i.pend || 'no') === 'si').length,
         tareas: (db.tareas || []).map(t => ({ txt: t.txt || '', hecha: !!t.hecha })),
+        listas: (db.listas || []).map(L => ({
+          id: L.id, nom: L.nom,
+          items: itemsL(db, L).map(t => ({ txt: t.txt || '', hecha: !!t.hecha }))
+        })),
+        libreta: String(db.libreta || '').slice(0, 4000),
         material: pend.slice(0, 40),
         semana: semana,
         semanaJor: semana.reduce((a, b) => a + b.jor, 0),
@@ -6119,27 +6916,67 @@ class Component extends DCLogic {
       if (f.tipo === 'salida') { p.salida = f.hora; dicho.push('salida ' + f.hora); }
       else if (!p.entrada) { p.entrada = f.hora; dicho.push('entrada ' + f.hora); }
     });
+    // Cada apunte del widget puede venir con la lista a la que va. Lo de
+    // antes, texto suelto, se entiende como la lista Pendientes.
+    const parte = x => {
+      const o = (x && typeof x === 'object') ? x : { txt: x };
+      return { lid: String(o.lista || 'tareas'), txt: String(o.txt || '').trim() };
+    };
+    const lineasDe = lid => {
+      const L = (db.listas || []).find(q => q && q.id === lid)
+        || (db.listas || []).find(q => q && q.id === 'tareas');
+      return L ? itemsL(db, L) : null;
+    };
     let nN = 0;
     (c.nuevas || []).forEach(x => {
-      const s = String(x || '').trim();
-      if (!s) return;
-      if ((db.tareas || []).some(y => (y.txt || '') === s)) return;
-      db.tareas = (db.tareas || []).concat([{ txt: s, hecha: false }]);
+      const { lid, txt } = parte(x);
+      if (!txt) return;
+      const A = lineasDe(lid);
+      if (!A || A.some(y => (y.txt || '') === txt)) return;
+      A.push({ txt: txt, hecha: false });
       nN++;
     });
-    if (nN) dicho.push(nN + (nN === 1 ? ' tarea nueva' : ' tareas nuevas'));
+    if (nN) dicho.push(nN + (nN === 1 ? ' línea nueva' : ' líneas nuevas'));
     let nT = 0;
-    (c.tareas || []).forEach(txt => {
-      const t = (db.tareas || []).find(x => (x.txt || '') === txt && !x.hecha);
+    (c.tareas || []).forEach(x => {
+      const { lid, txt } = parte(x);
+      const A = lineasDe(lid) || [];
+      const t = A.find(y => (y.txt || '') === txt && !y.hecha);
       if (t) { t.hecha = true; nT++; }
     });
-    if (nT) dicho.push(nT + (nT === 1 ? ' tarea tachada' : ' tareas tachadas'));
+    if (nT) dicho.push(nT + (nT === 1 ? ' línea tachada' : ' líneas tachadas'));
     let nD = 0;
-    (c.destareas || []).forEach(txt => {
-      const t = (db.tareas || []).find(x => (x.txt || '') === txt && x.hecha);
+    (c.destareas || []).forEach(x => {
+      const { lid, txt } = parte(x);
+      const A = lineasDe(lid) || [];
+      const t = A.find(y => (y.txt || '') === txt && y.hecha);
       if (t) { t.hecha = false; nD++; }
     });
-    if (nD) dicho.push(nD + (nD === 1 ? ' tarea sin tachar' : ' tareas sin tachar'));
+    if (nD) dicho.push(nD + (nD === 1 ? ' línea sin tachar' : ' líneas sin tachar'));
+    // ===== LA LIBRETA EDITADA DESDE EL WIDGET =====================
+    // No es una lista: llega la HOJA ENTERA tal como quedo, mas la «base», que
+    // es lo que habia cuando se abrio a editar. Si la app no la ha tocado
+    // mientras tanto, se reemplaza. Si SI la ha tocado, no se pisa: se pega lo
+    // del widget al final. Repetir un parrafo se arregla en diez segundos;
+    // perder notas, no.
+    if (c.libreta && typeof c.libreta === 'object' && typeof c.libreta.txt === 'string') {
+      const ahora = String(db.libreta || '');
+      const base = String(c.libreta.base || '');
+      const nuevo = String(c.libreta.txt || '');
+      if (nuevo !== ahora) {
+        if (ahora.trim() === base.trim()) db.libreta = nuevo;
+        else db.libreta = (ahora.replace(/\s+$/, '') + '\n' + nuevo).replace(/^\n+/, '');
+        dicho.push('la libreta');
+      }
+    }
+    // Lo apuntado con la version anterior del widget, por si quedaba algo en la
+    // cola: entonces era una lista y se pegaba al final.
+    const nNo = (c.notas || []).map(x => String((x && x.txt) || x || '').trim()).filter(Boolean);
+    if (nNo.length) {
+      const ant = String(db.libreta || '');
+      db.libreta = (ant ? ant.replace(/\s+$/, '') + '\n' : '') + nNo.join('\n');
+      dicho.push(nNo.length + (nNo.length === 1 ? ' nota' : ' notas'));
+    }
     let nM = 0;
     (c.material || []).forEach(m => {
       const p = parteDe(m.dia || hoyKey());
@@ -6155,19 +6992,59 @@ class Component extends DCLogic {
       if (!f || !f.b64) return;
       const dia = f.dia || hoyKey();
       const p = parteDe(dia);
+      // Una foto es lo unico de la cola que NO se puede repetir sin que se
+      // note: todo lo demas marca o escribe lo mismo dos veces y da igual.
+      // Si la cola llega a entregarse dos veces —porque el guardado fallo y se
+      // reintenta—, la misma foto entraria dos veces. Con su marca no.
+      // OJO CON LA MARCA DE RESPALDO (para fotos encoladas por una version
+      // anterior, que no traen id): los primeros caracteres del base64 son la
+      // CABECERA JPEG y son IGUALES en todas las fotos del mismo movil. Con
+      // eso, dos fotos del mismo minuto salian con la misma marca y la
+      // segunda se tiraba a la basura sin decir nada. Y la hora va sin
+      // segundos, y la camara dispara en rafaga. Se usa el tamaño y el FINAL,
+      // que si cambian de una foto a otra.
+      const b = String(f.b64);
+      const wid = f.id || ((f.dia || '') + '|' + (f.hora || '') + '|' + b.length + '|' + b.slice(-64));
+      if ((p.fotos || []).some(x => x && x.wid === wid)) return;
       const zona = ((p.trabajos || []).filter(t => t.zona).slice(-1)[0] || {}).zona || '';
-      p.fotos = (p.fotos || []).concat([{ src: 'data:image/jpeg;base64,' + f.b64, pie: '', hora: f.hora || '', zona }]);
+      p.fotos = (p.fotos || []).concat([{ src: 'data:image/jpeg;base64,' + f.b64, pie: '', hora: f.hora || '', zona, wid }]);
       kFoto = Object.keys(partes).filter(x => soloDia(x) === dia)
         .find(x => partes[x] === p) || kFoto;
       nF++;
     });
     if (nF) dicho.push(nF + (nF === 1 ? ' foto' : ' fotos'));
-    if (!dicho.length) return;
+    // Si no habia nada que meter —porque ya estaba todo dentro—, hay que
+    // confirmarlo IGUALMENTE. Si no, el envoltorio no vacia su cola, la vuelve
+    // a entregar en cuanto abras, se vuelve a descartar por repetida... y el
+    // widget se queda con el «sin volcar» puesto para siempre.
+    if (!dicho.length) { this.confirmaCola(); return; }
     // Si han entrado fotos, se abre el paso 6: les falta el pie.
     const salto = nF && kFoto ? { view: 'asistente', paso: 6, dia: kFoto } : {};
     this.setState(Object.assign({ db, partes }, salto), () => {
-      this.guarda();
-      this.aviso('Entrado desde los widgets', 'Se ha metido en el parte: ' + dicho.join(', ') + '.');
+      // ORDEN A PROPOSITO, y cada paso depende del anterior:
+      //   1. guardar de verdad, sin esperar;
+      //   2. mandar el estado nuevo a los widgets, para que no enseñen un
+      //      instante lo de antes;
+      //   3. y SOLO entonces decirle al envoltorio que puede vaciar la cola.
+      // Si el guardado falla, no se avisa: la cola se queda y se reintenta.
+      this.guardaYa().then(() => {
+        try { this.sincroWidget(); } catch (e) { }
+        this.confirmaCola();
+        // EL AVISO VA AQUI DENTRO, no fuera. Antes se daba por bueno nada mas
+        // aplicarlo, y aplicar no es guardar: si el guardado fallaba, la app
+        // decia «se ha metido 1 foto» y la foto no estaba en ninguna parte.
+        this.aviso('Entrado desde los widgets',
+          'Se ha metido en el parte: ' + dicho.join(', ') + '.');
+      }).catch(() => {
+        // Y un fallo de guardado ya no es mudo. Lo normal aqui es que no quepa:
+        // una foto son cientos de kilobytes y es lo mas pesado que entra.
+        this.setState({ sinEspacio: true });
+        this.aviso('NO se ha podido guardar',
+          'Lo que venia de los widgets (' + dicho.join(', ') + ') NO ha entrado: '
+          + 'no hay sitio en el telefono.\n\nNo se ha perdido: se queda esperando y se '
+          + 'vuelve a intentar la proxima vez que abras la app. Haz sitio en Ajustes '
+          + '> Datos y copias, o borra partes antiguos.');
+      });
     });
   }
   /** Trae a la vista la pastilla del paso en el que estas.
@@ -6278,6 +7155,11 @@ class Component extends DCLogic {
       const d = a.split(':')[1] || hoyKey();
       this.abreAgenda(d);
       return setTimeout(() => this.nuevaCita(d), 240);
+    }
+    if (a === 'notas') {
+      // El widget de la libreta: se abre el inicio con la hoja desplegada.
+      this.despliega('notas');
+      return this.setState({ view: 'inicio', dia: hoyKey() });
     }
     if (a === 'tareas') return this.setState({ view: 'inicio', dia: hoyKey() });
     if (a === 'obras') return this.setState({ view: 'obras', obraVer: null, ficha: null });
@@ -6652,6 +7534,31 @@ class Component extends DCLogic {
       probarLab: this.avisoApi() ? 'Probar el aviso (llega en 1 minuto)' : 'Probar el aviso',
       arreglaExacto: abre('exacto'), arreglaBateria: abre('bateria'), arreglaCanal: abre('ajustesNotif')
     };
+    // Los permisos, todos en la misma lista: estado, explicacion y el boton
+    // que abre los ajustes de Android, solo cuando falta.
+    const fila = (lab, det, ok, btn, abrir) => ({
+      lab: lab, det: det,
+      est: ok === null ? 'Sin comprobar' : (ok ? 'Dado' : 'Falta'),
+      col: ok === null ? 'var(--dim)' : (ok ? 'var(--green)' : 'var(--red)'),
+      btn: btn, btnCol: 'var(--red)',
+      dispBtn: ok === false ? 'block' : 'none',
+      abrir: abrir
+    });
+    const PER = [
+      ['Notificaciones', 'Para que el aviso de cierre del parte salga en la barra del móvil.', 'Dar permiso de notificaciones', base.arreglaCanal],
+      ['Alarmas exactas', 'Para que el aviso llegue a su hora y no cuando el móvil quiera.', 'Permitir alarmas exactas', base.arreglaExacto],
+      ['Sin ahorro de batería', 'Con el ahorro puesto, Android duerme la app y se salta el aviso.', 'Quitar el ahorro de batería', base.arreglaBateria]
+    ];
+    const ponPerm = oks => {
+      base.permisos = PER.map((f, i) => fila(f[0], f[1], oks[i], f[2], f[3]));
+      const faltan = oks.filter(x => x === false).length;
+      base.resPermisos = oks.every(x => x === null) ? 'Sin comprobar'
+        : (faltan ? faltan + (faltan === 1 ? ' permiso por dar' : ' permisos por dar') : 'Todo en orden');
+      base.dispFaltaPerm = faltan ? 'block' : 'none';
+    };
+    base.permNota = 'La cámara solo se abre cuando tocas «Hacer foto», y las fotos se quedan en este móvil. La app no pide la ubicación.';
+    base.faltaPermLab = 'Falta un permiso · míralo en «Permisos del móvil»';
+    ponPerm([null, null, null]);
     if (this.state.view !== 'ajustes') return base;
     const A = this.avisoApi();
     if (!A) {
@@ -6660,6 +7567,8 @@ class Component extends DCLogic {
         ? 'Aquí no hay avisos: este navegador no los tiene.'
         : 'Permiso: ' + (per === 'granted' ? 'dado' : per === 'denied' ? 'DENEGADO' : 'sin dar') +
           ' · sin la app instalada el aviso solo salta con la app abierta.';
+      ponPerm([per === null ? null : per === 'granted', null, null]);
+      base.permNota = 'En el navegador no hay más permisos que gestionar. Las alarmas exactas y el ahorro de batería son de la app instalada.';
       return base;
     }
     let e = null;
@@ -6680,6 +7589,7 @@ class Component extends DCLogic {
     base.dispCanal = (e.permiso && e.canal) ? 'none' : 'block';
     base.dispExacto = e.exactas ? 'none' : 'block';
     base.dispBateria = e.bateria ? 'none' : 'block';
+    ponPerm([!!(e.permiso && e.canal), !!e.exactas, !!e.bateria]);
     return base;
   }
   async probarAviso() {
@@ -6759,7 +7669,7 @@ class Component extends DCLogic {
     if (id === 'tareas') {
       const t = this.state.tut || {}, tar = t.tar || [false, false, false];
       return Object.assign({}, base, {
-        cab: 'Pendientes', der: '3', derCol: D, pie: 'Borrar las hechas',
+        cab: 'Listas · Pendientes', der: '3', derCol: D, pie: 'Borrar las hechas',
         filas: TUT_TAREAS.map((txt, i) => tFila({
           cajaDisp: 'flex', mark: tar[i] ? '✓' : '', cajaEdge: tar[i] ? V : 'var(--line)', cajaBg: tar[i] ? V : 'transparent',
           izq: txt, izqCol: tar[i] ? D : I, deco: tar[i] ? 'line-through' : 'none', cur: 'pointer',
@@ -6768,6 +7678,24 @@ class Component extends DCLogic {
         nota: 'Tu lista de recados: no va en el parte y no la ve nadie. La escribes abajo, tocas el cuadro para tacharla y «Borrar las hechas» limpia lo hecho. Toca los cuadros de arriba y verás.'
       });
     }
+    if (id === 'foto') return Object.assign({}, base, {
+      cab: 'Foto rápida', der: '3 fotos', derCol: D, pie: 'Hacer foto',
+      filas: [
+        tFila({ izq: 'Nave 3 · 09:41', der: 'anclajes', estDisp: 'flex', est: 'hoy', estCol: I }),
+        tFila({ izq: 'Nave 3 · 12:08', der: 'remate de cumbrera', estDisp: 'flex', est: 'hoy', estCol: I }),
+        tFila({ izq: 'Taller · 16:20', der: 'chapa doblada', estDisp: 'flex', est: 'hoy', estCol: I })
+      ],
+      nota: 'El botón abre la cámara y ya está: la foto entra en el parte de hoy con su hora y la última zona que hayas puesto. Debajo salen las últimas del día; tocando una vas al paso 6 a ponerle el pie. Manteniendo pulsado el botón se elige de la galería en vez de hacer la foto. Esta tarjeta solo sale en la app instalada, no en el navegador.'
+    });
+    if (id === 'notas') return Object.assign({}, base, {
+      cab: 'Notas', der: '▾', derCol: D,
+      filas: [
+        tFila({ izq: 'Preguntar por la grúa del jueves', izqCol: I }),
+        tFila({ izq: 'www.montajescubierta.es/tarifas', izqCol: A }),
+        tFila({ izq: 'Hueco nave 3: 4,20 x 2,85', izqCol: I })
+      ],
+      nota: 'Una libreta y nada más. Tocas la hoja y escribes: ideas, medidas, recados, lo que sea. No va en el parte y no lo ve nadie. Lo que escribas con pinta de dirección de internet o de correo queda subrayado y se abre al pulsarlo. La flecha de la cabecera esconde la hoja, y se queda como la dejes.'
+    });
     if (id === 'agenda') return Object.assign({}, base, {
       cab: 'Agenda · Agosto', der: 'Abrir ›', derCol: A,
       filas: [
@@ -7166,25 +8094,34 @@ class Component extends DCLogic {
     if (n && typeof n.dictar === 'function') return true;
     return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
   }
-  /** Mete lo dictado al final de la linea i, sin pisar lo ya escrito. */
-  ponDictado(i, texto) {
+  /** Junta lo dictado con lo que ya hubiera escrito, sin pisarlo. */
+  juntaDictado(base, texto) {
     const t = String(texto || '').trim();
-    if (!t) return;
-    this.setP(x => {
-      const l = x.trabajos[i];
-      if (!l) return;
-      const base = (l.texto || '').trim();
-      l.texto = base ? base.replace(/[.,;]$/, '') + '. ' + t : t.charAt(0).toUpperCase() + t.slice(1);
-    });
+    if (!t) return null;
+    const b = String(base || '').trim();
+    return b ? b.replace(/[.,;]$/, '') + '. ' + t : t.charAt(0).toUpperCase() + t.slice(1);
   }
-  /** Arranca o para el dictado de la linea i. */
-  dictado(i) {
+  /** Arranca o para el dictado de CUALQUIER campo.
+   *
+   *  «clave» es quien esta dictando: 't3' el trabajo 3, 'i0' la incidencia 0.
+   *  Antes era solo el numero de linea, y con dos microfonos en la app el
+   *  trabajo 2 y la incidencia 2 serian el mismo: se encenderian los dos a la
+   *  vez y lo dicho podria acabar en el campo que no es.
+   *
+   *  lee() devuelve lo que ya hay escrito; pon(v) lo escribe. Asi el dictado no
+   *  sabe nada de trabajos ni de incidencias y vale para el siguiente campo que
+   *  se le quiera poner. */
+  dictado(clave, lee, pon) {
     const nat = window.MiParteNative;
     if (nat && typeof nat.dictar === 'function') {
-      window.miParteDictadoOk = txt => { this.ponDictado(i, txt); this.setState({ dictando: null }); };
+      window.miParteDictadoOk = txt => {
+        const v = this.juntaDictado(lee(), txt);
+        if (v != null) pon(v);
+        this.setState({ dictando: null });
+      };
       window.miParteDictadoFin = () => this.setState({ dictando: null });
-      this.setState({ dictando: i });
-      try { nat.dictar(i); } catch (e) { this.setState({ dictando: null }); }
+      this.setState({ dictando: clave });
+      try { nat.dictar(0); } catch (e) { this.setState({ dictando: null }); }
       return;
     }
     if (this.rec) { try { this.rec.stop(); } catch (e) {} return; }
@@ -7194,12 +8131,12 @@ class Component extends DCLogic {
     rec.lang = 'es-ES';
     rec.continuous = true;
     rec.interimResults = true;
-    const base = ((this.parte().trabajos[i] || {}).texto || '').trim();
+    const base = String(lee() || '').trim();
     let firme = '';
     const pinta = prov => {
       const dicho = (firme + ' ' + prov).trim();
-      const junto = base ? (dicho ? base.replace(/[.,;]$/, '') + '. ' + dicho : base) : dicho.charAt(0).toUpperCase() + dicho.slice(1);
-      this.setP(x => { if (x.trabajos[i]) x.trabajos[i].texto = junto; });
+      const junto = dicho ? this.juntaDictado(base, dicho) : base;
+      if (junto != null) pon(junto);
     };
     rec.onresult = ev => {
       let prov = '';
@@ -7214,7 +8151,7 @@ class Component extends DCLogic {
     rec.onend = () => { this.rec = null; pinta(''); this.setState({ dictando: null }); };
     try { rec.start(); } catch (e) { return; }
     this.rec = rec;
-    this.setState({ dictando: i });
+    this.setState({ dictando: clave });
   }
   renderVals() {
     const s = this.state, db = s.db, p = this.parte();
@@ -7223,16 +8160,16 @@ class Component extends DCLogic {
     const hd = horasEntre(p.entrada, p.salida);
     const sel = (on, col) => ({ edge: on ? (col || 'var(--amber)') : 'var(--line)', bg: on ? (col || 'var(--amber)') : 'transparent', ink: on ? (col ? '#fff' : '#23231f') : 'var(--ink)' });
     const rellenos = [
-      !!(p.entrada && p.salida), p.ops.length > 0, p.trabajos.some(t => t.texto),
-      p.material.length > 0, p.incidencias.some(i => i.inc) || Object.values(p.epis).some(Boolean),
+      !!(p.entrada && p.salida), p.ops.length > 0, p.trabajos.some(t => t.texto) || !!(p.viaje || {}).on,
+      p.material.length > 0 || !!p.sinMat, p.incidencias.some(i => i.inc) || Object.values(p.epis).some(Boolean) || !!p.sinEpis,
       p.croquis.strokes.length > 0 || p.fotos.length > 0
     ];
     const infos = [
       p.entrada ? p.entrada + '–' + (p.salida || '?') : 'sin datos',
       p.ops.length ? p.ops.filter(o => this.valorado(o)).length + '/' + p.ops.length + ' valorados' : 'sin datos',
-      p.trabajos.filter(t => t.texto).length ? p.trabajos.filter(t => t.texto).length + ' líneas' : 'sin datos',
-      p.material.length ? p.material.length + ' líneas' + (p.material.filter(m => !matRec(m) || !matCol(m)).length ? ' · ' + p.material.filter(m => !matRec(m) || !matCol(m)).length + ' pend.' : '') : 'sin datos',
-      (p.incidencias.filter(i => i.inc).length ? p.incidencias.filter(i => i.inc).length + ' inc.' : '') || (Object.values(p.epis).some(Boolean) ? 'EPIs ok' : 'sin datos'),
+      p.trabajos.filter(t => t.texto).length ? p.trabajos.filter(t => t.texto).length + ' líneas' : ((p.viaje || {}).on ? 'solo viaje' : 'sin datos'),
+      p.material.length ? p.material.length + ' líneas' + (p.material.filter(m => !matRec(m) || !matCol(m)).length ? ' · ' + p.material.filter(m => !matRec(m) || !matCol(m)).length + ' pend.' : '') : (p.sinMat ? 'sin material' : 'sin datos'),
+      (p.incidencias.filter(i => i.inc).length ? p.incidencias.filter(i => i.inc).length + ' inc.' : '') || (Object.values(p.epis).some(Boolean) ? 'EPIs ok' : (p.sinEpis ? 'sin EPIs' : 'sin datos')),
       p.croquis.strokes.length ? 'croquis' : (p.fotos.length ? p.fotos.length + ' fotos' : 'sin datos')
     ];
     const pasos = PASOS.map((lab, i) => ({
@@ -7296,7 +8233,7 @@ class Component extends DCLogic {
     const ultCopia = (db.ajustes || {}).ultCopia || '';
     const abiertas = (db.ajustes || {}).abiertas || ((db.ajustes || {}).abierto ? { [(db.ajustes || {}).abierto]: true } : {});
     const secc = k => ({ on: !!abiertas[k], max: abiertas[k] ? '2000px' : '0px', op: abiertas[k] ? '1' : '0', sig: abiertas[k] ? '−' : '+', col: abiertas[k] ? 'var(--amber)' : 'var(--dim)' });
-    const secA = secc('aviso'), secT = secc('tarj'), secD = secc('datos');
+    const secA = secc('aviso'), secT = secc('tarj'), secD = secc('datos'), secP = secc('perm'), secX = secc('xls'), secE = secc('emp');
     const DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
     const mask = (db.ajustes || {}).dias || '1111111';
     const marcados = DIAS.filter((l, i) => mask[i] === '1');
@@ -7341,13 +8278,18 @@ class Component extends DCLogic {
     const orden = (ini.orden || []).filter(x => ids.includes(x));
     ids.forEach(x => { if (!orden.includes(x)) orden.push(x); });
     const pleg = ini.pleg || {};
+    const plg = ini.plg || {};
+    const esNativo = !!(typeof window !== 'undefined' && window.MiParteNative);
     const colsIni = this.colsInicio();
     const spans = s.spans || {};
     const tarjeta = id => ({
       o: orden.indexOf(id),
-      disp: pleg[id] ? 'none' : 'block',
+      disp: (pleg[id] || (id === 'foto' && !esNativo)) ? 'none' : 'block',
       span: colsIni > 1 && spans[id] ? 'span ' + spans[id] : 'auto',
-      pe: 'auto'
+      pe: 'auto',
+      cuerpo: plg[id] ? 'none' : 'block',
+      flecha: plg[id] ? '▸' : '▾',
+      tog: e => { if (e && e.stopPropagation) e.stopPropagation(); this.pliega(id); }
     });
     const dlg = s.dlg || {};
 
@@ -7763,7 +8705,156 @@ class Component extends DCLogic {
         poner: e => { e.stopPropagation(); this.plegar(id, false); }
       })),
       dispOcultas: orden.some(id => pleg[id]) ? 'flex' : 'none',
-      resetInicio: () => this.setDb(d => { d.inicio = { orden: TARJETAS.map(t => t[0]), pleg: {} }; }),
+      resetInicio: () => this.setDb(d => { d.inicio = { orden: TARJETAS.map(t => t[0]), pleg: {}, plg: {}, vPlg: 1, vFoto: 1 }; }),
+      nuevaLista: () => this.nuevaLista(),
+      cFoto: tarjeta('foto'),
+      fotoDato: p.fotos.length ? p.fotos.length + (p.fotos.length === 1 ? ' foto' : ' fotos') : '',
+      fotoUltimas: p.fotos.slice(-3).reverse().map(f => ({
+        thumb: React.createElement('img', { src: f.src || PIXEL, alt: '', style: { width: 62, height: 62, objectFit: 'cover', borderRadius: 10, background: 'var(--wash)', display: 'block' } }),
+        ir: () => this.setState({ view: 'asistente', paso: 6 })
+      })),
+      fotoTirasDisp: p.fotos.length ? 'flex' : 'none',
+      fotoVacioDisp: p.fotos.length ? 'none' : 'block',
+      refFotoGal: this.fotoGal,
+      // Pulsacion normal: camara. Pulsacion larga: galeria. El toque largo abre
+      // el segundo campo a mano y le quita el clic al primero, que si no
+      // abriria la camara encima.
+      fotoDown: () => {
+        this.fotoLargo = false;
+        clearTimeout(this.tFotoLargo);
+        this.tFotoLargo = setTimeout(() => {
+          this.fotoLargo = true;
+          if (this.fotoGal.current) this.fotoGal.current.click();
+        }, 520);
+      },
+      fotoUp: () => clearTimeout(this.tFotoLargo),
+      fotoClick: e => { if (this.fotoLargo) { this.fotoLargo = false; if (e) e.preventDefault(); } },
+      cNotas: tarjeta('notas'),
+      notaTxt: db.libreta || '',
+      notaTrozos: trozosNota(db.libreta || ''),
+      notaFlecha: plg.notas ? '▸' : '▾',
+      notaVerDisp: plg.notas || s.notaEdita ? 'none' : 'block',
+      notaEdDisp: plg.notas || !s.notaEdita ? 'none' : 'block',
+      notaVacioDisp: !String(db.libreta || '').trim() && !s.notaEdita ? 'inline' : 'none',
+      notaPliega: () => { this.setState({ notaEdita: false }); this.pliega('notas'); },
+      // Se escribe tocando la hoja, sin botones. El foco se pone a mano: la
+      // caja de texto acaba de aparecer y el toque se lo comio la vista.
+      notaEscribe: () => {
+        this.setState({ notaEdita: true }, () => {
+          const el = document.getElementById('libretaEd');
+          if (!el) return;
+          try { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } catch (x) { }
+        });
+      },
+      notaCierra: () => this.setState({ notaEdita: false }),
+      setNotaTxt: e => { const v = e.target.value; this.setDb(d => { d.libreta = v; }); },
+      spanListas: colsIni > 1 && spans['listas'] ? 'span ' + spans['listas'] : 'auto',
+      dispListas: pleg['tareas'] ? 'none' : 'flex',
+      listaFilas: (() => {
+        const F = 'system-ui,-apple-system,\'Segoe UI\',Roboto,sans-serif';
+        const base = () => ({
+          pad: '12px 14px', mt: '0', bg: 'var(--card)', bt: '0', rad: '0', cur: 'default',
+          flechaDisp: 'none', flecha: '', cajaDisp: 'none', caja: 'transparent', cajaEdge: 'var(--line)', mark: '',
+          txtDisp: 'block', txt: '', font: '500 13px ' + F, ls: '.04em', tt: 'none', ta: 'left',
+          col: 'var(--ink)', deco: 'none',
+          inpDisp: 'none', val: '', addDisp: 'none', datoDisp: 'none', dato: '',
+          xDisp: 'none', xTit: '', tap: null, set: null, x: null, setVal: null, key: null, add: null,
+          menu: null, down: null, up: null
+        });
+        const out = [];
+        (db.listas || []).forEach((L, li) => {
+          const arr = itemsL(db, L);
+          const its = arr.map((t, i) => ({ t, i }));
+          const ord = its.filter(x => !x.t.hecha).concat(its.filter(x => x.t.hecha));
+          const abierta = L.abierta !== false;
+          const nP = its.filter(x => !x.t.hecha).length;
+          const mete = () => {
+            const txt = String(((this.state.linNueva || {})[L.id] || '')).trim();
+            if (!txt) return;
+            this.setDb(d => { itemsL(d, d.listas[li]).push({ txt: txt, hecha: false }); });
+            this.setState({ linNueva: Object.assign({}, this.state.linNueva, { [L.id]: '' }) });
+          };
+          const desde = out.length;
+          out.push(Object.assign(base(), {
+            pad: '11px 14px', mt: li ? '14px' : '0', bg: 'var(--wash)', bt: '1px',
+            rad: '16px 16px 0 0', cur: 'pointer',
+            flechaDisp: 'block', flecha: abierta ? '▾' : '▸',
+            txt: L.nom, font: '600 9px ' + F, ls: '.16em', tt: 'uppercase', col: 'var(--dim)',
+            datoDisp: nP ? 'block' : 'none', dato: String(nP),
+            xDisp: 'block', xTit: 'Borrar la lista',
+            tap: () => this.setDb(d => { if (d.listas[li]) d.listas[li].abierta = !abierta; }),
+            menu: e => { if (e && e.preventDefault) e.preventDefault(); this.renombraLista(li); },
+            down: () => {
+              clearTimeout(this.tLarga);
+              this.pulsoLargo = false;
+              this.tLarga = setTimeout(() => { this.pulsoLargo = true; this.renombraLista(li); }, 500);
+            },
+            up: () => { clearTimeout(this.tLarga); },
+            x: e => {
+              if (e && e.stopPropagation) e.stopPropagation();
+              this.pregunta('Borrar «' + L.nom + '»',
+                its.length ? 'Se va la lista entera con sus ' + its.length + (its.length === 1 ? ' línea.' : ' líneas.') : 'Se va la lista, que está vacía.',
+                () => this.setDb(d => {
+                  const q = d.listas[li];
+                  if (q && q.id === 'tareas') { d.pendFuera = true; d.tareas = []; }
+                  d.listas.splice(li, 1);
+                }), 'Sí, borrar');
+            }
+          }));
+          if (abierta) {
+            ord.forEach(({ t, i }) => {
+              const cambia = () => this.setDb(d => {
+                const A = itemsL(d, d.listas[li]);
+                if (A[i]) A[i].hecha = !A[i].hecha;
+              });
+              out.push(Object.assign(base(), {
+                cajaDisp: 'flex', mark: t.hecha ? '✓' : '',
+                caja: t.hecha ? 'var(--green)' : 'transparent',
+                cajaEdge: t.hecha ? 'var(--green)' : 'var(--line)',
+                txt: t.txt, col: t.hecha ? 'var(--dim)' : 'var(--ink)',
+                deco: t.hecha ? 'line-through' : 'none', cur: 'pointer',
+                // Toque corto: tacha. Dedo mantenido: abre el editor de la linea.
+                tap: () => { if (this.pulsoLargo) { this.pulsoLargo = false; return; } cambia(); },
+                set: () => { if (this.pulsoLargo) { this.pulsoLargo = false; return; } cambia(); },
+                menu: e => { if (e && e.preventDefault) e.preventDefault(); this.pulsoLargo = true; this.editaLinea(li, i); },
+                down: () => {
+                  clearTimeout(this.tLarga);
+                  this.pulsoLargo = false;
+                  this.tLarga = setTimeout(() => { this.pulsoLargo = true; this.editaLinea(li, i); }, 500);
+                },
+                up: () => { clearTimeout(this.tLarga); },
+                xDisp: 'block', xTit: 'Quitar la línea',
+                x: e => {
+                  if (e && e.stopPropagation) e.stopPropagation();
+                  this.setDb(d => { itemsL(d, d.listas[li]).splice(i, 1); });
+                }
+              }));
+            });
+            if (!ord.length) out.push(Object.assign(base(), {
+              pad: '15px 14px', txt: 'Lista vacía.', font: '400 10px ' + F, ls: 'normal', col: 'var(--dim)'
+            }));
+            out.push(Object.assign(base(), {
+              txtDisp: 'none', inpDisp: 'block', addDisp: 'block',
+              val: (s.linNueva || {})[L.id] || '',
+              setVal: e => this.setState({ linNueva: Object.assign({}, this.state.linNueva, { [L.id]: e.target.value }) }),
+              key: e => { if (e.key === 'Enter') { e.preventDefault(); mete(); } },
+              add: () => mete()
+            }));
+            if (its.some(x => x.t.hecha)) out.push(Object.assign(base(), {
+              txt: 'Borrar las hechas', font: '600 9px ' + F, ls: '.14em', tt: 'uppercase',
+              ta: 'center', col: 'var(--dim)', cur: 'pointer',
+              tap: () => this.setDb(d => {
+                const q = d.listas[li];
+                if (!q) return;
+                const A = itemsL(d, q).filter(t => !t.hecha);
+                if (q.id === 'tareas') d.tareas = A; else q.items = A;
+              })
+            }));
+          }
+          out[out.length - 1].rad = desde === out.length - 1 ? '16px' : '0 0 16px 16px';
+        });
+        return out;
+      })(),
       tareas: tareasOrd.map(({ t, i }) => ({
         txt: t.txt,
         mark: t.hecha ? '✓' : '',
@@ -7803,7 +8894,7 @@ class Component extends DCLogic {
       hayMatPend: pendM.length > 0,
       matPendN: pendM.length + (pendM.length === 1 ? ' línea' : ' líneas'),
       matPend: pendM.map(({ l, i }) => {
-        const fm = db.materiales.find(x => x.id === l.id) || { desc: '?', ud: '' };
+        const fm = matDe(db.materiales, l);
         return {
           desc: fm.desc, cant: l.cant ? l.cant + ' ' + fm.ud : '',
           est: !matRec(l) ? 'no ha llegado' : 'sin colocar',
@@ -8049,6 +9140,37 @@ class Component extends DCLogic {
           }))
         }, this.semaforo(val ? this.global(o.crit) : null));
       }),
+      // paso 3: dia de solo desplazamiento
+      viajeMark: (p.viaje || {}).on ? '✓' : '',
+      viajeEdge: (p.viaje || {}).on ? 'var(--amber)' : 'var(--line)',
+      viajeBg: (p.viaje || {}).on ? 'var(--amber)' : 'transparent',
+      viajeInk: (p.viaje || {}).on ? 'var(--amber)' : 'var(--ink)',
+      viajeBorde: (p.viaje || {}).on ? 'var(--amber)' : 'var(--line)',
+      viajeCampo: (p.viaje || {}).on ? 'block' : 'none',
+      viajeTxt: (p.viaje || {}).txt || '',
+      setViajeTxt: e => { const v = e.target.value; this.setP(x => { x.viaje = Object.assign({ on: true, txt: '' }, x.viaje, { txt: v }); }); },
+      viajeTog: () => this.setP(x => { const v = Object.assign({ on: false, txt: '' }, x.viaje); v.on = !v.on; x.viaje = v; }),
+      trabDisp: (p.viaje || {}).on && !p.trabajos.length ? 'none' : 'flex',
+      trabMiniDisp: (p.viaje || {}).on && !p.trabajos.length ? 'block' : 'none',
+      // paso 4: dia sin material. Con lineas apuntadas la casilla no tapa nada:
+      // manda lo apuntado, y el aviso lo explica.
+      sinMatMark: p.sinMat ? '✓' : '',
+      sinMatEdge: p.sinMat ? 'var(--green)' : 'var(--line)',
+      sinMatBg: p.sinMat ? 'var(--green)' : 'transparent',
+      sinMatInk: p.sinMat ? 'var(--green)' : 'var(--ink)',
+      sinMatBorde: p.sinMat && !p.material.length ? 'var(--green)' : 'var(--line)',
+      sinMatNota: p.material.length
+        ? 'Tienes ' + p.material.length + (p.material.length === 1 ? ' línea apuntada' : ' líneas apuntadas') + ': manda lo apuntado. Quítalas para dejar el día sin material.'
+        : (p.sinMat ? 'El paso queda resuelto. En el PDF sale «Sin material».' : 'Márcalo y el paso cuenta como hecho sin apuntar nada.'),
+      matDisp: p.sinMat && !p.material.length ? 'none' : 'flex',
+      sinMatTog: () => this.setP(x => { x.sinMat = !x.sinMat; }),
+      // paso 5: dia sin EPIs repartidos
+      sinEpisMark: p.sinEpis ? '✓' : '',
+      sinEpisEdge: p.sinEpis ? 'var(--green)' : 'var(--line)',
+      sinEpisBg: p.sinEpis ? 'var(--green)' : 'transparent',
+      sinEpisInk: p.sinEpis ? 'var(--green)' : 'var(--ink)',
+      episDisp: p.sinEpis && !Object.values(p.epis || {}).some(Boolean) ? 'none' : 'block',
+      sinEpisTog: () => this.setP(x => { x.sinEpis = !x.sinEpis; }),
       // paso 3
       zonas: db.zonas || [],
       trabajos: p.trabajos.map((t, i) => { const ok = t.hecho !== false; return {
@@ -8063,13 +9185,15 @@ class Component extends DCLogic {
         setHora: e => this.setP(x => { x.trabajos[i].hora = e.target.value; }),
         setZona: e => { const v = e.target.value; this.setP(x => { x.trabajos[i].zona = v; }); if (v.length > 3 && !(db.zonas || []).includes(v)) this.setDb(d => { d.zonas = [...new Set([...(d.zonas || []), v])].slice(-14); }); },
         setTexto: e => this.setP(x => { x.trabajos[i].texto = e.target.value; }),
-        dictar: () => this.dictado(i),
+        dictar: () => this.dictado('t' + i,
+          () => (this.parte().trabajos[i] || {}).texto,
+          v => this.setP(x => { if (x.trabajos[i]) x.trabajos[i].texto = v; })),
         micDisp: this.hayDictado() ? 'flex' : 'none',
-        micTit: s.dictando === i ? 'Parar de dictar' : 'Dictar el trabajo',
-        micEdge: s.dictando === i ? 'var(--amber)' : 'var(--line)',
-        micBg: s.dictando === i ? 'var(--amber)' : 'var(--field)',
-        micInk: s.dictando === i ? '#fff' : 'var(--dim)',
-        micAviso: s.dictando === i ? 'block' : 'none',
+        micTit: s.dictando === 't' + i ? 'Parar de dictar' : 'Dictar el trabajo',
+        micEdge: s.dictando === 't' + i ? 'var(--amber)' : 'var(--line)',
+        micBg: s.dictando === 't' + i ? 'var(--amber)' : 'var(--field)',
+        micInk: s.dictando === 't' + i ? '#fff' : 'var(--dim)',
+        micAviso: s.dictando === 't' + i ? 'block' : 'none',
         quitar: () => this.setP(x => x.trabajos.splice(i, 1))
       }; }),
       addTrabajo: () => this.setP(x => x.trabajos.push({ hora: '', zona: '', texto: '', hecho: true })),
@@ -8085,7 +9209,7 @@ class Component extends DCLogic {
       hayMatFiltrados: !!s.tipoMat,
       matFiltrados: matQ.map(m => ({ desc: m.desc, ud: m.ud, add: () => { this.setP(x => x.material.push({ id: m.id, cant: '', rec: false, col: false })); this.setState({ tipoMat: null }); } })),
       lineasMat: p.material.map((l, i) => {
-        const f = db.materiales.find(x => x.id === l.id) || { desc: '?', ref: '', ud: '' };
+        const f = matDe(db.materiales, l);
         return {
           desc: f.desc, ref: f.ref, ud: f.ud, cant: l.cant || '',
           setCant: e => this.setP(x => { x.material[i].cant = e.target.value; }),
@@ -8113,6 +9237,16 @@ class Component extends DCLogic {
       incidencias: p.incidencias.map((it, i) => ({
         inc: it.inc || '', causa: it.causa || '', accion: it.accion || '',
         setInc: e => this.setP(x => { x.incidencias[i].inc = e.target.value; }),
+        // el mismo microfono que en los trabajos, pero para «Que ha pasado»
+        dictar: () => this.dictado('i' + i,
+          () => (this.parte().incidencias[i] || {}).inc,
+          v => this.setP(x => { if (x.incidencias[i]) x.incidencias[i].inc = v; })),
+        micDisp: this.hayDictado() ? 'flex' : 'none',
+        micTit: s.dictando === 'i' + i ? 'Parar de dictar' : 'Dictar la incidencia',
+        micEdge: s.dictando === 'i' + i ? 'var(--amber)' : 'var(--line)',
+        micBg: s.dictando === 'i' + i ? 'var(--amber)' : 'var(--field)',
+        micInk: s.dictando === 'i' + i ? '#fff' : 'var(--dim)',
+        micAviso: s.dictando === 'i' + i ? 'block' : 'none',
         setCausa: e => this.setP(x => { x.incidencias[i].causa = e.target.value; }),
         setAccion: e => this.setP(x => { x.incidencias[i].accion = e.target.value; }),
         quitar: () => this.setP(x => x.incidencias.splice(i, 1)),
@@ -8232,6 +9366,11 @@ class Component extends DCLogic {
       tendencia: rankF.g === null ? 'todavía sin valorar' : rankF.txt,
       notasFicha: notasOp, hayNotasFicha: notasOp.length > 0,
       borrarOperario: () => this.pregunta('Borrar la ficha', 'Se borra la ficha de ' + (fich.nom || 'este operario') + '. Los partes ya guardados la seguirán mencionando.', () => { this.setDb(d => { d.operarios = d.operarios.filter(x => x.id !== s.ficha); }); this.setState({ view: 'operarios', ficha: null }); }, 'Sí, borrar'),
+      ajXlsMax: secX.max, ajXlsOp: secX.op, ajXlsSig: secX.sig, ajXlsCol: secX.col,
+      ajXlsTog: () => this.abreSecc('xls'),
+      resXls: (db.materiales || []).length + ((db.materiales || []).length === 1 ? ' referencia en la lista' : ' referencias en la lista'),
+      xlsSaca: () => this.sacaExcelMateriales(),
+      xlsMete: e => { const f = (e.target.files || [])[0]; e.target.value = ''; this.meteExcelMateriales(f); },
       // bd materiales: buscador, apartados y ficha desplegable
       buscaMat: s.buscaMat,
       setBuscaMat: e => this.setState({ buscaMat: e.target.value }),
@@ -8278,7 +9417,7 @@ class Component extends DCLogic {
               borrar: () => this.pregunta(
                 m.tipo === 'epi' ? 'Borrar EPI' : (m.tipo === 'herramienta' ? 'Borrar herramienta' : 'Borrar material'),
                 'Se quita «' + (m.desc || 'esto') + '» de la lista. Los partes ya guardados no cambian.',
-                () => { this.setDb(d => { d.materiales = d.materiales.filter(y => y.id !== m.id); }); this.setState({ matEdit: null }); }, 'Sí, borrar')
+                () => { this.sellaMaterial(m.id); this.setDb(d => { d.materiales = d.materiales.filter(y => y.id !== m.id); }); this.setState({ matEdit: null }); }, 'Sí, borrar')
             };
           })
         };
@@ -8312,8 +9451,32 @@ class Component extends DCLogic {
       resDatos: ultCopia ? 'Última copia: ' + ultCopia : '',
       dispResDatos: ultCopia ? 'block' : 'none',
       ajAvisoMax: secA.max, ajAvisoOp: secA.op, ajAvisoSig: secA.sig, ajAvisoCol: secA.col, ajAvisoTog: () => this.abreSecc('aviso'),
+      ajPermMax: secP.max, ajPermOp: secP.op, ajPermSig: secP.sig, ajPermCol: secP.col, ajPermTog: () => this.abreSecc('perm'),
+      irPermisos: () => this.abreSecc('perm'),
       ajTarjMax: secT.max, ajTarjOp: secT.op, ajTarjSig: secT.sig, ajTarjCol: secT.col, ajTarjTog: () => this.abreSecc('tarj'),
       ajDatosMax: secD.max, ajDatosOp: secD.op, ajDatosSig: secD.sig, ajDatosCol: secD.col, ajDatosTog: () => this.abreSecc('datos'),
+      // ---- aspecto y empresa ----
+      ajEmpMax: secE.max, ajEmpOp: secE.op, ajEmpSig: secE.sig, ajEmpCol: secE.col, ajEmpTog: () => this.abreSecc('emp'),
+      temaAhora: (TEMAS.find(x => x[0] === ((db.ajustes || {}).tema || 'ambar')) || TEMAS[0])[1],
+      temas: TEMAS.map(([k, lab, cl, osc]) => {
+        const on = ((db.ajustes || {}).tema || 'ambar') === k;
+        return {
+          lab, tono: cl,
+          borde: on ? 'var(--ink)' : 'var(--line)',
+          grosor: on ? '2px' : '1px',
+          mark: on ? '✓' : '',
+          set: () => this.setDb(d => { d.ajustes = Object.assign({}, d.ajustes, { tema: k }); })
+        };
+      }),
+      empNom: (db.empresa || {}).nom || '',
+      empDir: (db.empresa || {}).dir || '',
+      setEmpNom: e => { const v = e.target.value; this.setDb(d => { d.empresa.nom = v; }); },
+      setEmpDir: e => { const v = e.target.value; this.setDb(d => { d.empresa.dir = v; }); },
+      empLogo: (db.empresa || {}).logo || PIXEL,
+      empLogoDisp: (db.empresa || {}).logo ? 'block' : 'none',
+      empSinLogo: (db.empresa || {}).logo ? 'none' : 'flex',
+      ponLogo: e => this.cargaLogo(e),
+      quitaLogo: () => this.setDb(d => { d.empresa.logo = ''; }),
       toggleNotif: () => this.pedirNotif(),
       notifEdge: notif ? 'var(--green)' : 'var(--line)',
       notifBg: notif ? 'var(--green)' : 'var(--field)',
