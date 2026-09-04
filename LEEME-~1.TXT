@@ -1,0 +1,57 @@
+WIDGET DE PROXIMA CITA  ·  Mi Parte 1.5.0
+===========================================
+
+QUE HACE
+----------
+Un 4x2 con lo primero que tienes por delante en la agenda: cuando es, de que
+va, la obra y el sitio, con la raya del color de la obra a la izquierda.
+
+Se puede encoger a 4x1 y 3x1 estirando el marco: a una fila se quedan el
+cuando y el titulo, y el sitio se recorta solo.
+
+  toque en el widget    abre la agenda EN ESE DIA
+  sin nada apuntado     pone "Nada por delante" y el boton APUNTAR CITA, que
+                        abre la ficha de cita en blanco del dia de hoy
+
+Solo mira citas y plazos de obra. Los partes ya tienen sus propios widgets.
+
+
+ARCHIVOS: DONDE VA CADA UNO
+-----------------------------
+NUEVOS
+  codigo-fuente/WidgetCita.java          -> app/src/main/java/com/miparte/montajes/
+  proyecto/res/layout/widget_cita.xml    -> app/src/main/res/layout/
+  proyecto/res/xml/widget_cita_info.xml  -> app/src/main/res/xml/
+
+PISAN A LOS DE LA 1.4.4
+  codigo-fuente/Widgets.java             WidgetCita.class entra en TODOS, para
+                                         que se repinte con los demas
+  codigo-fuente/AndroidManifest.xml      receiver nuevo, delante del de WidgetObra,
+                                         y la version sube a 1.5.0 (versionCode 29)
+  proyecto/res/values/colores_widget.xml una linea: w_desc_cita
+
+WEB (los dos van juntos)
+  index.html                             -> app/src/main/assets/  (ya esta en
+  sw.js                                     proyecto/assets/ de este paquete)
+
+
+LO QUE CAMBIA EN LA PARTE WEB
+-------------------------------
+1. sincroWidget manda un bloque "cita" mas: dia, fecha, hora, titulo,
+   subtitulo, color, y los textos "HOY" y "MANANA" ya escritos. Los textos van
+   en el JSON a proposito: asi no hay ni un acento en el codigo Java y, si
+   pasan dias sin abrir la app, el widget recalcula la palabra comparando la
+   fecha guardada con la de verdad.
+2. accionWidget entiende dos acciones nuevas:
+     agenda            abre la agenda en el mes de hoy
+     agenda:2026-08-26 abre la agenda en ese dia
+     citanueva         abre la agenda y encima la ficha de cita en blanco
+3. El tutorial de los widgets lleva la ficha del widget nuevo, y ya dice doce
+   widgets en vez de once.
+
+
+SI NO SE VE NADA EN EL WIDGET
+-------------------------------
+El widget no lee la agenda: lee lo ultimo que le mando la app. Abre la app una
+vez despues de instalar y ya. Si sigue vacio, es que no hay ninguna cita ni
+plazo por delante: apunta una y mira otra vez.

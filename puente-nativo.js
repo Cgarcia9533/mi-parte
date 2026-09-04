@@ -181,6 +181,156 @@
      impedir que el aviso llegue se puede ver y arreglar desde la app.
      Si el APK es anterior a la 1.12 estos metodos no existen: cada uno se
      comprueba por separado y la app se apaña sin ellos. */
+  /* 8. QUE EL TECLADO NO TAPE EL CAMPO.
+
+     Desde Android 15, una app que apunta a SDK 35 o mas ya NO se redimensiona
+     al salir el teclado: se pinta ENCIMA y el navegador ni se entera. Por eso
+     su propio scrollIntoView no sirve: mide contra la ventana entera, ve el
+     campo dentro, y decide que ya se ve. No es que falle, es que le mienten.
+
+     Asi que se hace a mano. El envoltorio deja el alto del teclado en la
+     variable --teclado; aqui se calcula cuanto sobresale el campo por debajo
+     de la raya del teclado y se sube EXACTAMENTE eso, con animacion.
+
+     Reglas:
+       - Si el campo ya se ve entero, no se mueve nada. Un salto sin motivo
+         marea mas que ayudar.
+       - Solo al enfocar o al abrirse el teclado. Despues manda el dedo: si el
+         usuario mueve la pantalla, no se le vuelve a tocar.
+       - Si el campo esta dentro de una ventana con scroll propio (un dialogo),
+         se mueve esa y no la pagina. */
+  var CAMPOS = /^(INPUT|TEXTAREA|SELECT)$/;
+
+  /* Las VENTANAS FLOTANTES son otra cosa y hay que tratarlas aparte.
+     Un dialogo va pegado al borde de la PANTALLA: mover la pagina de detras no
+     lo mueve a el ni un pixel, solo marea. Lo que hay que hacer es subirle el
+     SUELO hasta la raya del teclado, y como su panel va pegado abajo, sube con
+     el y queda justo encima.
+
+     OJO CON COMO SE BUSCAN. El primer intento fue una regla de CSS que miraba
+     el texto del atributo style («inset:0»), y no acerto NUNCA: el navegador
+     reescribe ese atributo a su manera, con espacios, y sale «inset: 0px». Hay
+     que mirar el estilo YA CALCULADO. Y la regla va por CLASE y con
+     «!important», no poniendole el estilo a mano al elemento: React repinta el
+     dialogo en cada tecla y le devolveria su «inset:0». */
+  var CLASE = 'mp-flota';
+  (function ponLaRegla() {
+    try {
+      var s = document.createElement('style');
+      s.id = 'miparte-teclado-css';
+      s.textContent = '.' + CLASE + '{bottom:var(--teclado,0px)!important}';
+      (document.head || document.documentElement).appendChild(s);
+    } catch (e) { }
+  })();
+
+  function marcaVentanas() {
+    try {
+      var d = document.body ? document.body.getElementsByTagName('div') : [];
+      for (var i = 0; i < d.length; i++) {
+        var e = d[i];
+        if (e.classList.contains(CLASE)) continue;
+        var c = getComputedStyle(e);
+        // a pantalla completa: pegada arriba y abajo. Las que no llegan al
+        // suelo no las tapa el teclado y no hay nada que subir.
+        if (c.position === 'fixed' && parseFloat(c.top) === 0 && parseFloat(c.bottom) === 0) {
+          e.classList.add(CLASE);
+        }
+      }
+    } catch (e) { }
+  }
+
+  /* La ventana flotante que contiene el campo, si es que hay alguna. */
+  function ventanaDe(el) {
+    var p = el;
+    while (p && p !== document.body) {
+      if (getComputedStyle(p).position === 'fixed') return p;
+      p = p.parentElement;
+    }
+    return null;
+  }
+
+  function altoTeclado() {
+    var v = 0;
+    try {
+      v = parseFloat(getComputedStyle(document.documentElement)
+            .getPropertyValue('--teclado')) || 0;
+    } catch (e) { }
+    if (v > 0) return v;
+    // Respaldo por si el envoltorio no llega a dar la medida: hay WebViews que
+    // si encogen el «visual viewport» aunque la ventana siga igual de alta.
+    try {
+      var vv = window.visualViewport;
+      if (vv && window.innerHeight - vv.height > 120) {
+        return Math.round(window.innerHeight - vv.height);
+      }
+    } catch (e) { }
+    return 0;
+  }
+
+  /* Contenedor con scroll propio entre el campo y «tope» (sin pasarse de el). */
+  function cajaConScroll(el, tope) {
+    var p = el.parentElement;
+    while (p && p !== document.body && p !== document.documentElement) {
+      var s = getComputedStyle(p);
+      if (/(auto|scroll)/.test(s.overflowY) && p.scrollHeight > p.clientHeight + 2) return p;
+      if (p === tope) return null;
+      p = p.parentElement;
+    }
+    return null;
+  }
+
+  /* QUE EL TECLADO NO TAPE EL CAMPO.
+
+     Desde Android 15, una app que apunta a SDK 35 o mas ya NO se redimensiona
+     al salir el teclado: se pinta ENCIMA y el navegador ni se entera. Por eso
+     su scrollIntoView no sirve: mide contra la ventana entera, ve el campo
+     dentro y decide que ya se ve. No falla, es que le mienten.
+
+     Reglas:
+       - Si el campo ya se ve entero, no se mueve NADA.
+       - Solo al enfocar o al salir el teclado. Despues manda el dedo.
+       - Dentro de una ventana flotante NO se mueve la pagina: la ventana ya ha
+         subido sola con el CSS de arriba. Si la ventana tiene scroll propio, se
+         mueve ese. */
+  function subeElCampo() {
+    var a = document.activeElement;
+    if (!a || !CAMPOS.test(a.tagName || '')) return;
+    var tec = altoTeclado();
+    if (tec <= 0) return;
+    marcaVentanas();                       // por si acaba de abrirse una
+    var vent = ventanaDe(a);
+    var AIRE = 14;                         // que no quede pegado a la raya
+    var r = a.getBoundingClientRect();     // esto ya cuenta con la ventana subida
+    var sobra = Math.round(r.bottom + AIRE - (window.innerHeight - tec));
+    if (sobra <= 0) return;                // ya se ve: quieto
+    var caja = cajaConScroll(a, vent);
+    if (caja) {
+      try { caja.scrollBy({ top: sobra, behavior: 'smooth' }); }
+      catch (e) { caja.scrollTop += sobra; }
+      return;
+    }
+    if (vent) return;                      // ventana flotante: no se toca la pagina
+    try { window.scrollBy({ top: sobra, behavior: 'smooth' }); }
+    catch (e) { window.scrollBy(0, sobra); }
+  }
+
+  var tSube = 0;
+  function pideSubir() {
+    marcaVentanas();
+    clearTimeout(tSube);
+    tSube = setTimeout(subeElCampo, 90);
+  }
+
+  // Al tocar un campo. Si el teclado aun no ha salido, --teclado vale 0 y no se
+  // hace nada; ya lo hara el aviso de abajo cuando salga.
+  document.addEventListener('focusin', function (ev) {
+    var t = ev.target;
+    if (t && CAMPOS.test(t.tagName || '')) pideSubir();
+  }, true);
+  // Al salir el teclado (lo avisa el envoltorio) y por si el WebView encoge solo.
+  window.addEventListener('miparte-teclado', pideSubir);
+  try { if (window.visualViewport) window.visualViewport.addEventListener('resize', pideSubir); } catch (e) { }
+
   window.MiParteSync = function () { ultimo = ''; sync(); };
   window.MiParteAvisos = {
     nativo: true,
