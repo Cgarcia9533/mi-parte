@@ -48,7 +48,20 @@ final class Widgets {
     /** Escribir una tarea sin abrir la app: una ventanita encima de lo que
      *  tengas puesto, y la tarea se queda en la cola hasta que abras la app. */
     static PendingIntent tareaNueva(Context c, int codigo) {
+        return tareaNueva(c, codigo, "tareas");
+    }
+
+    /** Igual, pero apuntando en la lista que ensena ese widget. */
+    static PendingIntent tareaNueva(Context c, int codigo, String lid) {
         Intent i = new Intent(c, TareaRapida.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("lista", lid == null || lid.isEmpty() ? "tareas" : lid);
+        return PendingIntent.getActivity(c, codigo, i, banderas());
+    }
+
+    /** Una linea para la libreta sin abrir la app. */
+    static PendingIntent notaEdita(Context c, int codigo) {
+        Intent i = new Intent(c, NotaRapida.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return PendingIntent.getActivity(c, codigo, i, banderas());
     }
@@ -64,12 +77,14 @@ final class Widgets {
     private static final Class<?>[] TODOS = {
             Widget.class, WidgetFila.class, WidgetFichar.class, WidgetTareas.class,
             WidgetMaterial.class, WidgetVigilar.class, WidgetSemana.class, WidgetFoto.class,
-            WidgetIncidencia.class, WidgetObra.class, WidgetResumen.class, WidgetCita.class
+            WidgetIncidencia.class, WidgetObra.class, WidgetResumen.class, WidgetCita.class,
+            WidgetNota.class
     };
 
-    /** Los tres que llevan lista con scroll: hay que avisarles aparte. */
+    /** Los que llevan lista con scroll: hay que avisarles aparte. */
     private static boolean conLista(Class<?> k) {
-        return k == WidgetTareas.class || k == WidgetMaterial.class || k == WidgetVigilar.class;
+        return k == WidgetTareas.class || k == WidgetMaterial.class || k == WidgetVigilar.class
+                || k == WidgetNota.class;
     }
 
     /** Repinta todos los widgets puestos, de cualquier tipo. */

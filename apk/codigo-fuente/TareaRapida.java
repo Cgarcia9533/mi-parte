@@ -30,10 +30,16 @@ public class TareaRapida extends Activity {
     private AlertDialog dialogo;
     private EditText campo;
     private int puestas = 0;
+    private String lid = "tareas";
+    private String nomLista = "Pendientes";
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+
+        String x = getIntent() == null ? null : getIntent().getStringExtra("lista");
+        if (x != null && !x.isEmpty()) lid = x;
+        nomLista = WidgetDatos.nomLista(this, lid);
 
         campo = new EditText(this);
         campo.setHint("Qué hay que hacer");
@@ -55,7 +61,7 @@ public class TareaRapida extends Activity {
         caja.addView(campo);
 
         dialogo = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("Nueva tarea")
+                .setTitle("Nueva línea · " + nomLista)
                 .setView(caja)
                 .setPositiveButton("Añadir", null)   // null: lo enganchamos abajo
                 .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
@@ -88,12 +94,12 @@ public class TareaRapida extends Activity {
     private void apunta() {
         String t = campo.getText().toString().trim();
         if (t.isEmpty()) return;
-        WidgetDatos.nuevaTarea(this, t);
+        WidgetDatos.nuevaTarea(this, lid, t);
         Widgets.refresca(this);
         puestas++;
         campo.setText("");
-        dialogo.setTitle(puestas == 1 ? "Nueva tarea · 1 apuntada"
-                : "Nueva tarea · " + puestas + " apuntadas");
+        dialogo.setTitle(puestas == 1 ? nomLista + " · 1 apuntada"
+                : nomLista + " · " + puestas + " apuntadas");
     }
 
     @Override

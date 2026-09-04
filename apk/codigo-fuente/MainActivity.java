@@ -16,8 +16,14 @@ import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.util.Base64;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
+import android.content.res.Configuration;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -37,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -68,6 +75,7 @@ public class MainActivity extends Activity {
     private static final int RC_NOTIF = 12;
     private static final int RC_ESCRITURA = 13;
     private static final int RC_CARPETA = 14;
+    private static final int RC_DICTADO = 15;
 
     private WebView web;
     private ValueCallback<Uri[]> ficheroCb;
@@ -83,6 +91,7 @@ public class MainActivity extends Activity {
 
         web = new WebView(this);
         setContentView(web);
+        bordeABorde();
 
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
@@ -107,6 +116,227 @@ public class MainActivity extends Activity {
         accionPendiente = b == null && getIntent() != null ? getIntent().getStringExtra("accion") : null;
 
         web.loadUrl(BASE + "index.html");
+    }
+
+    /** Apuntando a Android 16 (API 36) el sistema dibuja la app POR DEBAJO de
+     *  la barra de estado y de la de navegacion, y ya no se puede decir que no.
+     *
+     *  DOS INTENTOS FALLIDOS Y POR QUE:
+     *  La 1.6.0 pedia las medidas al sistema. La 1.6.1 añadia medirlas de los
+     *  recursos de Android. Ninguna de las dos aparto nada, y el motivo no era
+     *  el metodo: era que TODO estaba dentro de un mismo try con un catch que
+     *  se come el error sin decir nada, y el margen se aplicaba al final. Si
+     *  algo de las primeras lineas petaba —y ahi habia dos llamadas que en
+     *  Android 16 ya no valen, setStatusBarColor y setNavigationBarColor— se
+     *  saltaba todo lo demas y no quedaba ni rastro de que hubiera fallado.
+     *
+     *  Ahora cada cosa va en su propio try. Lo PRIMERO que se hace, antes que
+     *  nada que pueda petar, es apartar el WebView. Si lo de despues falla,
+     *  como mucho se quedan los iconos del reloj de un color raro, pero la app
+     *  no se queda tapada. */
+    private void bordeABorde() {
+        // El hueco de las barras lo pone ahora la propia pagina, con la
+        // variable de CSS que se le inyecta al servirla. Aqui ya no se toca el
+        // margen de la vista: tres intentos por ahi no movieron nada.
+        try { fondoDeVentana(); } catch (Throwable ignored) { }
+        try { iconosDeLasBarras(); } catch (Throwable ignored) { }
+        try { escuchaAlSistema(); } catch (Throwable ignored) { }
+    }
+
+    private void fondoDeVentana() {
+        // El MISMO tono que la cabecera y la barra de pestañas de la app, en
+        // los dos modos. Antes era el color del papel: en modo claro dejaba
+        // una franja clara pegada a unas barras oscuras y cantaba.
+        int fondo = WidgetDatos.color(this, R.color.w_barra_app);
+        getWindow().setBackgroundDrawable(new ColorDrawable(fondo));
+        if (web != null) web.setBackgroundColor(fondo);
+    }
+
+    /** Escucha por si el sistema manda las medidas de verdad, que son mejores
+     *  en apaisado y con muesca. Si no manda nada, no pasa nada: ya esta
+     *  puesto el margen medido de los recursos. */
+    private void escuchaAlSistema() {
+        web.setFitsSystemWindows(false);
+        View.OnApplyWindowInsetsListener l = new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets in) {
+                aplica(in);
+                return in;
+            }
+        };
+        web.setOnApplyWindowInsetsListener(l);
+        getWindow().getDecorView().setOnApplyWindowInsetsListener(
+                new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets in) {
+                        aplica(in);
+                        return v.onApplyWindowInsets(in);
+                    }
+                });
+        web.requestApplyInsets();
+    }
+
+    /** Aparta el WebView con lo que diga el sistema.
+     *
+     *  Solo pisa el margen de respaldo si trae ALGO por arriba o por abajo. Si
+     *  viniera medio vacio, se quedaria peor de lo que ya estaba. */
+    private void aplica(WindowInsets in) {
+        try {
+            if (in == null || web == null) return;
+            int iz, ar, de, ab;
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets b = in.getInsets(
+                        WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+                iz = b.left; ar = b.top; de = b.right; ab = b.bottom;
+            } else {
+                // «Stable» y no «SystemWindow» a proposito: el teclado NO cuenta
+                // como barra. Con adjustResize, getSystemWindowInsetBottom crece
+                // hasta la altura del teclado y la pagina se quedaba con un
+                // hueco enorme debajo mientras se escribe.
+                iz = in.getStableInsetLeft();
+                ar = in.getStableInsetTop();
+                de = in.getStableInsetRight();
+                ab = in.getStableInsetBottom();
+            }
+            int tec = altoDelTeclado(in);
+            if (tec > 0) ab = 0;   // el teclado ya tapa la barra de abajo
+            if (ar <= 0 && ab <= 0 && iz <= 0 && de <= 0 && tec <= 0) return;
+            // Las medidas de verdad, a la pagina. En pixeles de CSS, no fisicos.
+            float d = getResources().getDisplayMetrics().density;
+            if (d <= 0) d = 1f;
+            final String css = ":root{--bar-arriba:" + Math.round(ar / d)
+                    + "px;--bar-abajo:" + Math.round(ab / d)
+                    + "px;--bar-izq:" + Math.round(iz / d)
+                    + "px;--bar-der:" + Math.round(de / d)
+                    + "px;--teclado:" + Math.round(tec / d) + "px}";
+            web.evaluateJavascript(
+                    "(function(){var s=document.getElementById('miparte-barras');"
+                  + "if(!s){s=document.createElement('style');s.id='miparte-barras';"
+                  + "(document.head||document.documentElement).appendChild(s);}"
+                  + "s.textContent=" + jsTxt(css) + ";})()", null);
+            if (tec != tecladoAnterior) avisaDelTeclado();
+            tecladoAnterior = tec;
+        } catch (Throwable ignored) { }
+    }
+
+    /** Cuanto tapa el teclado, en pixeles fisicos. 0 si no esta.
+     *
+     *  Desde Android 15, una app que apunta a SDK 35 o mas ya NO se redimensiona
+     *  sola cuando sale el teclado: «adjustResize» dejo de tener efecto y el
+     *  teclado se pinta ENCIMA de lo que estas escribiendo. Hay que preguntarle
+     *  al sistema cuanto ocupa y decirselo a la pagina, igual que con las
+     *  barras. Por debajo de Android 11 no hay forma de preguntarlo, pero es que
+     *  alli adjustResize todavia funciona y no hace falta. */
+    private int altoDelTeclado(WindowInsets in) {
+        // OJO CON LA VERSION: por debajo de Android 15 «adjustResize» SI funciona
+        // y la ventana ya encoge sola. Si ademas le diesemos el hueco a la
+        // pagina, se apartaria dos veces y quedaria una franja muerta enorme.
+        if (Build.VERSION.SDK_INT < 35) return 0;
+        try { return in.getInsets(WindowInsets.Type.ime()).bottom; }
+        catch (Throwable t) { return 0; }
+    }
+
+    /** Avisa a la pagina de que el teclado ha cambiado.
+     *
+     *  NO se hace aqui el scrollIntoView del navegador: no sirve. La ventana no
+     *  encoge, asi que el navegador mide contra la pantalla entera, ve el campo
+     *  dentro y decide que ya se ve. Quien sabe donde esta la raya del teclado
+     *  es la pagina, que tiene la medida en --teclado; alli esta la cuenta
+     *  (miparte-native.js, apartado 8). */
+    private void avisaDelTeclado() {
+        if (web == null) return;
+        web.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    if (web != null) web.evaluateJavascript(
+                            "(function(){try{window.dispatchEvent("
+                          + "new Event('miparte-teclado'));}catch(e){}})()", null);
+                } catch (Throwable ignored) { }
+            }
+        }, 60);
+    }
+
+    private int tecladoAnterior = 0;
+
+    /** El hueco de las barras, en CSS.
+     *
+     *  Tres intentos apartando el WebView con setPadding no movieron nada en
+     *  el movil de Carlos. Asi que se deja de tocar la vista de Android y se le
+     *  dice a la PAGINA cuanto hueco tiene que dejar, que es donde vive la
+     *  maquetacion: la cabecera y la barra de pestañas son «sticky», y con una
+     *  variable de CSS se pegan en el sitio bueno sin pelearse con nadie.
+     *
+     *  OJO CON LAS UNIDADES: los recursos de Android vienen en pixeles fisicos
+     *  y el CSS trabaja en pixeles logicos. Hay que dividir por la densidad de
+     *  la pantalla o en un movil como este el hueco saldria del triple. */
+    String cssDeLasBarras() {
+        int ar = 0, ab = 0;
+        try {
+            float d = getResources().getDisplayMetrics().density;
+            if (d <= 0) d = 1f;
+            ar = Math.round(altoDeSistema("status_bar_height") / d);
+            ab = Math.round(altoDeSistema("navigation_bar_height") / d);
+            boolean apaisado = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            if (apaisado) ab = 0;   // en apaisado la barra se va a un lado
+        } catch (Throwable ignored) { }
+        return ":root{--bar-arriba:" + ar + "px;--bar-abajo:" + ab
+                + "px;--bar-izq:0px;--bar-der:0px;--teclado:0px}";
+    }
+
+    /** Le pasa las medidas nuevas a la pagina, sin recargarla. Al girar. */
+    private void refrescaBarras() {
+        if (web == null) return;
+        final String css = cssDeLasBarras();
+        web.evaluateJavascript(
+                "(function(){var s=document.getElementById('miparte-barras');"
+              + "if(!s){s=document.createElement('style');s.id='miparte-barras';"
+              + "(document.head||document.documentElement).appendChild(s);}"
+              + "s.textContent=" + jsTxt(css) + ";})()", null);
+    }
+
+    private int altoDeSistema(String nombre) {
+        try {
+            int id = getResources().getIdentifier(nombre, "dimen", "android");
+            return id > 0 ? getResources().getDimensionPixelSize(id) : 0;
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
+
+    /** El reloj, la bateria y los botones del sistema, SIEMPRE en claro.
+     *
+     *  Antes esto seguia el modo del movil: en modo claro pedia iconos
+     *  oscuros. Pero la franja de detras la pinta la cabecera de la app, que
+     *  es oscura en los DOS modos. Resultado: en modo claro salia el reloj en
+     *  negro sobre negro y no se leia.
+     *
+     *  Lo que manda no es el modo del telefono, es el color que hay detras. Y
+     *  detras siempre hay una barra oscura. */
+    private void iconosDeLasBarras() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsetsController wic = getWindow().getInsetsController();
+            if (wic != null) {
+                int m = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                      | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+                wic.setSystemBarsAppearance(0, m);   // 0 = iconos claros
+            }
+        } else if (Build.VERSION.SDK_INT >= 23) {
+            int f = getWindow().getDecorView().getSystemUiVisibility();
+            getWindow().getDecorView().setSystemUiVisibility(f & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+    }
+
+    /** Al girar el movil o al cambiar a modo claro, las barras cambian de sitio
+     *  y de color. El manifest declara estos cambios, asi que la pantalla no se
+     *  rehace sola: hay que volver a medir a mano. */
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration nueva) {
+        super.onConfigurationChanged(nueva);
+        try { refrescaBarras(); } catch (Throwable ignored) { }
+        try { fondoDeVentana(); } catch (Throwable ignored) { }
+        try { iconosDeLasBarras(); } catch (Throwable ignored) { }
+        try { if (web != null) web.requestApplyInsets(); } catch (Throwable ignored) { }
     }
 
     // ---------------- servidor de assets ----------------
@@ -193,6 +423,9 @@ public class MainActivity extends Activity {
         shim = "<script>window.MiParteFuente={ok:" + (tipo != null)
                 + ",fuente:" + jsTxt(fuenteNombre) + ",origen:" + jsTxt(fuenteOrigen)
                 + ",bytes:" + (tipo == null ? 0 : tipo.length) + "};</script>" + shim;
+        // El hueco de las barras del movil, lo primero de todo, para que la
+        // pagina ya nazca con el sitio reservado y no de un salto al abrirse.
+        shim = "<style id=\"miparte-barras\">" + cssDeLasBarras() + "</style>" + shim;
         int i = txt.toLowerCase().indexOf("<head");
         if (i >= 0) {
             int fin = txt.indexOf('>', i);
@@ -346,9 +579,33 @@ public class MainActivity extends Activity {
                     doc.addCategory(Intent.CATEGORY_OPENABLE);
                     doc.setType("*/*");
                     doc.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
-                            "application/json", "text/json", "text/plain", "application/octet-stream"});
+                            "application/json", "text/json", "text/plain", "application/octet-stream",
+                            // el .xlsx de la lista de materiales
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/vnd.ms-excel", "application/zip"});
                     doc.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multi);
-                    startActivityForResult(Intent.createChooser(doc, "Elige el fichero de la copia"), RC_ARCHIVO);
+                    startActivityForResult(Intent.createChooser(doc, "Elige el archivo"), RC_ARCHIVO);
+                    return true;
+                }
+
+                Intent camara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                boolean hayCamara = camara.resolveActivity(getPackageManager()) != null;
+                if (hayCamara) {
+                    File dir = new File(getCacheDir(), "compartir");
+                    dir.mkdirs();
+                    File destino = new File(dir, "foto-" + System.currentTimeMillis() + ".jpg");
+                    destino.createNewFile();
+                    fotoUri = PdfProvider.uriDe(destino.getName());
+                    camara.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
+                    camara.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+
+                // El campo con capture="environment" (el boton de «Foto rapida»
+                // del inicio) quiere la camara y nada mas: sin pasar por la
+                // pantalla de elegir. La galeria de ese mismo boton va por otro
+                // campo, sin capture, que se abre con la pulsacion larga.
+                if (hayCamara && params != null && params.isCaptureEnabled()) {
+                    startActivityForResult(camara, RC_ARCHIVO);
                     return true;
                 }
 
@@ -358,18 +615,7 @@ public class MainActivity extends Activity {
                 galeria.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multi);
 
                 Intent elige = Intent.createChooser(galeria, "Hacer foto o adjuntar");
-
-                Intent camara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (camara.resolveActivity(getPackageManager()) != null) {
-                    File dir = new File(getCacheDir(), "compartir");
-                    dir.mkdirs();
-                    File destino = new File(dir, "foto-" + System.currentTimeMillis() + ".jpg");
-                    destino.createNewFile();
-                    fotoUri = PdfProvider.uriDe(destino.getName());
-                    camara.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
-                    camara.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    elige.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{camara});
-                }
+                if (hayCamara) elige.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{camara});
                 startActivityForResult(elige, RC_ARCHIVO);
                 return true;
             } catch (Exception e) {
@@ -419,6 +665,17 @@ public class MainActivity extends Activity {
             }
             return;
         }
+        if (req == RC_DICTADO) {
+            String dicho = null;
+            if (res == RESULT_OK && data != null) {
+                ArrayList<String> l = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (l != null && !l.isEmpty()) dicho = l.get(0);
+            }
+            if (dicho != null && dicho.trim().length() > 0) diceLaPagina(
+                    "if(window.miParteDictadoOk)window.miParteDictadoOk(" + jsCad(dicho) + ")");
+            else finDictado();
+            return;
+        }
         if (req != RC_ARCHIVO) { super.onActivityResult(req, res, data); return; }
         Uri[] r = null;
         if (res == RESULT_OK) {
@@ -436,6 +693,75 @@ public class MainActivity extends Activity {
         if (ficheroCb != null) ficheroCb.onReceiveValue(r);
         ficheroCb = null;
         fotoUri = null;
+    }
+
+    // ---------------- dictado por voz ----------------
+
+    /** Abre el reconocedor de voz del sistema y devuelve lo dicho a la pagina.
+     *
+     *  POR QUE NATIVO Y NO EL DEL NAVEGADOR: el WebView de Android declara
+     *  «webkitSpeechRecognition» pero no lo implementa. Chromium deja el
+     *  servicio de voz fuera del componente, asi que el objeto existe, el
+     *  boton se pinta, y al arrancarlo salta onerror y no pasa nada. Por eso
+     *  la pagina pregunta primero por este puente.
+     *
+     *  POR QUE EL INTENT Y NO SpeechRecognizer: con el intent graba la app de
+     *  voz del sistema, no esta. Asi Mi Parte NO necesita el permiso
+     *  RECORD_AUDIO, que es de los sensibles y obliga a dar explicaciones en
+     *  Play. Lo que se pierde es el dictado continuo: una parrafada por
+     *  pulsacion. Para describir un trabajo sobra. */
+    private void abreDictado() {
+        try {
+            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            String idioma;
+            try { idioma = Locale.getDefault().toLanguageTag(); }
+            catch (Throwable ig) { idioma = "es-ES"; }
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, idioma);
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, idioma);
+            i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Di el trabajo");
+            startActivityForResult(i, RC_DICTADO);
+        } catch (Throwable t) {
+            // Sin app de voz instalada. Que la pagina apague el microfono
+            // encendido, o se queda «escuchando» para siempre.
+            finDictado();
+            try {
+                Toast.makeText(this, "Este telefono no trae dictado por voz",
+                        Toast.LENGTH_LONG).show();
+            } catch (Throwable ignored) { }
+        }
+    }
+
+    private void finDictado() {
+        diceLaPagina("if(window.miParteDictadoFin)window.miParteDictadoFin()");
+    }
+
+    private void diceLaPagina(final String js) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                try { if (web != null) web.evaluateJavascript("(function(){" + js + "})()", null); }
+                catch (Throwable ignored) { }
+            }
+        });
+    }
+
+    /** Como jsTxt pero SIN perder nada. jsTxt tira las comillas y las barras
+     *  para no complicarse; aqui no vale, porque esto es texto del usuario. */
+    private static String jsCad(String s) {
+        String t = s == null ? "" : s;
+        StringBuilder b = new StringBuilder("\"");
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            if (c == '"' || c == '\\') b.append('\\').append(c);
+            else if (c == '\n') b.append("\\n");
+            else if (c == '\r') b.append("\\r");
+            else if (c < 0x20 || c == 0x2028 || c == 0x2029)
+                b.append(String.format("\\u%04x", (int) c));
+            else b.append(c);
+        }
+        return b.append('"').toString();
     }
 
     // ---------------- puente JS ----------------
@@ -713,6 +1039,35 @@ public class MainActivity extends Activity {
             // La hora limite llega en ese json: si ha cambiado, la alarma que
             // repinta el rojo tiene que moverse con ella.
             Alarms.repintaEnLaHora(MainActivity.this);
+        }
+
+        /** La pagina llama aqui al pulsar el microfono de «Trabajo realizado».
+         *  El numero de linea no hace falta en Java: la pagina se lo guarda en
+         *  la funcion que deja puesta en window.miParteDictadoOk. */
+        @JavascriptInterface
+        public void dictar(int linea) {
+            runOnUiThread(new Runnable() {
+                public void run() { MainActivity.this.abreDictado(); }
+            });
+        }
+
+        /** La pagina avisa de que la cola YA ESTA GUARDADA en el disco.
+         *
+         *  Este es el unico sitio donde se vacia. Antes se vaciaba en cuanto
+         *  la pagina decia «me la quedo», pero quedarsela y guardarla no es lo
+         *  mismo: la pagina agrupa los guardados 220 ms, y si salias de la app
+         *  en ese rato el apunte no llegaba a escribirse y ya no estaba en la
+         *  cola. De ahi que unas veces apareciera y otras no. */
+        @JavascriptInterface
+        public void colaHecha() {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    String e = colaEntregada;
+                    colaEntregada = null;
+                    WidgetDatos.quitaEntregado(MainActivity.this, e);
+                    Widgets.refresca(MainActivity.this);
+                }
+            });
         }
 
         @JavascriptInterface
@@ -1049,6 +1404,8 @@ public class MainActivity extends Activity {
      *  se mando. Sirve para no mandarla dos veces seguidas. Caduca sola a los
      *  tres segundos: si algo va mal, se reintenta, no se queda atascada. */
     private String colaEnVuelo;
+    /** Lo ultimo que se entrego a la pagina y aun no ha confirmado guardado. */
+    private String colaEntregada;
     private long colaDesde;
 
     private void sueltaPendientes(final int intento) {
@@ -1079,15 +1436,26 @@ public class MainActivity extends Activity {
                 try {
                     if (cola != null) {
                         web.evaluateJavascript(
+                                // «si» SOLO si la pagina confirma que se ha
+                                // quedado con la cola. Antes bastaba con que
+                                // no reventara, y como al otro lado se tragan
+                                // los errores, un fallo a mitad vaciaba la cola
+                                // y se perdia lo que hubiera despues.
                                 "(function(){if(!window.MiParteCola)return 'no';"
-                                        + "try{window.MiParteCola(" + cola + ");return 'si';}"
+                                        + "try{return window.MiParteCola(" + cola + ")?'si':'no';}"
                                         + "catch(e){return 'no';}})()",
                                 new ValueCallback<String>() {
                                     public void onReceiveValue(String r) {
                                         colaEnVuelo = null;
                                         if (r != null && r.contains("si")) {
-                                            WidgetDatos.vaciaCola(MainActivity.this);
-                                            Widgets.refresca(MainActivity.this);
+                                            // Entregada, PERO NO GUARDADA. Aqui ya
+                                            // no se vacia nada: la pagina llamara a
+                                            // colaHecha() cuando el dato este
+                                            // escrito en el disco. Si no llama, la
+                                            // cola se queda y se reintenta al abrir
+                                            // otra vez. Repetir es recuperable;
+                                            // perder un apunte, no.
+                                            colaEntregada = cola;
                                         } else {
                                             reintenta(intento);
                                         }

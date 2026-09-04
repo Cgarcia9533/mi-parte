@@ -19,16 +19,23 @@ public class ListaService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent i) {
         String tipo = i.getStringExtra("tipo");
-        return new Factory(getApplicationContext(), tipo == null ? "tareas" : tipo);
+        String lid = i.getStringExtra("lista");
+        return new Factory(getApplicationContext(), tipo == null ? "tareas" : tipo,
+                lid == null || lid.isEmpty() ? "tareas" : lid);
     }
+
+    /** Filas de hoja que se pintan aunque no haya texto, para que la libreta
+     *  se vea rayada hasta abajo y no se corte en la ultima linea escrita. */
+    private static final int RAYAS_LIBRETA = 14;
 
     private static final class Factory implements RemoteViewsFactory {
 
         private final Context c;
         private final String tipo;
+        private final String lid;
         private JSONArray filas = new JSONArray();
 
-        Factory(Context c, String tipo) { this.c = c; this.tipo = tipo; }
+        Factory(Context c, String tipo, String lid) { this.c = c; this.tipo = tipo; this.lid = lid; }
 
         @Override public void onCreate() { }
         @Override public void onDestroy() { }
@@ -47,8 +54,8 @@ public class ListaService extends RemoteViewsService {
                     // y el texto tachado, igual que en la app. El estado que se
                     // pinta es el de la app mas lo que espera en la cola, para
                     // que el toque se vea en el momento y en los dos sentidos.
-                    JSONArray a = o.optJSONArray("tareas");
-                    for (int i = 0; a != null && i < a.length(); i++) {
+                    JSONArray a = WidgetDatos.lineas(c, lid);
+                    for (int i = 0; i < a.length(); i++) {
                         Object it = a.opt(i);
                         String t = WidgetDatos.tareaTxt(it);
                         if (t.isEmpty()) continue;
@@ -56,15 +63,15 @@ public class ListaService extends RemoteViewsService {
                         f.put("izq", t);
                         f.put("caja", true);
                         f.put("txt", t);
-                        f.put("hecha", WidgetDatos.tareaVista(c, t, WidgetDatos.tareaHecha(it)));
+                        f.put("hecha", WidgetDatos.tareaVista(c, lid, t, WidgetDatos.tareaHecha(it)));
                         out.put(f);
                     }
                     // Y las escritas en el widget que aun no han entrado en la
                     // app: se ven abajo, marcadas, y un toque las borra.
-                    JSONArray nv = WidgetDatos.nuevasEnCola(c);
+                    JSONArray nv = WidgetDatos.nuevasEnCola(c, lid);
                     for (int i = 0; i < nv.length(); i++) {
                         String t = nv.optString(i, "");
-                        if (t.isEmpty() || WidgetDatos.estaEnApp(c, t)) continue;
+                        if (t.isEmpty() || WidgetDatos.estaEnApp(c, lid, t)) continue;
                         JSONObject f = new JSONObject();
                         f.put("izq", t);
                         f.put("caja", true);
@@ -72,6 +79,30 @@ public class ListaService extends RemoteViewsService {
                         f.put("hecha", false);
                         f.put("est", "sin volcar");
                         out.put(f);
+                    }
+                } else if ("nota".equals(tipo)) {
+                    // LA LIBRETA. No es una lista: es UNA hoja de texto que se
+                    // parte por lineas solo para poder pintarla y desplazarla.
+                    // libreta() ya devuelve la edicion hecha desde el widget si
+                    // hay alguna sin volcar, asi que aqui no hay que juntar nada.
+                    //
+                    // OJO CON EL CASO VACIO: si se devuelve UNA fila en blanco,
+                    // la lista deja de estar vacia, el «empty view» no sale
+                    // nunca y se ve una raya suelta sin texto. Paso en la 1.7.9.
+                    String txt = WidgetDatos.libreta(c).replaceAll("\\s+$", "");
+                    if (!txt.isEmpty()) {
+                        // Las lineas en blanco de DENTRO si se respetan: en una
+                        // libreta separan parrafos.
+                        String[] ls = txt.split("\\n", -1);
+                        for (int i = 0; i < ls.length; i++) {
+                            out.put(new JSONObject().put("izq", ls[i].trim()));
+                        }
+                        // Y hoja en blanco hasta abajo. La raya la pinta cada
+                        // fila, asi que sin estas el papel se acabaria en la
+                        // ultima linea escrita y no pareceria una libreta.
+                        for (int i = out.length(); i < RAYAS_LIBRETA; i++) {
+                            out.put(new JSONObject().put("izq", ""));
+                        }
                     }
                 } else if ("material".equals(tipo)) {
                     JSONArray a = o.optJSONArray("material");
@@ -119,7 +150,9 @@ public class ListaService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int i) {
-            RemoteViews v = new RemoteViews(c.getPackageName(), R.layout.widget_fila_lista);
+            // La libreta tiene su propia fila: papel, raya y margen, sin casilla.
+            RemoteViews v = new RemoteViews(c.getPackageName(),
+                    "nota".equals(tipo) ? R.layout.widget_fila_nota : R.layout.widget_fila_lista);
             JSONObject f = filas.optJSONObject(i);
             if (f == null) return v;
 
